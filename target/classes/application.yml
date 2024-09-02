@@ -1,11 +1,8 @@
 spring:
-  application:
-    admin:
-      jmx-name: 2team
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: oracle:thin:@ADMIN?TNS_ADMIN=./src/main/resources/wallet
-    username: ADMIN
+    username: ADMIN 
     password: Kosadb2team!
 server:
   port: 8081
