@@ -3,6 +3,10 @@ fontPropagated=true
 org.eclipse.wst.jsdt.ui.editor.tab.width=
 org.eclipse.wst.jsdt.ui.formatterprofiles.version=11
 org.eclipse.wst.jsdt.ui.javadoclocations.migrated=true
+<<<<<<< HEAD
+proposalOrderMigrated=true
+=======
+>>>>>>> 18bf167505fa08012876716c2c1358761cb4d61c
 tabWidthPropagated=true
 useAnnotationsPrefPage=true
 useQuickDiffPrefPage=true
