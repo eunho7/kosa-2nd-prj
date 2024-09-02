@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: oracle:thin:@ADMIN?TNS_ADMIN=./src/main/resources/wallet
+    url: jdbc:oracle:thin:@kosadb_high?tns_admin=./src/main/resources/wallet
     username: ADMIN 
     password: Kosadb2team!
 server:

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class testController2 {
+public class testController2 { //TEST
 	  @GetMapping("/health2")
 	    public String healthCheck() {
 	        return "Application is running!";
