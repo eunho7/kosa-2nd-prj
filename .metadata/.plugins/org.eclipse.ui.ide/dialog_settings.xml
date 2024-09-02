@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+<<<<<<< HEAD
 	<list key="installedFeatures">
 		<item value="org.eclipse.buildship:3.1.9.v20240115-1636"/>
 		<item value="org.eclipse.egit.gitflow.feature:6.10.0.202406032230-r"/>
@@ -36,6 +37,8 @@
 		<item value="org.jboss.tools.m2e.wro4j.feature:1.2.1.202301111328"/>
 		<item value="org.sonatype.m2e.egit.feature:0.17.0.202209271423"/>
 	</list>
+=======
+>>>>>>> 18bf167505fa08012876716c2c1358761cb4d61c
 	<section name="ExternalProjectImportWizard">
 		<item key="WizardProjectsImportPage.STORE_NESTED_PROJECTS" value="false"/>
 		<item key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID" value="false"/>
@@ -62,8 +65,11 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+<<<<<<< HEAD
 			<item value="C:\IDE\PROJECT\PRO\PRO"/>
 			<item value="C:\Users\user\git\PRO"/>
+=======
+>>>>>>> 18bf167505fa08012876716c2c1358761cb4d61c
 			<item value="C:\IDE\PROJECT\PRO"/>
 		</list>
 		<section name="SmartImportWizard.dialogBounds">
