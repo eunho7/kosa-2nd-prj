@@ -2,7 +2,11 @@ spring:
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@kosadb_high?tns_admin=./src/main/resources/wallet
-    username: ADMIN 
+    username: admin
     password: Kosadb2team!
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
 server:
   port: 8081
