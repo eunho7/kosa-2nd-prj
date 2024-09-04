@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Search Travel Albums</title>
+    <style>
+        .search-container {
+            margin: 20px;
+        }
+        .search-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .search-form {
+            margin-bottom: 20px;
+        }
+        .search-form select, .search-form input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            display: none;
+        }
+        .search-button {
+            background-color: cornflowerblue;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #45a049;
+        }
+        .option-label {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header :: header"></header>
+<main>
+    <section class="search-container">
+        <div class="search-form">
+            <p class="search-title">여행 앨범 검색</p>
+
+            <!-- 옵션 선택 -->
+            <div>
+                <input type="radio" id="theme-option" name="searchOption" value="theme" onclick="toggleInputFields()">
+                <label class="option-label" for="theme-option">테마별 검색</label>
+
+                <input type="radio" id="region-option" name="searchOption" value="region" onclick="toggleInputFields()">
+                <label class="option-label" for="region-option">지역별 검색</label>
+            </div>
+
+            <!-- 검색 폼 -->
+            <form th:action="@{/travel/search}" method="get">
+                <!-- 테마 드롭다운 -->
+                <select id="theme-select" name="theme">
+                    <option value="" disabled selected>테마를 선택해주세요.</option>
+                    <option value="힐링">힐링</option>
+                    <option value="먹방">먹방</option>
+                    <option value="액티비티">액티비티</option>
+                    <option value="감성">감성</option>
+                    <option value="기타">기타</option>
+                    <!-- 다른 테마 옵션 추가 -->
+                </select>
+
+                <!-- 지역 입력 필드 -->
+                <input type="text" id="region-input" name="region" placeholder="지역을 입력해주세요.">
+
+                <!-- 검색 버튼 -->
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script>
+    function toggleInputFields() {
+        const themeOption = document.getElementById('theme-option').checked;
+        const regionOption = document.getElementById('region-option').checked;
+
+        document.getElementById('theme-select').style.display = themeOption ? 'inline-block' : 'none';
+        document.getElementById('region-input').style.display = regionOption ? 'inline-block' : 'none';
+
+        if (themeOption) {
+            document.getElementById('region-input').value = '';
+        }
+        if (regionOption) {
+            document.getElementById('theme-select').value = '';
+        }
+    }
+</script>
+</body>
+</html>
