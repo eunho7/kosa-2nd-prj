@@ -25,8 +25,6 @@ Dsrc/main/java/com/example/_team/exception/DataNotFoundException.java,5/5/55968
 j
 :src/main/java/com/example/_team/domain/enums/Category.java,5/f/5f5943c0ee6c6825a9a528fcb9534c7c81a9fd73
 h
-8src/main/java/com/example/_team/domain/enums/Region.java,7/6/762de9eb9b38bc48ac1b2b4f92dc50b84b8d3f54
-h
 8src/main/java/com/example/_team/domain/TravelImages.java,f/d/fd68efc3e578389fbf83ef5531347234a4b8f79f
 a
 1src/main/java/com/example/_team/domain/Users.java,5/c/5c53a5eb2b3f4d2a67e8ed7b7d128e303990a51d
@@ -34,8 +32,6 @@ m
 =src/main/java/com/example/_team/domain/common/BaseEntity.java,8/2/82ddab7bb98caccab4967517f0623cadd3cd3d4d
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-g
-7src/main/java/com/example/_team/domain/TravelBoard.java,9/3/938ac8ab3e6c559f13ba52b31866b3af8287fcd7
 a
 1src/main/java/com/example/_team/domain/Theme.java,e/5/e552bcacea15116dc93cc76ba9479a6469433fb4
 l

@@ -1,6 +1,7 @@
 package com.example._team.repository;
 
 import com.example._team.domain.TravelBoard;
+import com.example._team.domain.enums.Region;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,4 +12,6 @@ public interface TravelRepository extends JpaRepository<TravelBoard, Integer> {
             + "on th.travel_id = t.id where th.name = :name and t.is_public = :is_public",
             nativeQuery = true)
     List<Object[]> findAllByThemeName(@Param("name") String name, @Param("is_public") Integer is_public);
+
+    List<TravelBoard> findAllByRegionAndIsPublic(Region region, @Param("is_public") Integer is_public);
 }

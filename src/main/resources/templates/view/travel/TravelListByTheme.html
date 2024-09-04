@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
-    <title>Travel Themes Results</title>
+    <title>Travel Albums Results</title>
     <style>
-      .search-container {
+        .search-container {
 
-      }
+        }
         .results-container ul {
             list-style-type: none;
             padding: 0;
@@ -65,14 +65,17 @@
 <body>
 <header th:replace="fragments/header :: header"></header>
 <main>
-    <section class="search-container">
-        <form th:action="@{/travel/theme}" method="get">
-            <input type="text" name="theme" placeholder="테마를 입력해주세요." class="search-input-theme">
-            <button type="submit" class="search-button">Search</button>
-        </form>
-    </section>
     <section class="results-container">
-        <h1><span th:text="${theme}">Theme</span> 에 대한 앨범 검색</h1>
+        <h1>
+            <!-- 테마가 존재할 때 -->
+            <span th:if="${theme != null}" th:text="'\'테마: \' + ${theme} + \'에 대한 앨범 검색\'">Theme Search Results</span>
+
+            <!-- 지역이 존재할 때 -->
+            <span th:if="${region != null}" th:text="'\'지역: \' + ${region} + \'에 대한 앨범 검색\'">Region Search Results</span>
+
+            <!-- 둘 다 null일 때 -->
+            <span th:if="${theme == null and region == null}">검색 결과</span>
+        </h1>
         <ul>
             <li th:each="album : ${albums}">
                 <a th:href="@{/travel/detail/{id}(id=${album.id})}">
@@ -84,7 +87,7 @@
                 </a>
             </li>
         </ul>
-        <button class="back-button" onclick="window.location.href='/travel/themeform'">뒤로가기</button>
+        <button class="back-button" onclick="window.location.href='/travel/searchform'">뒤로가기</button>
     </section>
 </main>
 </body>
