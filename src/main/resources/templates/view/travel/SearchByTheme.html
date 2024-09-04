@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Search Travel Themes</title>
+</head>
+<body>
+<header th:replace="fragments/header :: header"></header>
+<main>
+    <section class="search-container">
+
+        <form th:action="@{/travel/theme}" method="get">
+            <input type="text" name="theme" placeholder="테마를 입력해주세요." class="search-input-theme">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

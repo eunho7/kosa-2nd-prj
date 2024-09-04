@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Travel Themes Results</title>
+    <style>
+      .search-container {
+
+      }
+        .results-container ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .results-container li {
+            margin-bottom: 1rem;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .results-container h1 {
+            text-align: center;
+        }
+
+        .result-image {
+            width: 320px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .result-title {
+            margin: 0.5rem 0;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 버튼 스타일 */
+        .search-button, .back-button {
+            background-color: cornflowerblue;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            width: 100px;
+            height: 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header :: header"></header>
+<main>
+    <section class="search-container">
+        <form th:action="@{/travel/theme}" method="get">
+            <input type="text" name="theme" placeholder="테마를 입력해주세요." class="search-input-theme">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </section>
+    <section class="results-container">
+        <h1><span th:text="${theme}">Theme</span> 에 대한 앨범 검색</h1>
+        <ul>
+            <li th:each="album : ${albums}">
+                <a th:href="@{/travel/detail/{id}(id=${album.id})}">
+                    <img th:src="@{/images/{thumbnail}(thumbnail=${album.thumbnail})}" alt="Album Image"
+                         class="result-image">
+                    <br>
+                    <span th:text="${album.title}" class="result-title">Album Title</span>
+                    <p th:text="${album.dateRange}">Travel Date</p>
+                </a>
+            </li>
+        </ul>
+        <button class="back-button" onclick="window.location.href='/travel/themeform'">뒤로가기</button>
+    </section>
+</main>
+</body>
+</html>

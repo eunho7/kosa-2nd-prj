@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class TravelBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRAVEL_BOARD_SEQ_GENERATOR")
-    private Integer travelIdx;
+    private Integer id;
     @Column(length = 100, nullable = false)
     private String title;
     @Lob
@@ -40,6 +40,8 @@ public class TravelBoard extends BaseEntity {
     private LocalDateTime endDate;
     @Column(nullable = false)
     private Integer isPublic;
+    @Column(nullable = false)
+    private String thumbnail;
     @ManyToOne
     @JoinColumn(name="user_idx")
     private Users userIdx;
