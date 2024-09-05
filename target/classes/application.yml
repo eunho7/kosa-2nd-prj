@@ -15,14 +15,11 @@ spring:
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@localhost:1521:xe
-    username: song
+    username: bokjaesung
     password: oracle
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .html
 server:
   port: 8080
