@@ -46,7 +46,10 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/user"),
-                                new AntPathRequestMatcher("/user/find-id")
+                                new AntPathRequestMatcher("/user/find-id"),
+                                new AntPathRequestMatcher("/signup/send-code"),
+                                new AntPathRequestMatcher("/signup/verify"),
+                                new AntPathRequestMatcher("/signup/complete")
                         ).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
