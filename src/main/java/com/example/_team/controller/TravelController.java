@@ -2,6 +2,7 @@ package com.example._team.controller;
 
 import com.example._team.domain.enums.Region;
 import com.example._team.service.TravelService;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -56,5 +57,14 @@ public class TravelController {
 
         model.addAttribute("albums", albums);
         return "view/travel/TravelListByTheme";
+    }
+
+
+    @GetMapping("/random")
+    public String getRandomTravelAlbum(Model model) {
+
+        TravelAlbumDetailResponseDTO response = travelService.getRandomTravelAlbum();
+        model.addAttribute("response", response);
+        return "view/travel/TravelAlbumRandom";
     }
 }

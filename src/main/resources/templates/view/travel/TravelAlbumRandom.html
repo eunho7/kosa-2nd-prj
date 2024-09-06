@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/travel/RandomAlbum.css}">
+    <title>Search Travel Albums</title>
+</head>
+<body>
+<header th:replace="fragments/header :: header"></header>
+<main>
+    <section class="user-container">
+        <h1 th:text="${response.nickname} + '님의'"></h1>
+        <h1>여행 앨범</h1>
+        <a th:href="@{/travel/detail/{id}(id=${response.id})}" class="album-link">
+            <img th:src="@{/images/{thumbnail}(thumbnail=${response.thumbnail})}" alt="Album image" class="result-image">
+            <h2 th:text="${response.title}"></h2>
+            <!-- 여행 날짜 출력 -->
+            <p th:text="${response.dateRange}">Date Range</p>
+
+            <!-- 테마 리스트 출력 -->
+            <div class="theme-list">
+                <ul>
+                    <li th:each="theme : ${response.travelThemeList}" th:text="${theme.name}">Theme Name</li>
+                </ul>
+            </div>
+
+            <!-- 이미지 리스트 출력 -->
+            <div class="image-list">
+                <div th:each="image : ${response.travelAlbumImageList}">
+                    <img th:src="@{${image.imagePath}}" alt="Travel Image" class="travel-image" />
+                </div>
+            </div>
+        </a>
+    </section>
+</main>
+</body>
+</html>
