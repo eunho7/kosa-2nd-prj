@@ -12,14 +12,19 @@ import com.example._team.domain.Board;
 import com.example._team.domain.enums.Category;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-	
+
 	List<Board> findByTitleContaining(String keyword);
-	
+
 	@Query("SELECT b FROM Board b WHERE b.category = :category ORDER BY b.boardIdx DESC")
-    List<Board> findByCategoryOrderByBoardIdxDesc(@Param("category") Category category);
-	
+	List<Board> findByCategoryOrderByBoardIdxDesc(@Param("category") Category category);
+
 	List<Board> findAllByOrderByViewsDesc();
-	
+
 //	List<Board> findAll();
-//	Page<Board> findAll(Pageable pageable);
+	
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow",
+	           countQuery = "SELECT COUNT(*) FROM board",
+	           nativeQuery = true)
+	    List<Board> findAllOrderedByBoardIdx(@Param("startRow") int startRow, @Param("endRow") int endRow, Pageable pageable);
+
 }

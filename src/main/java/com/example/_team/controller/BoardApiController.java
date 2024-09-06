@@ -1,5 +1,6 @@
 package com.example._team.controller;
 
+import com.example._team.domain.Board;
 import com.example._team.domain.enums.Category;
 import com.example._team.dto.board.BoardRequestDto;
 import com.example._team.dto.board.BoardResponseDto;
@@ -7,10 +8,12 @@ import com.example._team.exception.DataNotFoundException;
 import com.example._team.service.BoardService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,36 +25,53 @@ import java.util.List;
 @RequestMapping("/api/boards")
 public class BoardApiController {
 
+	@Autowired
 	private final BoardService boardService;
-
-	// 게시글 저장
-	@PostMapping
-	public ResponseEntity<String> savePost(@RequestBody BoardRequestDto boardRequestDto) {
-		try {
-			boardService.savePost(boardRequestDto);
-			return new ResponseEntity<>("Post saved successfully", HttpStatus.CREATED);
-		} catch (DataNotFoundException e) {
-			return new ResponseEntity<>("Failed to save post", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+	
 	
 
+	// 게시글 저장
+//	@PostMapping
+//	public ResponseEntity<String> savePost(@RequestBody BoardRequestDto boardRequestDto) {
+//		try {
+//			boardService.savePost(boardRequestDto);
+//			return new ResponseEntity<>("Post saved successfully", HttpStatus.CREATED);
+//		} catch (DataNotFoundException e) {
+//			return new ResponseEntity<>("Failed to save post", HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
+	
+	// 게시글 저장
+	@PostMapping
+    public ResponseEntity<BoardResponseDto> savePost(@RequestBody BoardRequestDto boardDto) {
+        BoardResponseDto responseDto = boardService.createBoard(boardDto);
+        return ResponseEntity.ok(responseDto);
+    }
+	
+	
 	// 게시글 업데이트
-	@PutMapping("/{id}")
-	public ResponseEntity<String> updatePost(@PathVariable Integer id, @RequestBody BoardRequestDto boardRequestDto) {
-		try {
-			boardService.update(id, boardRequestDto);
-			return new ResponseEntity<>("Post updated successfully", HttpStatus.OK);
-		} catch (DataNotFoundException e) {
-			return new ResponseEntity<>("Failed to update post", HttpStatus.NOT_FOUND);
-		}
-	}
+//	@PutMapping("/{id}")
+//	public ResponseEntity<String> updatePost(@PathVariable Integer id, @RequestBody BoardRequestDto boardRequestDto) {
+//		try {
+//			boardService.update(id, boardRequestDto);
+//			return new ResponseEntity<>("Post updated successfully", HttpStatus.OK);
+//		} catch (DataNotFoundException e) {
+//			return new ResponseEntity<>("Failed to update post", HttpStatus.NOT_FOUND);
+//		}
+//	}
+	
+	// 게시글 업데이트
+    @PutMapping("/{id}")
+    public ResponseEntity<BoardResponseDto> updatePost(@PathVariable Integer id, @RequestBody BoardRequestDto boardDto) {
+        BoardResponseDto responseDto = boardService.updateBoard(id, boardDto);
+        return ResponseEntity.ok(responseDto);
+    }
 
 	// 게시글 삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deletePost(@PathVariable Integer id) {
 		try {
-			boardService.deletePost(id);
+			boardService.deleteBoard(id);
 			return new ResponseEntity<>("Post deleted successfully", HttpStatus.NO_CONTENT);
 		} catch (DataNotFoundException e) {
 			return new ResponseEntity<>("Failed to delete post", HttpStatus.NOT_FOUND);
@@ -63,42 +83,27 @@ public class BoardApiController {
 	@GetMapping("/{id}")
 	public ResponseEntity<BoardResponseDto> getPost(@PathVariable Integer id) {
 		try {
-			BoardResponseDto board = boardService.getPost(id);
+			BoardResponseDto board = boardService.getBoard(id);
 			return new ResponseEntity<>(board, HttpStatus.OK);
 		} catch (DataNotFoundException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
-	 //게시글 목록 조회
 	@GetMapping
-	public ResponseEntity<List<BoardResponseDto>> getBoardList(
-			@RequestParam(value = "page", defaultValue = "0") Integer pageNum) {
-		List<BoardResponseDto> boards = boardService.getBoardList(pageNum);
-		return new ResponseEntity<>(boards, HttpStatus.OK);
-	}
+    public ResponseEntity<Page<BoardResponseDto>> getBoards(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<BoardResponseDto> boardPage = boardService.getBoardList(page, size);
+        return ResponseEntity.ok(boardPage);
+    }
 	
-	//페이징 테스트 코드
-//	@GetMapping
-//    public ResponseEntity<Page<BoardResponseDto>> getBoardList(
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "10") int size,
-//            @RequestParam(value = "sort", defaultValue = "boardIdx,desc") String sort) {
-//        
-//        // 페이지 요청 생성
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("boardIdx")));
-//        
-//        // 서비스 호출
-//        Page<BoardResponseDto> boardPage = boardService.getBoardList(pageable);
-//        
-//        return ResponseEntity.ok(boardPage);
-//    }
 	
-
+	// 게시글 카테고리별 검색
 	@GetMapping("/category/{category}")
 	public ResponseEntity<List<BoardResponseDto>> getPostsByCategory(@PathVariable Category category) {
 		try {
-			List<BoardResponseDto> posts = boardService.getPostsByCategoryWithSorting(category);
+			List<BoardResponseDto> posts = boardService.getBoardsByCategoryWithSorting(category);
 			return new ResponseEntity<>(posts, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -116,7 +121,7 @@ public class BoardApiController {
 	// 게시글 검색 키워드
 	@GetMapping("/search")
 	public ResponseEntity<List<BoardResponseDto>> searchPosts(@RequestParam("keyword") String keyword) {
-		List<BoardResponseDto> boards = boardService.searchPosts(keyword);
+		List<BoardResponseDto> boards = boardService.searchBoards(keyword);
 		return new ResponseEntity<>(boards, HttpStatus.OK);
 	}
 

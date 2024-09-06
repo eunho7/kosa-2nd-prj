@@ -16,8 +16,8 @@ public class BoardRequestDto {
     private Category category;
     private Integer views;
     private Integer status;
-    private Integer userIdx; // Use Integer instead of Long
-    private Integer answerBoardIdx; // Use Integer instead of Long
+    private Integer userIdx; 
+    private Integer answerBoardIdx; 
 
     @Builder
     public BoardRequestDto(String title, String content, Category category, Integer views, Integer status, Integer userIdx, Integer answerBoardIdx) {
@@ -36,8 +36,8 @@ public class BoardRequestDto {
                 .title(this.title)
                 .content(this.content)
                 .category(this.category)
-                .views(this.views)
-                .status(this.status)
+                .views(0)
+                .status(1)
                 .userIdx(user)
                 .answerBoardIdx(answerBoard)
                 .build();

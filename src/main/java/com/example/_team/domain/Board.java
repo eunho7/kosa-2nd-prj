@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 public class Board extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BORAD_SEQ_GENERATOR")
+    @Column(name = "board_idx")
     private Integer boardIdx;
     
     @Column(length = 100, nullable = false)

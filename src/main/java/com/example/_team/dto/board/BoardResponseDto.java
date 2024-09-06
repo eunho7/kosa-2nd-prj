@@ -1,5 +1,7 @@
 package com.example._team.dto.board;
 
+import java.time.LocalDateTime;
+
 import com.example._team.domain.Board;
 import com.example._team.domain.enums.Category;
 
@@ -20,8 +22,9 @@ public class BoardResponseDto {
     private Category category;
     private Integer views;
     private Integer status;
-    private Integer userIdx; // Use Integer instead of Long
-//    private Integer answerBoardIdx; // Use Integer instead of Long
+    private Integer userIdx;
+    private LocalDateTime updatedAt;
+//    private Integer answerBoardIdx;
 
 
 
@@ -35,6 +38,7 @@ public class BoardResponseDto {
                 .views(board.getViews())
                 .status(board.getStatus())
                 .userIdx(board.getUserIdx() != null ? board.getUserIdx().getUserIdx() : null) // Corrected method to get ID
+                .updatedAt(board.getUpdatedAt())
 //                .answerBoardIdx(board.getAnswerBoardIdx() != null ? board.getAnswerBoardIdx().getBoardIdx() : null) // Corrected method to get ID
                 .build();
     }
