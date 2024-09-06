@@ -23,7 +23,7 @@ public class Theme {
     @Column(length = 30, nullable = false)
     private String name;
     @ManyToOne
-    @JoinColumn(name="travel_idx")
+    @JoinColumn(name="travel_id")
     private TravelBoard travelIdx;
 
 }

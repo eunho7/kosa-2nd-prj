@@ -2,6 +2,32 @@
 #  datasource:
 #    driver-class-name: oracle.jdbc.driver.OracleDriver
 #    url: jdbc:oracle:thin:@kosadb_high?tns_admin=./src/main/resources/wallet
+<<<<<<< HEAD
+#    username: admin
+#    password: Kosadb2team!
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#server:
+#  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: song
+    password: oracle
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+server:
+  port: 8080
+=======
 #    username: ADMIN
 #    password: Kosadb2team!
 #  jpa:
@@ -42,3 +68,4 @@
         show-sql: true
   server:
     port: 8081
+>>>>>>> ceafc513a6263b725e397cd69935e556d4f55ef5

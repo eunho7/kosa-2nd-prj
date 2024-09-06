@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class VisitedLocations {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "V_LOC_SEQ_GENERATOR")
+
     private Integer locationIdx;
     @ManyToOne
     @JoinColumn(name = "travel_idx")

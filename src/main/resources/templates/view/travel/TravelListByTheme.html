@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Travel Albums Results</title>
+    <style>
+        .search-container {
+
+        }
+        .results-container ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .results-container li {
+            margin-bottom: 1rem;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .results-container h1 {
+            text-align: center;
+        }
+
+        .result-image {
+            width: 320px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .result-title {
+            margin: 0.5rem 0;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 버튼 스타일 */
+        .search-button, .back-button {
+            background-color: cornflowerblue;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            width: 100px;
+            height: 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="fragments/header :: header"></header>
+<main>
+    <section class="results-container">
+        <h1>
+            <!-- 테마가 존재할 때 -->
+            <span th:if="${theme != null}" th:text="'\'테마: \' + ${theme} + \'에 대한 앨범 검색\'">Theme Search Results</span>
+
+            <!-- 지역이 존재할 때 -->
+            <span th:if="${region != null}" th:text="'\'지역: \' + ${region} + \'에 대한 앨범 검색\'">Region Search Results</span>
+
+            <!-- 둘 다 null일 때 -->
+            <span th:if="${theme == null and region == null}">검색 결과</span>
+        </h1>
+        <ul>
+            <li th:each="album : ${albums}">
+                <a th:href="@{/travel/detail/{id}(id=${album.id})}">
+                    <img th:src="@{/images/{thumbnail}(thumbnail=${album.thumbnail})}" alt="Album Image"
+                         class="result-image">
+                    <br>
+                    <span th:text="${album.title}" class="result-title">Album Title</span>
+                    <p th:text="${album.dateRange}">Travel Date</p>
+                </a>
+            </li>
+        </ul>
+        <button class="back-button" onclick="window.location.href='/travel/searchform'">뒤로가기</button>
+    </section>
+</main>
+</body>
+</html>

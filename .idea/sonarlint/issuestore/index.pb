@@ -1,0 +1,27 @@
+
+9
+	2team.iml,4/4/44a9cfd65c13a80be7dff6aaa651941b04a19fb9
+8
+mvnw.cmd,1/f/1f1763f358c257ea3515417352b82b0165647ad1
+4
+mvnw,5/d/5d837c4ed85ecaaf932c506e80ff5d7b9f3d590d
+k
+;src/main/java/com/example/_team/domain/enums/Authority.java,a/a/aa6e859c84a029a3fa131c5741d1aa439b7df6e1
+g
+7src/main/java/com/example/_team/domain/TravelLikes.java,9/e/9ebc51bbceb47285abafc8aad885efe821a842e5
+c
+3src/main/java/com/example/_team/domain/Reports.java,7/b/7b08ad66d56740c34dbdbc4e4361c7d90f74fac8
+f
+6src/main/java/com/example/_team/domain/BoardFiles.java,3/6/36abf98d869e725b19662a696ea3653fe81b79eb
+a
+1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
+j
+:src/main/java/com/example/_team/domain/enums/Category.java,5/f/5f5943c0ee6c6825a9a528fcb9534c7c81a9fd73
+a
+1src/main/java/com/example/_team/domain/Users.java,5/c/5c53a5eb2b3f4d2a67e8ed7b7d128e303990a51d
+m
+=src/main/java/com/example/_team/domain/common/BaseEntity.java,8/2/82ddab7bb98caccab4967517f0623cadd3cd3d4d
+`
+0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
+e
+5src/main/java/com/example/_team/config/WebConfig.java,2/b/2bc62d806d6bf7cb3c77f4bdd084e8d9fb6ca596
