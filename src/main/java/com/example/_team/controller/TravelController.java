@@ -4,18 +4,23 @@ import com.example._team.domain.enums.Region;
 import com.example._team.service.TravelService;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+//@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/travel")
+@RequestMapping("/api/travel")
 public class TravelController {
 
     private final TravelService travelService;
@@ -66,5 +71,11 @@ public class TravelController {
         TravelAlbumDetailResponseDTO response = travelService.getRandomTravelAlbum();
         model.addAttribute("response", response);
         return "view/travel/TravelAlbumRandom";
+    }
+
+    @PostMapping("/likes/{travelIdx}")
+    public TravelAlbumResultDTO postTravelAlbumLikes(@PathVariable(name = "travelIdx")Integer travelIdx) {
+        TravelAlbumResultDTO response = travelService.postAlbumLikes(travelIdx);
+        return response;
     }
 }
