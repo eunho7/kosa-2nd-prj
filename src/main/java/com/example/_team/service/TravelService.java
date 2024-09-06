@@ -1,14 +1,17 @@
 package com.example._team.service;
 
 import com.example._team.domain.TravelBoard;
+import com.example._team.domain.TravelLikes;
 import com.example._team.domain.enums.Region;
 import com.example._team.exception.DataNotFoundException;
 import com.example._team.repository.ThemeRepository;
 import com.example._team.repository.TravelImageRepository;
+import com.example._team.repository.TravelLikesRepository;
 import com.example._team.repository.TravelRepository;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,6 +27,7 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final TravelImageRepository travelImageRepository;
     private final ThemeRepository themeRepository;
+    private final TravelLikesRepository travelLikesRepository;
 
     public List<TravelAlbumListDTO> searchTravelListByTheme(String theme, Integer isPublic) {
         List<Object[]> results = travelRepository.findAllByThemeName(theme, isPublic);
@@ -98,6 +102,26 @@ public class TravelService {
                 .title(travelBoard.getTitle()) // 타이틀
                 .travelAlbumImageList(imageList) // 이미지 리스트
                 .travelThemeList(themeList) // 테마 리스트
+                .build();
+    }
+
+    public TravelAlbumResultDTO postAlbumLikes(Integer travelIdx) {
+        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        boolean alreadyLiked = travelLikesRepository.existsByUserIdxAndTravelIdx(travelBoard.getUserIdx(), travelBoard);
+
+        if (alreadyLiked) {
+            throw new IllegalArgumentException("이미 이 앨범에 좋아요를 눌렀습니다.");
+        }
+
+        TravelLikes travelLikes = new TravelLikes();
+        travelLikes.setTravelIdx(travelBoard);
+        travelLikes.setUserIdx(travelBoard.getUserIdx());
+
+        travelLikesRepository.save(travelLikes);
+        return TravelAlbumResultDTO.builder()
+                .travelLikesIdx(travelLikes.getLikeIdx())
                 .build();
     }
 }

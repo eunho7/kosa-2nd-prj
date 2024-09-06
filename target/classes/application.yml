@@ -2,7 +2,6 @@
 #  datasource:
 #    driver-class-name: oracle.jdbc.driver.OracleDriver
 #    url: jdbc:oracle:thin:@kosadb_high?tns_admin=./src/main/resources/wallet
-<<<<<<< HEAD
 #    username: admin
 #    password: Kosadb2team!
 #  jpa:
@@ -13,6 +12,21 @@
 #  port: 8081
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zoown99@gmail.com
+    password: wzuo voqh inih bdkz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
   datasource:
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@localhost:1521:xe
@@ -27,45 +41,3 @@ spring:
     suffix: .html
 server:
   port: 8080
-=======
-#    username: ADMIN
-#    password: Kosadb2team!
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
-#    database: oracle
-#    show-sql: true
-#server:
-#  port: 8081
-
-
-  spring:
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: zoown99@gmail.com
-      password: wzuo voqh inih bdkz
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-              required: true
-            connectiontimeout: 5000
-            timeout: 5000
-            writetimeout: 5000
-    datasource:
-      driver-class-name: oracle.jdbc.driver.OracleDriver
-      url: jdbc:oracle:thin:@localhost:1521:xe
-      username: system
-      password: oracle
-    jpa:
-      show-sql: true
-      hibernate:
-        ddl-auto: create
-        database: oracle
-        show-sql: true
-  server:
-    port: 8081
->>>>>>> ceafc513a6263b725e397cd69935e556d4f55ef5
