@@ -10,6 +10,10 @@ public class Application {	//	// //
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+		System.out.println("       /\\_/\\  ");
+		System.out.println("      ( o.o )  ");
+		System.out.println("       > ^ <  ");
+		System.out.println("      /\\_^_/\\ ");
 		System.out.println("SERVER START...");
 	}
 

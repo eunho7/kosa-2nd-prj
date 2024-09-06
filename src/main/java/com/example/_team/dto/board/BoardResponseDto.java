@@ -22,7 +22,7 @@ public class BoardResponseDto {
     private Category category;
     private Integer views;
     private Integer status;
-    private Integer userIdx;
+    private long userIdx;
     private LocalDateTime updatedAt;
 //    private Integer answerBoardIdx;
 
