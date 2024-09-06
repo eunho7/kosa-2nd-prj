@@ -15,16 +15,12 @@ a
 1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
 j
 :src/main/java/com/example/_team/domain/enums/Category.java,5/f/5f5943c0ee6c6825a9a528fcb9534c7c81a9fd73
-m
-=src/main/java/com/example/_team/domain/common/BaseEntity.java,8/2/82ddab7bb98caccab4967517f0623cadd3cd3d4d
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
 e
 5src/main/java/com/example/_team/config/WebConfig.java,2/b/2bc62d806d6bf7cb3c77f4bdd084e8d9fb6ca596
 h
 8src/main/java/com/example/_team/domain/enums/Region.java,7/6/762de9eb9b38bc48ac1b2b4f92dc50b84b8d3f54
-a
-1src/main/java/com/example/_team/domain/Board.java,e/1/e1bd300de1909ebc16c8047149e2617d835a994e
 h
 8src/main/java/com/example/_team/domain/TravelImages.java,f/d/fd68efc3e578389fbf83ef5531347234a4b8f79f
 a
