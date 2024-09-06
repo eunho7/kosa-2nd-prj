@@ -1,4 +1,4 @@
-package com.example._team.contorller;
+package com.example._team.controller;
 
 import com.example._team.service.EmailService;
 import com.example._team.service.UserService;

@@ -52,4 +52,12 @@ public class TravelAlbumResponseDTO {
         Integer id;
         String name;    // 테마 이름
     }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TravelAlbumResultDTO {
+        Integer travelLikesIdx;
+    }
 }
