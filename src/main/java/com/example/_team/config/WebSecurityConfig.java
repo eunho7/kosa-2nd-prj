@@ -51,6 +51,7 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/signup/verify"),
                                 new AntPathRequestMatcher("/signup/complete"),
                                 new AntPathRequestMatcher("/api/**")
+//                                new AntPathRequestMatcher("/api/travel/likes/{travelIdx}")
                         ).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
