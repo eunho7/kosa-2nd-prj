@@ -23,10 +23,9 @@ public class BoardResponseDto {
     private Integer views;
     private Integer status;
     private long userIdx;
+    private String nickname; // 작성자의 닉네임 필드 추가
     private LocalDateTime updatedAt;
-//    private Integer answerBoardIdx;
-
-
+    private LocalDateTime createdAt; // createdAt 필드 추가
 
     // Static method to convert from entity to DTO
     public static BoardResponseDto fromEntity(Board board) {
@@ -38,8 +37,9 @@ public class BoardResponseDto {
                 .views(board.getViews())
                 .status(board.getStatus())
                 .userIdx(board.getUserIdx() != null ? board.getUserIdx().getUserIdx() : null) // Corrected method to get ID
+                .nickname(board.getUserIdx() != null ? board.getUserIdx().getNickname() : null) // 닉네임 가져오기
                 .updatedAt(board.getUpdatedAt())
-//                .answerBoardIdx(board.getAnswerBoardIdx() != null ? board.getAnswerBoardIdx().getBoardIdx() : null) // Corrected method to get ID
+                .createdAt(board.getCreatedAt()) // createdAt 필드 설정
                 .build();
     }
 }

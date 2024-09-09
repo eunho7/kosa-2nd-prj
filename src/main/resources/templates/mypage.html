@@ -121,6 +121,7 @@
     </div>
 
     <div class="action-buttons">
+        <a href="/board/list" class="btn btn-primary">게시글 리스트</a>
         <a href="/mypage/edit" class="btn btn-primary">회원 정보 수정</a>
         <a href="/mypage/change-password" class="btn btn-primary">비밀번호 변경</a>
         <form th:action="@{/mypage/deactivate}" method="POST" class="form-inline" onsubmit="return confirmDeactivation();">

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 목록</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+  <h2 class="mb-4">게시글 목록</h2>
+
+  <!-- 새 글 작성 버튼 -->
+  <a th:href="@{/board/create}" class="btn btn-success mb-4">새 글 작성</a>
+
+  <!-- 마이페이지로 돌아가는 버튼 -->
+  <a th:href="@{/mypage}" class="btn btn-info mb-4">마이페이지로 돌아가기</a>
+
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>번호</th>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>조회수</th>
+      <th>작성일</th>
+      <th>카테고리</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${boardList}">
+      <td th:text="${board.boardIdx}">1</td>
+      <td>
+        <a th:href="@{/board/{id}(id=${board.boardIdx})}" th:text="${board.title}">게시글 제목</a>
+      </td>
+      <td th:text="${board.nickname}">작성자</td> <!-- 여기서 nickname 사용 -->
+      <td th:text="${board.views}">0</td>
+      <td th:text="${board.createdAt}">작성일시</td>
+      <td th:text="${board.category}">카테고리</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center">
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${page.isFirst()}? 'disabled'">
+        <a class="page-link" th:href="@{|/board/list?page=${page.number - 1}|}">이전</a>
+      </li>
+      <li class="page-item" th:classappend="${page.isLast()}? 'disabled'">
+        <a class="page-link" th:href="@{|/board/list?page=${page.number + 1}|}">다음</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
