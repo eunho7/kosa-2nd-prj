@@ -13,18 +13,8 @@ f
 6src/main/java/com/example/_team/domain/BoardFiles.java,3/6/36abf98d869e725b19662a696ea3653fe81b79eb
 a
 1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
-j
-:src/main/java/com/example/_team/domain/enums/Category.java,5/f/5f5943c0ee6c6825a9a528fcb9534c7c81a9fd73
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-h
-8src/main/java/com/example/_team/domain/enums/Region.java,7/6/762de9eb9b38bc48ac1b2b4f92dc50b84b8d3f54
-h
-8src/main/java/com/example/_team/domain/TravelImages.java,f/d/fd68efc3e578389fbf83ef5531347234a4b8f79f
-a
-1src/main/java/com/example/_team/domain/Theme.java,e/5/e552bcacea15116dc93cc76ba9479a6469433fb4
-g
-7src/main/java/com/example/_team/domain/TravelBoard.java,9/3/938ac8ab3e6c559f13ba52b31866b3af8287fcd7
 u
 Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
 o
@@ -40,8 +30,6 @@ m
 =src/main/java/com/example/_team/domain/common/BaseEntity.java,8/2/82ddab7bb98caccab4967517f0623cadd3cd3d4d
 a
 1src/main/java/com/example/_team/domain/Board.java,e/1/e1bd300de1909ebc16c8047149e2617d835a994e
-a
-1src/main/java/com/example/_team/domain/Users.java,5/c/5c53a5eb2b3f4d2a67e8ed7b7d128e303990a51d
 w
 Gsrc/main/java/com/example/_team/controller/PasswordResetController.java,a/2/a21f3ccf7a5494c6e7fe3889d80e0e8ff928e476
 t

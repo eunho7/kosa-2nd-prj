@@ -1,27 +1,40 @@
 package com.example._team.service;
 
+import com.example._team.domain.Theme;
 import com.example._team.domain.TravelBoard;
+import com.example._team.domain.TravelImages;
 import com.example._team.domain.TravelLikes;
+import com.example._team.domain.Users;
 import com.example._team.domain.enums.Region;
 import com.example._team.exception.DataNotFoundException;
+import com.example._team.global.s3.AmazonS3Manager;
 import com.example._team.repository.ThemeRepository;
 import com.example._team.repository.TravelImageRepository;
 import com.example._team.repository.TravelLikesRepository;
 import com.example._team.repository.TravelRepository;
+import com.example._team.repository.UserRepository;
+import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +43,8 @@ public class TravelService {
     private final TravelImageRepository travelImageRepository;
     private final ThemeRepository themeRepository;
     private final TravelLikesRepository travelLikesRepository;
+    private final UserRepository userRepository;
+    private final AmazonS3Manager s3ImgService;
 
     public List<TravelAlbumListDTO> searchTravelListByTheme(String theme, Integer isPublic) {
         List<Object[]> results = travelRepository.findAllByThemeName(theme, isPublic);
@@ -56,8 +71,8 @@ public class TravelService {
         return results.stream().map(record -> {
             Integer id = record.getId();
             String title = record.getTitle();
-            LocalDateTime statDate = record.getStatDate();
-            LocalDateTime endDate = record.getEndDate();
+            LocalDate statDate = record.getStatDate();
+            LocalDate endDate = record.getEndDate();
             String thumbnail = record.getThumbnail();
 
             // 포맷된 날짜 문자열 생성
@@ -75,7 +90,8 @@ public class TravelService {
             throw new DataNotFoundException("여행 앨범이 존재하지 않습니다.");
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String formattedDateRange = travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
+        String formattedDateRange =
+                travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
 
         // 이미지 리스트 조회
         List<TravelAlbumImageListDTO> imageList = travelImageRepository.findByTravelIdx(travelBoard)
@@ -107,7 +123,7 @@ public class TravelService {
                 .build();
     }
 
-    public TravelAlbumResultDTO postAlbumLikes(Integer travelIdx) {
+    public TravelAlbumLikesResultDTO postAlbumLikes(Integer travelIdx) {
         TravelBoard travelBoard = travelRepository.findById(travelIdx)
                 .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
 
@@ -122,21 +138,86 @@ public class TravelService {
         travelLikes.setUserIdx(travelBoard.getUserIdx());
 
         travelLikesRepository.save(travelLikes);
-        return TravelAlbumResultDTO.builder()
+        return TravelAlbumLikesResultDTO.builder()
                 .travelLikesIdx(travelLikes.getLikeIdx())
                 .build();
     }
 
-    public TravelAlbumResultDTO cancelTravelAlbumLikes(Integer travelIdx) {
+    public TravelAlbumLikesResultDTO cancelTravelAlbumLikes(Integer travelIdx) {
         TravelBoard travelBoard = travelRepository.findById(travelIdx)
                 .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
 
-        TravelLikes travelLikes = travelLikesRepository.findByUserIdxAndTravelIdx(travelBoard.getUserIdx(), travelBoard);
+        TravelLikes travelLikes = travelLikesRepository.findByUserIdxAndTravelIdx(travelBoard.getUserIdx(),
+                travelBoard);
 
         travelLikesRepository.delete(travelLikes);
 
-        return TravelAlbumResultDTO.builder()
+        return TravelAlbumLikesResultDTO.builder()
                 .travelLikesIdx(travelLikes.getLikeIdx())
                 .build();
+    }
+
+    public TravelAlbumResultDTO postTravelAlbum(String email, createTravelAlbumDTO request) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new DataNotFoundException("유저가 존재하지 않습니다."));
+
+        TravelBoard newTravel = new TravelBoard();
+        newTravel.setTitle(request.getTitle());
+        newTravel.setContent(request.getContent());
+        newTravel.setRegion(Region.valueOf(request.getRegion()));
+        newTravel.setStatDate(request.getStatDate());
+        newTravel.setEndDate(request.getEndDate());
+        newTravel.setUserIdx(user);
+        newTravel.setIsPublic(request.getIsPublic());
+
+        // 썸네일을 S3에 업로드
+        MultipartFile thumbnailFile = request.getThumbnail();
+
+        String thumbnailFileName =
+                UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+        String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+        String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+
+        // 썸네일 URL 설정
+        newTravel.setThumbnail(thumbnailUrl);
+        travelRepository.save(newTravel);
+
+        // 사용자가 입력한 테마 리스트를 처리
+        List<Theme> themes = request.getTravelThemeList().stream()
+                .map(themeRequest -> {
+                    Theme theme = new Theme();
+                    theme.setName(themeRequest.getName());
+                    theme.setTravelIdx(newTravel);  // 테마에 TravelBoard 설정
+                    return themeRepository.save(theme);
+                }).collect(Collectors.toList());
+
+        List<String> imageUrls = extractImageUrlsFromContent(request.getContent());
+        List<TravelImages> savedImgs = imageUrls.stream()
+                .map(imgUrl -> {
+                    TravelImages travelImage = new TravelImages();
+                    travelImage.setImagePath(imgUrl);
+                    travelImage.setUploadedAt(LocalDateTime.now());
+                    travelImage.setTravelIdx(newTravel);  // 새로운 게시글과 연결
+                    return travelImage;
+                })
+                .collect(Collectors.toList());
+
+        travelImageRepository.saveAll(savedImgs);
+        themeRepository.saveAll(themes);
+
+        return TravelAlbumResultDTO.builder()
+                .travelIdx(newTravel.getId())
+                .build();
+    }
+
+    private List<String> extractImageUrlsFromContent(String content) {
+        List<String> imageUrls = new ArrayList<>();
+        Document doc = Jsoup.parse(content);  // Jsoup을 사용하여 HTML 파싱
+        Elements imgElements = doc.select("img");  // 모든 <img> 태그를 선택
+        for (Element imgElement : imgElements) {
+            String imgUrl = imgElement.attr("src");  // 이미지 URL 추출
+            imageUrls.add(imgUrl);
+        }
+        return imageUrls;
     }
 }

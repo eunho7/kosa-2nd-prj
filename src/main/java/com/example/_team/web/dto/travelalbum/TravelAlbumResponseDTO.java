@@ -57,7 +57,15 @@ public class TravelAlbumResponseDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TravelAlbumResultDTO {
+    public static class TravelAlbumLikesResultDTO {
         Integer travelLikesIdx;
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TravelAlbumResultDTO {
+        Integer travelIdx;
     }
 }

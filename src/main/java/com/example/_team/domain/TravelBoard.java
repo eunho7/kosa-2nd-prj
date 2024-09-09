@@ -2,6 +2,7 @@ package com.example._team.domain;
 
 import com.example._team.domain.common.BaseEntity;
 import com.example._team.domain.enums.Region;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +13,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,9 +40,9 @@ public class TravelBoard extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Region region;
     @Column(nullable = false)
-    private LocalDateTime statDate;
+    private LocalDate statDate;
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
     @Column(nullable = false)
     private Integer isPublic;
     @Column(nullable = false)
@@ -45,4 +50,6 @@ public class TravelBoard extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_idx")
     private Users userIdx;
+    @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Theme> themes = new ArrayList<>();
 }
