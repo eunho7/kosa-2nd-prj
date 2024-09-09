@@ -17,9 +17,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -120,6 +122,19 @@ public class TravelService {
         travelLikes.setUserIdx(travelBoard.getUserIdx());
 
         travelLikesRepository.save(travelLikes);
+        return TravelAlbumResultDTO.builder()
+                .travelLikesIdx(travelLikes.getLikeIdx())
+                .build();
+    }
+
+    public TravelAlbumResultDTO cancelTravelAlbumLikes(Integer travelIdx) {
+        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        TravelLikes travelLikes = travelLikesRepository.findByUserIdxAndTravelIdx(travelBoard.getUserIdx(), travelBoard);
+
+        travelLikesRepository.delete(travelLikes);
+
         return TravelAlbumResultDTO.builder()
                 .travelLikesIdx(travelLikes.getLikeIdx())
                 .build();

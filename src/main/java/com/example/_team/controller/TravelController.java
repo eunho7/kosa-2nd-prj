@@ -8,6 +8,7 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumR
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +77,12 @@ public class TravelController {
     @PostMapping("/likes/{travelIdx}")
     public TravelAlbumResultDTO postTravelAlbumLikes(@PathVariable(name = "travelIdx")Integer travelIdx) {
         TravelAlbumResultDTO response = travelService.postAlbumLikes(travelIdx);
+        return response;
+    }
+
+    @DeleteMapping("/likes/{travelIdx}")
+    public TravelAlbumResultDTO deleteTravelAlbumLikes(@PathVariable(name = "travelIdx") Integer travelIdx) {
+        TravelAlbumResultDTO response = travelService.cancelTravelAlbumLikes(travelIdx);
         return response;
     }
 }
