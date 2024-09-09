@@ -8,13 +8,38 @@
 </head>
 <body>
 <div class="container mt-5">
-  <h2 class="mb-4">게시글 목록</h2>
+  <a th:href="@{/board/list(page=0)}">
+    <h2 class="mb-4">게시글 목록</h2>
+  </a>
+  
+  <!-- 카테고리 필터 버튼 -->
+  <div class="mb-4">
+    <a th:href="@{/board/list(category='질문', sort=${sort != null ? sort : ''})}" class="btn btn-primary">질문</a>
+    <a th:href="@{/board/list(category='정보', sort=${sort != null ? sort : ''})}" class="btn btn-primary">정보</a>
+    <a th:href="@{/board/list(category='계획', sort=${sort != null ? sort : ''})}" class="btn btn-primary">계획</a>
+    <a th:href="@{/board/list(category='기타', sort=${sort != null ? sort : ''})}" class="btn btn-primary">기타</a>
+  </div>
+  
+  <!-- 정렬 버튼 추가 -->
+  <div class="mb-4">
+    <a th:href="@{/board/list(sort=${sort != 'views' ? 'views' : ''}, category=${category != null ? category.name() : ''})}" 
+       th:text="${sort != 'views' ? '조회수 순' : '기본 정렬'}" 
+       class="btn btn-secondary"></a>
+  </div>
 
   <!-- 새 글 작성 버튼 -->
   <a th:href="@{/board/create}" class="btn btn-success mb-4">새 글 작성</a>
 
   <!-- 마이페이지로 돌아가는 버튼 -->
   <a th:href="@{/mypage}" class="btn btn-info mb-4">마이페이지로 돌아가기</a>
+
+  <!-- 검색 폼 추가 -->
+  <form th:action="@{/board/list}" method="get" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="keyword" class="form-control" placeholder="제목 또는 내용으로 검색" th:value="${keyword}">
+      <button class="btn btn-outline-secondary" type="submit">검색</button>
+    </div>
+  </form>
 
   <table class="table table-bordered">
     <thead>
@@ -23,11 +48,17 @@
       <th>제목</th>
       <th>작성자</th>
       <th>조회수</th>
+     <!--  <th>댓글 수</th>  <!-- 댓글 개수 칼럼 추가 -->
       <th>작성일</th>
       <th>카테고리</th>
     </tr>
     </thead>
     <tbody>
+    <!-- 검색 결과가 없는 경우 -->
+    <tr th:if="${#lists.isEmpty(boardList)}">
+      <td colspan="7" class="text-center">검색 결과가 없습니다.</td>
+    </tr>
+    <!-- 게시글 목록 출력 -->
     <tr th:each="board : ${boardList}">
       <td th:text="${board.boardIdx}">1</td>
       <td>
@@ -35,6 +66,7 @@
       </td>
       <td th:text="${board.nickname}">작성자</td> <!-- 여기서 nickname 사용 -->
       <td th:text="${board.views}">0</td>
+ <!--     <td th:if="${board.commentCount > 0}" th:text="'댓글 ' + ${board.commentCount}"></td> <!-- 댓글 개수 0일 때는 표시 안 함 -->
       <td th:text="${board.createdAt}">작성일시</td>
       <td th:text="${board.category}">카테고리</td>
     </tr>
@@ -42,16 +74,26 @@
   </table>
 
   <!-- Pagination -->
-  <div class="d-flex justify-content-center">
+  <div class="d-flex justify-content-center" th:if="${page.totalPages > 1}">
     <ul class="pagination">
-      <li class="page-item" th:classappend="${page.isFirst()}? 'disabled'">
-        <a class="page-link" th:href="@{|/board/list?page=${page.number - 1}|}">이전</a>
+      <!-- 이전 버튼 -->
+      <li class="page-item" th:classappend="${page.number == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{/board/list(page=${page.number - 1}, category=${category != null ? category.name() : ''}, sort=${sort != null ? sort : ''})}">이전</a>
       </li>
-      <li class="page-item" th:classappend="${page.isLast()}? 'disabled'">
-        <a class="page-link" th:href="@{|/board/list?page=${page.number + 1}|}">다음</a>
+      
+      <!-- 페이지 번호 출력 -->
+      <li class="page-item" th:each="i : ${#numbers.sequence(1, page.totalPages)}" 
+          th:classappend="${i == page.number + 1} ? 'active'">
+        <a class="page-link" th:href="@{/board/list(page=${i - 1}, category=${category != null ? category.name() : ''}, sort=${sort != null ? sort : ''})}" th:text="${i}">1</a>
+      </li>
+      
+      <!-- 다음 버튼 -->
+      <li class="page-item" th:classappend="${page.number == page.totalPages - 1} ? 'disabled'">
+        <a class="page-link" th:href="@{/board/list(page=${page.number + 1}, category=${category != null ? category.name() : ''}, sort=${sort != null ? sort : ''})}">다음</a>
       </li>
     </ul>
   </div>
+
 </div>
 </body>
 </html>

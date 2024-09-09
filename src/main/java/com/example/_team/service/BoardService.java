@@ -24,15 +24,8 @@ public interface BoardService {
     // 게시글 상세 조회
     BoardResponseDto getBoard(Integer id);
 
-    // 게시글 리스트 조회 (페이징)
-    Page<BoardResponseDto> getBoardList(int page, int size);
+    // 게시글 리스트 조회 (페이징, 키워드, 카테고리, 조회수)
+    Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort);
 
-    // 게시글 카테고리 검색
-    List<BoardResponseDto> getBoardsByCategoryWithSorting(Category category);
 
-    // 게시글 조회수 정렬
-    List<BoardResponseDto> getBoardListByViews();
-
-    // 게시글 검색
-    List<BoardResponseDto> searchBoards(String keyword);
 }

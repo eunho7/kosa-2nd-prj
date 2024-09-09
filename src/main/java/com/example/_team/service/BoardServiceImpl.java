@@ -12,6 +12,7 @@ import com.example._team.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,7 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private UserRepository userRepository;
 
+	// 게시글 작성
 	@Transactional
 	@Override
 	public BoardResponseDto createBoard(BoardRequestDto boardDto) {
@@ -49,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
 		return BoardResponseDto.fromEntity(savedBoard);
 	}
 
-
+	// 게시글 수정
 	@Transactional
 	@Override
 	public BoardResponseDto updateBoard(Integer id, BoardRequestDto dto) {
@@ -61,7 +63,8 @@ public class BoardServiceImpl implements BoardService {
 		Board updatedBoard = boardRepository.save(board);
 		return BoardResponseDto.fromEntity(updatedBoard);
 	}
-
+	
+	// 게시글 삭제
 	@Transactional
 	@Override
 	public void deleteBoard(Integer id) {
@@ -70,31 +73,7 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.delete(board);
 	}
 
-//	@Override
-//	public BoardResponseDto getBoard(Integer id) {
-//		Board board = boardRepository.findById(id)
-//				.orElseThrow(() -> new DataNotFoundException("Board not found with ID: " + id));
-//		// 조회수를 증가시킵니다.
-//		board.setViews(board.getViews() + 1);
-//		Board updatedBoard = boardRepository.save(board);
-//		return BoardResponseDto.fromEntity(updatedBoard);
-//	}
-//
-//	@Override
-//    public Page<BoardResponseDto> getBoardList(int page, int size) {
-//        int startRow = page * size + 1;
-//        int endRow = (page + 1) * size;
-//
-//        List<Board> boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
-//        long total = boardRepository.count(); // 총 게시글 수 가져오기
-//
-//        List<BoardResponseDto> boardDtos = boards.stream()
-//            .map(BoardResponseDto::fromEntity)
-//            .collect(Collectors.toList());
-//
-//        return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
-//    }
-
+	// 게시글 상세보기 
 	@Override
 	public BoardResponseDto getBoard(Integer id) {
 		Board board = boardRepository.findById(id)
@@ -104,36 +83,39 @@ public class BoardServiceImpl implements BoardService {
 		return BoardResponseDto.fromEntity(updatedBoard);
 	}
 
+	// 게시글 리스트
 	@Override
-	public Page<BoardResponseDto> getBoardList(int page, int size) {
-		int startRow = page * size + 1;
+    public Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort) {
+        List<Board> boards;
+        int startRow = page * size + 1;
 		int endRow = (page + 1) * size;
+		long total;
 
-		List<Board> boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
-		long total = boardRepository.count(); // 전체 게시글 수를 가져옵니다.
-
-		List<BoardResponseDto> boardDtos = boards.stream()
+		if (keyword != null && !keyword.trim().isEmpty()) {
+            // 키워드 검색
+            boards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
+            total = boardRepository.countByKeyword(keyword);
+        } else if (category != null) {
+            // 카테고리 필터
+            boards = boardRepository.findByCategoryOrderedByBoardIdx(category.name(), startRow, endRow, Pageable.unpaged());
+            total = boardRepository.countByCategory(category);
+        } else {
+            // 정렬 방식에 따라 처리
+            if ("views".equals(sort)) {
+                // 조회수 기준 정렬
+                boards = boardRepository.findAllOrderedByViews(startRow, endRow, Pageable.unpaged());
+            } else {
+                // 기본 정렬 (게시글 번호 기준)
+                boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
+            }
+            total = boardRepository.count();
+        }
+        	
+        List<BoardResponseDto> boardDtos = boards.stream()
 				.map(BoardResponseDto::fromEntity)
 				.collect(Collectors.toList());
+        
+        return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
+    }
 
-		return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
-	}
-	
-	@Override
-	public List<BoardResponseDto> getBoardsByCategoryWithSorting(Category category) {
-		List<Board> boards = boardRepository.findByCategoryOrderByBoardIdxDesc(category);
-		return boards.stream().map(BoardResponseDto::fromEntity).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<BoardResponseDto> getBoardListByViews() {
-		List<Board> boards = boardRepository.findAllByOrderByViewsDesc();
-		return boards.stream().map(BoardResponseDto::fromEntity).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<BoardResponseDto> searchBoards(String keyword) {
-		List<Board> boards = boardRepository.findByTitleContaining(keyword);
-		return boards.stream().map(BoardResponseDto::fromEntity).collect(Collectors.toList());
-	}
 }

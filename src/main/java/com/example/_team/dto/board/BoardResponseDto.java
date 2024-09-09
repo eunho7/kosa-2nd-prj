@@ -3,6 +3,7 @@ package com.example._team.dto.board;
 import java.time.LocalDateTime;
 
 import com.example._team.domain.Board;
+import com.example._team.domain.Reply;
 import com.example._team.domain.enums.Category;
 
 import lombok.AllArgsConstructor;
