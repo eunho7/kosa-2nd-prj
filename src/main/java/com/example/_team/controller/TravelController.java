@@ -85,4 +85,9 @@ public class TravelController {
         TravelAlbumResultDTO response = travelService.cancelTravelAlbumLikes(travelIdx);
         return response;
     }
+
+    /*
+        여행앨범 생성
+     */
+
 }

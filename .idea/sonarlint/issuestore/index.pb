@@ -44,10 +44,6 @@ a
 1src/main/java/com/example/_team/domain/Users.java,5/c/5c53a5eb2b3f4d2a67e8ed7b7d128e303990a51d
 w
 Gsrc/main/java/com/example/_team/controller/PasswordResetController.java,a/2/a21f3ccf7a5494c6e7fe3889d80e0e8ff928e476
-7
-pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
-e
-5src/main/java/com/example/_team/config/WebConfig.java,2/b/2bc62d806d6bf7cb3c77f4bdd084e8d9fb6ca596
 t
 Dsrc/main/java/com/example/_team/exception/DataNotFoundException.java,5/5/55968168cf2fbde658242fd76ac24cdda1a0ec99
 g
