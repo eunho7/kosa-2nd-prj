@@ -1,30 +1,47 @@
 package com.example._team.controller;
 
+import com.example._team.domain.Users;
 import com.example._team.domain.enums.Region;
+import com.example._team.global.s3.AmazonS3Manager;
 import com.example._team.service.TravelService;
+import com.example._team.service.UserService;
+import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-//@Controller
-@RestController
+@Controller
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/travel")
 public class TravelController {
 
     private final TravelService travelService;
+    private final UserService userService;
+    private final AmazonS3Manager s3ImgService;
 
     @GetMapping("/searchform")
     public String travelTheme() {
@@ -75,14 +92,47 @@ public class TravelController {
     }
 
     @PostMapping("/likes/{travelIdx}")
-    public TravelAlbumResultDTO postTravelAlbumLikes(@PathVariable(name = "travelIdx")Integer travelIdx) {
-        TravelAlbumResultDTO response = travelService.postAlbumLikes(travelIdx);
+    public TravelAlbumLikesResultDTO postTravelAlbumLikes(@PathVariable(name = "travelIdx")Integer travelIdx) {
+        TravelAlbumLikesResultDTO response = travelService.postAlbumLikes(travelIdx);
         return response;
     }
 
     @DeleteMapping("/likes/{travelIdx}")
-    public TravelAlbumResultDTO deleteTravelAlbumLikes(@PathVariable(name = "travelIdx") Integer travelIdx) {
-        TravelAlbumResultDTO response = travelService.cancelTravelAlbumLikes(travelIdx);
+    public TravelAlbumLikesResultDTO deleteTravelAlbumLikes(@PathVariable(name = "travelIdx") Integer travelIdx) {
+        TravelAlbumLikesResultDTO response = travelService.cancelTravelAlbumLikes(travelIdx);
         return response;
+    }
+
+    /*
+        여행앨범 생성
+     */
+    @PostMapping("/create")
+    public String createTravelAlbum(@ModelAttribute("request")createTravelAlbumDTO request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        travelService.postTravelAlbum(email, request);
+        return "view/travel/TravelUpload";
+    }
+    @GetMapping("/upload")
+    public String showUploadForm(Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userService.findByEmail(email);
+        model.addAttribute("user", user);
+        return "view/travel/TravelUpload";
+    }
+    @PostMapping("/upload-image")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = UUID.randomUUID().toString().substring(0, 10) + "-" + file.getOriginalFilename();
+            String keyName = "travel/images/" + fileName;
+            String fileUrl = s3ImgService.uploadFile(keyName, file);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("location", fileUrl);  // TinyMCE가 요구하는 응답 형식
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

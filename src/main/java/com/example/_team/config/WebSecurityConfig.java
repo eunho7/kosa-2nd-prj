@@ -50,7 +50,8 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/signup/send-code"),
                                 new AntPathRequestMatcher("/signup/verify"),
                                 new AntPathRequestMatcher("/signup/complete"),
-                                new AntPathRequestMatcher("/api/**")
+                                new AntPathRequestMatcher("/api/**"),
+                                new AntPathRequestMatcher("/api/travel/create")
 //                                new AntPathRequestMatcher("/api/travel/likes/{travelIdx}")
                         ).permitAll()
                         .anyRequest().authenticated())
