@@ -28,4 +28,9 @@ public class BoardAnswerService {
         Board board =  AnswerRequestDto.toSaveAnswerDto(user, answerRequestDto, answerBoard);
         boardRepository.save(board);
     }
+
+    public Board findById(Integer id) {
+        return boardRepository.findById(id).get();
+    }
+
 }
