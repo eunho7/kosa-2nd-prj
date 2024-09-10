@@ -34,6 +34,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
@@ -268,5 +269,18 @@ public class TravelService {
                 .travelAlbumImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
+    }
+    @Transactional
+    public void deleteTravelBoard(Integer id) {
+
+        if (!travelRepository.existsById(id)) {
+            throw new DataNotFoundException("TravelBoard not found");
+        }
+
+        TravelBoard travelBoard = travelRepository.getReferenceById(id);
+
+        travelImageRepository.deleteByTravelIdx(travelBoard);
+        themeRepository.deleteByTravelIdx(travelBoard);
+        travelRepository.deleteById(id);
     }
 }

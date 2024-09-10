@@ -15,8 +15,6 @@ a
 1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-u
-Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
 l
 <src/main/java/com/example/_team/domain/VisitedLocations.java,9/e/9e6914328e7d98519c0885081bafc5a361feeed5
 :

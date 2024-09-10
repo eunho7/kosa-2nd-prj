@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ThemeRepository extends JpaRepository<Theme, Integer> {
     List<Theme> findByTravelIdx(TravelBoard travelBoard);
+    void deleteByTravelIdx(TravelBoard TravelIdx);
 }

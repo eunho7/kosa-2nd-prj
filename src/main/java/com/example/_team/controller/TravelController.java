@@ -148,4 +148,9 @@ public class TravelController {
         return travelService.getTravelBoard(id);
     }
 
+    // 삭제
+    @DeleteMapping("/{travelIdx}")
+    public void deleteTravelBoard(@PathVariable Integer travelIdx) {
+        travelService.deleteTravelBoard(travelIdx);
+    }
 }
