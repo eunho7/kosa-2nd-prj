@@ -20,6 +20,7 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumL
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
+import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -100,6 +101,7 @@ public class TravelService {
             return new TravelAlbumListDTO(id, title, formattedDateRange, thumbnail);
         }).collect(Collectors.toList());
     }
+
     public TravelAlbumDetailResponseDTO getRandomTravelAlbum() {
         // 여행앨범 랜덤 조회
         TravelBoard travelBoard = travelRepository.findRandomTravelBoard();
@@ -239,12 +241,14 @@ public class TravelService {
         return imageUrls;
     }
 
-    public TravelAlbumDetailResponseDTO getTravelBoard(Integer id) {
+    public TravelAlbumDetailResponseDTO getTravelBoard(Integer id, Users user) {
         TravelBoard travelBoard = travelRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+        Long postLikesCnt = travelLikesRepository.countAllByTravelIdx(travelBoard);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String formattedDateRange = travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
+        String formattedDateRange =
+                travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
 
         List<TravelAlbumImageListDTO> imageList = travelImageRepository.findByTravelIdx(travelBoard)
                 .stream()
@@ -261,15 +265,22 @@ public class TravelService {
                         .name(theme.getName())
                         .build())
                 .collect(Collectors.toList());
+        boolean likedByCurrentUser = isLikedByUser(travelBoard, user);
+
         return TravelAlbumDetailResponseDTO.builder()
+                .id(travelBoard.getId())
                 .title(travelBoard.getTitle())
                 .content(travelBoard.getContent())
+                .thumbnail(travelBoard.getThumbnail())
                 .region(travelBoard.getRegion().name())
                 .dateRange(formattedDateRange)
+                .postLikeCount(postLikesCnt)
+                .likedByCurrentUser(likedByCurrentUser)
                 .travelAlbumImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
     }
+
     @Transactional
     public void deleteTravelBoard(Integer id) {
 
@@ -282,5 +293,58 @@ public class TravelService {
         travelImageRepository.deleteByTravelIdx(travelBoard);
         themeRepository.deleteByTravelIdx(travelBoard);
         travelRepository.deleteById(id);
+    }
+
+    public boolean isLikedByUser(TravelBoard travelIdx, Users user) {
+        return travelLikesRepository.existsByUserIdxAndTravelIdx(user, travelIdx);
+    }
+
+    public List<UserListByPostLikesDTO> getTravelLikesByUsers(Integer id) {
+        // 여행 앨범을 조회합니다.
+        TravelBoard travelBoard = travelRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        // 여행 앨범에 좋아요를 누른 유저 리스트를 조회합니다.
+        List<TravelLikes> users = travelLikesRepository.findUsersByTravelIdx(travelBoard);
+
+        // 유저 정보를 UserListByPostLikesDTO 리스트로 변환합니다.
+        List<UserListByPostLikesDTO> userList = users.stream()
+                .map(user -> UserListByPostLikesDTO.builder()
+                        .userIdx(user.getUserIdx().getUserIdx()) // 유저의 ID를 설정합니다.
+                        .nickname(user.getUserIdx().getNickname()) // 유저의 닉네임을 설정합니다.
+                        .build())
+                .collect(Collectors.toList());
+
+        return userList;
+    }
+    public boolean addLike(Integer travelIdx, Long userIdx) {
+        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+        Users user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        // 좋아요 추가
+        TravelLikes travelLikes = new TravelLikes();
+        travelLikes.setTravelIdx(travelBoard);
+        travelLikes.setUserIdx(user);
+        travelLikesRepository.save(travelLikes);
+
+        return true;
+    }
+
+    public boolean removeLike(Integer travelIdx, Long userIdx) {
+        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+        Users user = userRepository.findById(userIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+        // 좋아요 엔티티 찾기
+        TravelLikes travelLikes = travelLikesRepository.findByUserIdxAndTravelIdx(user, travelBoard);
+
+        if (travelLikes != null) {
+            travelLikesRepository.delete(travelLikes);
+            return true;
+        }
+
+        return false;
     }
 }
