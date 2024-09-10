@@ -25,4 +25,8 @@ public class Reports extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_idx")
     private Users userIdx;
+    // 신은호 : domain에 BoardIdx 추가, 이유 : 게시판 신고인데 게시판 참조가 없음
+    @ManyToOne
+    @JoinColumn(name="board_idx")
+    private Board boardIdx;
 }
