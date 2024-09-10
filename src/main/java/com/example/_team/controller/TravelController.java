@@ -1,6 +1,5 @@
 package com.example._team.controller;
 
-import com.example._team.domain.TravelBoard;
 import com.example._team.domain.Users;
 import com.example._team.domain.enums.Region;
 import com.example._team.global.s3.AmazonS3Manager;
@@ -9,7 +8,6 @@ import com.example._team.service.TravelService;
 import com.example._team.service.UserService;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
-import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
@@ -32,14 +30,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/travel")
 public class TravelController {
@@ -177,8 +172,10 @@ public class TravelController {
     }
 
     // 삭제
-    @DeleteMapping("/{travelIdx}")
-    public void deleteTravelBoard(@PathVariable Integer travelIdx) {
+    @PostMapping("/delete/{travelIdx}")
+    public String deleteTravelBoard(@PathVariable Integer travelIdx) {
+
         travelService.deleteTravelBoard(travelIdx);
+        return "redirect:/api/travel/random";
     }
 }

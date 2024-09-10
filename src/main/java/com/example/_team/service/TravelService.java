@@ -269,6 +269,7 @@ public class TravelService {
 
         return TravelAlbumDetailResponseDTO.builder()
                 .id(travelBoard.getId())
+                .userIdx(travelBoard.getUserIdx().getUserIdx())
                 .title(travelBoard.getTitle())
                 .content(travelBoard.getContent())
                 .thumbnail(travelBoard.getThumbnail())
@@ -281,18 +282,21 @@ public class TravelService {
                 .build();
     }
 
+    // 삭제
+//    @Override
     @Transactional
     public void deleteTravelBoard(Integer id) {
 
-        if (!travelRepository.existsById(id)) {
-            throw new DataNotFoundException("TravelBoard not found");
-        }
-
-        TravelBoard travelBoard = travelRepository.getReferenceById(id);
+        TravelBoard travelBoard = travelRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("TravelBoard not found"));
 
         travelImageRepository.deleteByTravelIdx(travelBoard);
+
         themeRepository.deleteByTravelIdx(travelBoard);
-        travelRepository.deleteById(id);
+        travelLikesRepository.deleteByTravelIdx(travelBoard);
+
+        travelRepository.delete(travelBoard);
+
     }
 
     public boolean isLikedByUser(TravelBoard travelIdx, Users user) {

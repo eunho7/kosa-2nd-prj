@@ -16,5 +16,6 @@ public interface TravelLikesRepository extends JpaRepository<TravelLikes, Intege
     TravelLikes findByUserIdxAndTravelIdx(Users userIdx, TravelBoard travelIdx);
     Long countAllByTravelIdx(@Param("travelIdx") TravelBoard travelIdx);
     List<TravelLikes> findUsersByTravelIdx(@Param("travelIdx") TravelBoard travelIdx);
+    void deleteByTravelIdx(TravelBoard travelIdx);
 
 }

@@ -50,6 +50,9 @@ public class TravelBoard extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_idx")
     private Users userIdx;
-    @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Theme> themes = new ArrayList<>();
+    @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<TravelImages> imagesList = new ArrayList<>();
+
 }
