@@ -13,8 +13,6 @@ f
 6src/main/java/com/example/_team/domain/BoardFiles.java,3/6/36abf98d869e725b19662a696ea3653fe81b79eb
 a
 1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
-`
-0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
 l
 <src/main/java/com/example/_team/domain/VisitedLocations.java,9/e/9e6914328e7d98519c0885081bafc5a361feeed5
 :

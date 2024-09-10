@@ -1,5 +1,6 @@
 package com.example._team.controller;
 
+import com.example._team.domain.TravelBoard;
 import com.example._team.domain.Users;
 import com.example._team.domain.enums.Region;
 import com.example._team.global.s3.AmazonS3Manager;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 //@RestController
@@ -126,14 +128,13 @@ public class TravelController {
     }
 
 
-    /*
-        여행앨범 생성
-     */
+   // 여행앨범 생성
     @PostMapping("/create")
-    public String createTravelAlbum(@ModelAttribute("request")createTravelAlbumDTO request) {
+    public String createTravelAlbum(@ModelAttribute("request")createTravelAlbumDTO request, RedirectAttributes redirectAttributes) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        travelService.postTravelAlbum(email, request);
-        return "view/travel/TravelUpload";
+        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
+        redirectAttributes.addAttribute("id", response.getTravelIdx());
+        return "redirect:/api/travel/detail/{id}";
     }
     @GetMapping("/upload")
     public String showUploadForm(Model model) {
@@ -164,11 +165,14 @@ public class TravelController {
     public String getTravelBoard(@PathVariable Integer id, Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userService.findByEmail(email);
+
         TravelAlbumDetailResponseDTO response = travelService.getTravelBoard(id, user);
         model.addAttribute("response", response);
+
         List<UserListByPostLikesDTO> userList = travelService.getTravelLikesByUsers(id);
         model.addAttribute("userList", userList);
         model.addAttribute("connectUser", user);
+
         return "view/travel/TravelDetail";
     }
 

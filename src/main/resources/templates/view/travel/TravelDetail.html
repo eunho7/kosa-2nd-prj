@@ -135,9 +135,8 @@
             <i class="fas fa-heart"
                th:classappend="${connectUser != null && userList.contains(connectUser.userIdx) ? 'filled' : 'empty'}"
                id="likeIcon"></i>
-            <span id="likeCount" th:text="${response.postLikeCount}">0</span> 좋아요 누른 유저
+            <span id="likeCount" th:text="${response.postLikeCount}">0</span>
 
-            <!-- 좋아요 누른 유저 리스트 (커서를 올렸을 때 보이게 설정) -->
             <div class="user-list-container">
                 <div class="user-list">
                     <h3>Likes</h3>
