@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TravelImageRepository extends JpaRepository<TravelImages, Integer> {
     List<TravelImages> findByTravelIdx(TravelBoard travelBoard);
+    void deleteByTravelIdx(TravelBoard travelIdx);
 }
