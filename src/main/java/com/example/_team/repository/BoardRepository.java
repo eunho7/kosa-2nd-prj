@@ -22,9 +22,12 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
 
 //	List<Board> findAll();
 	
-	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow",
-	           countQuery = "SELECT COUNT(*) FROM board",
-	           nativeQuery = true)
+//	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow",
+//	           countQuery = "SELECT COUNT(*) FROM board",
+//	           nativeQuery = true)
+@Query(value = "SELECT * FROM ( SELECT b.*, ROW_NUMBER() OVER (ORDER BY CASE  WHEN b.answer_board_idx IS NULL THEN b.board_idx ELSE b.answer_board_idx END DESC, b.answer_board_idx NULLS FIRST, b.board_idx ASC) AS rn FROM board b START WITH b.answer_board_idx IS NULL CONNECT BY PRIOR b.board_idx = b.answer_board_idx) WHERE rn BETWEEN :startRow AND :endRow",
+		countQuery = "SELECT COUNT(*) FROM board",
+		nativeQuery = true)
 	    List<Board> findAllOrderedByBoardIdx(@Param("startRow") int startRow, @Param("endRow") int endRow, Pageable pageable);
 
 }

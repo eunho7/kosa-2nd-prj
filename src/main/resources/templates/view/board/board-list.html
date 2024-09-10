@@ -16,6 +16,14 @@
   <!-- 마이페이지로 돌아가는 버튼 -->
   <a th:href="@{/mypage}" class="btn btn-info mb-4">마이페이지로 돌아가기</a>
 
+  <!-- 검색 폼 추가 -->
+  <form th:action="@{/board/list}" method="get" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="keyword" class="form-control" placeholder="제목 또는 내용으로 검색" th:value="${keyword}">
+      <button class="btn btn-outline-secondary" type="submit">검색</button>
+    </div>
+  </form>
+
   <table class="table table-bordered">
     <thead>
     <tr>
@@ -28,6 +36,11 @@
     </tr>
     </thead>
     <tbody>
+    <!-- 검색 결과가 없는 경우 -->
+    <tr th:if="${#lists.isEmpty(boardList)}">
+      <td colspan="6" class="text-center">검색 결과가 없습니다.</td>
+    </tr>
+    <!-- 게시글 목록 출력 -->
     <tr th:each="board : ${boardList}">
       <td th:text="${board.boardIdx}">1</td>
       <td>
@@ -44,11 +57,20 @@
   <!-- Pagination -->
   <div class="d-flex justify-content-center">
     <ul class="pagination">
-      <li class="page-item" th:classappend="${page.isFirst()}? 'disabled'">
-        <a class="page-link" th:href="@{|/board/list?page=${page.number - 1}|}">이전</a>
+      <!-- 이전 버튼 -->
+      <li class="page-item" th:classappend="${page.isFirst()} ? 'disabled'">
+        <a class="page-link" th:href="@{/board/list(page=${page.number - 1}, keyword=${keyword})}">이전</a>
       </li>
-      <li class="page-item" th:classappend="${page.isLast()}? 'disabled'">
-        <a class="page-link" th:href="@{|/board/list?page=${page.number + 1}|}">다음</a>
+
+      <!-- 페이지 번호 출력 -->
+      <li class="page-item" th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+          th:classappend="${i == page.number + 1} ? 'active'">
+        <a class="page-link" th:href="@{/board/list(page=${i - 1}, keyword=${keyword})}" th:text="${i}">1</a>
+      </li>
+
+      <!-- 다음 버튼 -->
+      <li class="page-item" th:classappend="${page.isLast()} ? 'disabled'">
+        <a class="page-link" th:href="@{/board/list(page=${page.number + 1}, keyword=${keyword})}">다음</a>
       </li>
     </ul>
   </div>
