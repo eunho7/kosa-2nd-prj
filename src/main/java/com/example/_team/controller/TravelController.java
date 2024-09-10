@@ -143,4 +143,9 @@ public class TravelController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/{id}")
+    public TravelAlbumDetailResponseDTO getTravelBoard(@PathVariable Integer id) {
+        return travelService.getTravelBoard(id);
+    }
+
 }

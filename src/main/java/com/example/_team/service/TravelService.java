@@ -237,4 +237,36 @@ public class TravelService {
         }
         return imageUrls;
     }
+
+    public TravelAlbumDetailResponseDTO getTravelBoard(Integer id) {
+        TravelBoard travelBoard = travelRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        String formattedDateRange = travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
+
+        List<TravelAlbumImageListDTO> imageList = travelImageRepository.findByTravelIdx(travelBoard)
+                .stream()
+                .map(image -> TravelAlbumImageListDTO.builder()
+                        .id(image.getImageIdx())
+                        .imagePath(image.getImagePath())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<TravelThemeListDTO> themeList = themeRepository.findByTravelIdx(travelBoard)
+                .stream()
+                .map(theme -> TravelThemeListDTO.builder()
+                        .id(theme.getThemeIdx())
+                        .name(theme.getName())
+                        .build())
+                .collect(Collectors.toList());
+        return TravelAlbumDetailResponseDTO.builder()
+                .title(travelBoard.getTitle())
+                .content(travelBoard.getContent())
+                .region(travelBoard.getRegion().name())
+                .dateRange(formattedDateRange)
+                .travelAlbumImageList(imageList)
+                .travelThemeList(themeList)
+                .build();
+    }
 }

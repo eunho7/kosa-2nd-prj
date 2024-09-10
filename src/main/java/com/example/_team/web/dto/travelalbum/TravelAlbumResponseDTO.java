@@ -27,6 +27,7 @@ public class TravelAlbumResponseDTO {
         Integer id;
         String nickname;
         String dateRange;   // 여행날짜
+        String content;
         String region;
         String thumbnail;
         String title;
