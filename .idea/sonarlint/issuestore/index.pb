@@ -20,8 +20,6 @@ l
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 m
 =src/main/java/com/example/_team/domain/common/BaseEntity.java,8/2/82ddab7bb98caccab4967517f0623cadd3cd3d4d
-a
-1src/main/java/com/example/_team/domain/Board.java,e/1/e1bd300de1909ebc16c8047149e2617d835a994e
 w
 Gsrc/main/java/com/example/_team/controller/PasswordResetController.java,a/2/a21f3ccf7a5494c6e7fe3889d80e0e8ff928e476
 t

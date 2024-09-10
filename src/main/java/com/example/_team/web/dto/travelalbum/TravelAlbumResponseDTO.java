@@ -26,6 +26,7 @@ public class TravelAlbumResponseDTO {
     public static class TravelAlbumDetailResponseDTO {
         Integer id;
         String nickname;
+        Long userIdx;
         String dateRange;   // 여행날짜
         String content;
         String region;
