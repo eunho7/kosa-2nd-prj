@@ -82,6 +82,23 @@ public class TravelService {
         }).collect(Collectors.toList());
     }
 
+    public List<TravelAlbumListDTO> searchTravelListByThemeAndRegion(String theme, Region region, Integer isPublic) {
+        List<Object[]> results = travelRepository.findAllByThemeAndRegionAndIsPublic(theme, region.name(), isPublic);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+
+        return results.stream().map(record -> {
+            Integer id = (Integer) record[0];
+            String title = (String) record[1];
+            LocalDateTime statDate = ((Timestamp) record[2]).toLocalDateTime();
+            LocalDateTime endDate = ((Timestamp) record[3]).toLocalDateTime();
+            String thumbnail = (String) record[4];
+
+            // 포맷된 날짜 문자열 생성
+            String formattedDateRange = statDate.format(formatter) + " - " + endDate.format(formatter);
+
+            return new TravelAlbumListDTO(id, title, formattedDateRange, thumbnail);
+        }).collect(Collectors.toList());
+    }
     public TravelAlbumDetailResponseDTO getRandomTravelAlbum() {
         // 여행앨범 랜덤 조회
         TravelBoard travelBoard = travelRepository.findRandomTravelBoard();

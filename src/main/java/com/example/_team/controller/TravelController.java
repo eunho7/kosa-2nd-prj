@@ -56,21 +56,27 @@ public class TravelController {
 
         List<TravelAlbumListDTO> albums;
 
-        if (theme != null && !theme.trim().isEmpty()) {
-            // 테마 검색
-            System.out.println("Searching by theme: " + theme);
-            albums = travelService.searchTravelListByTheme(theme, 1);
-        } else if (region != null && !region.trim().isEmpty()) {
-            // 지역 검색
-            System.out.println("Searching by region: " + region);
+        if (theme != null && !theme.trim().isEmpty() && region != null && !region.trim().isEmpty()) {
+            // 테마와 지역 모두 검색
             try {
                 // 공백 제거 및 대문자로 변환
                 Region regionEnum = Region.valueOf(region.trim().toUpperCase());
-                System.out.println("Region enum: " + regionEnum);
+                albums = travelService.searchTravelListByThemeAndRegion(theme, regionEnum, 1);
+            } catch (IllegalArgumentException e) {
+                // 유효하지 않은 지역 값
+                albums = List.of(); // 빈 리스트 반환
+            }
+        } else if (theme != null && !theme.trim().isEmpty()) {
+            // 테마 검색
+            albums = travelService.searchTravelListByTheme(theme, 1);
+        } else if (region != null && !region.trim().isEmpty()) {
+            // 지역 검색
+            try {
+                // 공백 제거 및 대문자로 변환
+                Region regionEnum = Region.valueOf(region.trim().toUpperCase());
                 albums = travelService.searchTravelListByRegion(regionEnum, 1);
             } catch (IllegalArgumentException e) {
                 // 유효하지 않은 지역 값
-                System.err.println("Invalid region value: " + region);
                 albums = List.of(); // 빈 리스트 반환
             }
         } else {
@@ -79,6 +85,8 @@ public class TravelController {
         }
 
         model.addAttribute("albums", albums);
+        model.addAttribute("region", region);
+        model.addAttribute("theme", theme);
         return "view/travel/TravelListByTheme";
     }
 

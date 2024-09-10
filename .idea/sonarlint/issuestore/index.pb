@@ -15,8 +15,6 @@ a
 1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-o
-?src/main/java/com/example/_team/repository/ThemeRepository.java,5/0/509a28250a3225a53e96032daea12c6f4515a8c6
 u
 Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
 l
@@ -36,8 +34,6 @@ t
 Dsrc/main/java/com/example/_team/exception/DataNotFoundException.java,5/5/55968168cf2fbde658242fd76ac24cdda1a0ec99
 g
 7src/main/java/com/example/_team/domain/TravelLikes.java,9/e/9ebc51bbceb47285abafc8aad885efe821a842e5
-p
-@src/main/java/com/example/_team/repository/TravelRepository.java,6/2/62f4100e7f800486ba91a78c70e91c25ce3b78c6
 i
 9src/main/java/com/example/_team/service/EmailService.java,a/5/a5ca4e6906136c39af19e7eb64d65c6af0c1d469
 o
