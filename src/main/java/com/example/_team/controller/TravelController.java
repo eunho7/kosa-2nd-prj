@@ -42,12 +42,6 @@ public class TravelController {
     private final TravelService travelService;
     private final UserService userService;
     private final AmazonS3Manager s3ImgService;
-    private final TravelLikesRepository travelLikesRepository;
-
-    @GetMapping("/searchform")
-    public String travelTheme() {
-        return "view/travel/SearchByTheme";  // 검색창 페이지
-    }
 
     @GetMapping("/search")
     public String searchByRegionOrTheme(

@@ -5,8 +5,6 @@
 	2team.iml,4/4/44a9cfd65c13a80be7dff6aaa651941b04a19fb9
 8
 mvnw.cmd,1/f/1f1763f358c257ea3515417352b82b0165647ad1
-k
-;src/main/java/com/example/_team/domain/enums/Authority.java,a/a/aa6e859c84a029a3fa131c5741d1aa439b7df6e1
 c
 3src/main/java/com/example/_team/domain/Reports.java,7/b/7b08ad66d56740c34dbdbc4e4361c7d90f74fac8
 f
