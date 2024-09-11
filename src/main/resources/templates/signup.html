@@ -100,9 +100,10 @@
             animation: fadeInUp 1s ease forwards;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        #passwordStrength {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
         }
 
         #verifyCodeButton {
@@ -113,10 +114,74 @@
             background-color: #95a5a6;
             cursor: not-allowed;
         }
+
+        #phoneError {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+            // 비밀번호 유효성 검사 및 강도 확인
+            $('#password').on('input', function () {
+                const password = $(this).val();
+                const strength = checkPasswordStrength(password);
+                $('#passwordStrength').text(strength.message).css('color', strength.color);
+            });
+
+            // 비밀번호 확인
+            $('#confirmPassword').on('input', function () {
+                const password = $('#password').val();
+                const confirmPassword = $(this).val();
+                if (password !== confirmPassword) {
+                    $('#passwordMatch').text('비밀번호가 일치하지 않습니다.').css('color', 'red');
+                } else {
+                    $('#passwordMatch').text('비밀번호가 일치합니다.').css('color', 'green');
+                }
+            });
+
+            // 전화번호 유효성 검사
+            $('#phone').on('input', function () {
+                const phone = $(this).val();
+                const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
+                if (!phonePattern.test(phone)) {
+                    $('#phoneError').text('전화번호 형식이 올바르지 않습니다. (예: 010-1234-5678)').show();
+                } else {
+                    $('#phoneError').hide();
+                }
+            });
+
+            // 폼 제출 시 유효성 검사
+            $('#additionalFields').on('submit', function(event) {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
+                const passwordStrength = checkPasswordStrength(password);
+                const phone = $('#phone').val();
+                const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
+
+                if (password !== confirmPassword) {
+                    event.preventDefault();
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return false;
+                }
+
+                if (passwordStrength.message === '약함' || passwordStrength.message === '중간') {
+                    event.preventDefault();
+                    alert("대문자, 특수기호, 숫자를 포함한 비밀번호를 입력하세요.");
+                    return false;
+                }
+
+                if (!phonePattern.test(phone)) {
+                    event.preventDefault();
+                    alert("전화번호 형식이 올바르지 않습니다. (예: 010-1234-5678)");
+                    return false;
+                }
+            });
+
+            // 인증번호 확인
             $('#verifyCodeButton').click(function(event) {
                 event.preventDefault();
                 const inputCode = $('#verificationCode').val();
@@ -134,6 +199,21 @@
                 }
             });
         });
+
+        // 비밀번호 강도 확인 함수
+        function checkPasswordStrength(password) {
+            const minLength = 7;
+            const maxLength = 18;
+            let strength = { message: '약함', color: 'red' };
+
+            if (password.length >= minLength && password.length <= maxLength &&
+                /[A-Z]/.test(password) && /[0-9]/.test(password) && /[\W_]/.test(password)) {
+                strength = { message: '강함', color: 'green' };
+            } else if (password.length >= minLength) {
+                strength = { message: '중간', color: 'orange' };
+            }
+            return strength;
+        }
     </script>
 </head>
 <body>
@@ -160,7 +240,8 @@
         <button type="button" id="verifyCodeButton" class="btn btn-primary">인증번호 확인</button>
     </form>
 
-    <!-- 인증번호 확인 후 보여줄 추가 필드 -->
+    <!-- 비밀번호 강도 및 추가 필드 -->
+    <div id="passwordStrength"></div>
     <form th:action="@{/signup/complete}" method="POST" id="additionalFields">
         <input type="hidden" name="email" th:value="${email}">
         <div class="form-group mb-3">
@@ -172,8 +253,14 @@
             <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
         </div>
         <div class="form-group mb-3">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호를 다시 입력하세요" required>
+            <div id="passwordMatch"></div>
+        </div>
+        <div class="form-group mb-3">
             <label for="phone">전화번호</label>
-            <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호를 입력하세요" required>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="010-1234-5678" required>
+            <div id="phoneError"></div>
         </div>
         <button type="submit" class="btn btn-primary">회원가입 완료</button>
     </form>
