@@ -12,6 +12,7 @@ import com.example._team.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +35,7 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private UserRepository userRepository;
 
+	// 게시글 작성
 	@Transactional
 	@Override
 	public BoardResponseDto createBoard(BoardRequestDto boardDto) {
@@ -49,7 +54,7 @@ public class BoardServiceImpl implements BoardService {
 		return BoardResponseDto.fromEntity(savedBoard);
 	}
 
-
+	// 게시글 수정
 	@Transactional
 	@Override
 	public BoardResponseDto updateBoard(Integer id, BoardRequestDto dto) {
@@ -62,6 +67,7 @@ public class BoardServiceImpl implements BoardService {
 		return BoardResponseDto.fromEntity(updatedBoard);
 	}
 
+	// 게시글 삭제
 	@Transactional
 	@Override
 	public void deleteBoard(Integer id) {
@@ -70,31 +76,7 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.delete(board);
 	}
 
-//	@Override
-//	public BoardResponseDto getBoard(Integer id) {
-//		Board board = boardRepository.findById(id)
-//				.orElseThrow(() -> new DataNotFoundException("Board not found with ID: " + id));
-//		// 조회수를 증가시킵니다.
-//		board.setViews(board.getViews() + 1);
-//		Board updatedBoard = boardRepository.save(board);
-//		return BoardResponseDto.fromEntity(updatedBoard);
-//	}
-//
-//	@Override
-//    public Page<BoardResponseDto> getBoardList(int page, int size) {
-//        int startRow = page * size + 1;
-//        int endRow = (page + 1) * size;
-//
-//        List<Board> boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
-//        long total = boardRepository.count(); // 총 게시글 수 가져오기
-//
-//        List<BoardResponseDto> boardDtos = boards.stream()
-//            .map(BoardResponseDto::fromEntity)
-//            .collect(Collectors.toList());
-//
-//        return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
-//    }
-
+	// 게시글 상세보기
 	@Override
 	public BoardResponseDto getBoard(Integer id) {
 		Board board = boardRepository.findById(id)
@@ -105,35 +87,79 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public Page<BoardResponseDto> getBoardList(int page, int size) {
-		int startRow = page * size + 1;
-		int endRow = (page + 1) * size;
+	public Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort) {
+	    Set<BoardResponseDto> boardDtos = new LinkedHashSet<>(); // Set으로 중복 제거
+	    int startRow = page * size + 1;
+	    int endRow = (page + 1) * size;
+	    long total;
 
-		List<Board> boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
-		long total = boardRepository.count(); // 전체 게시글 수를 가져옵니다.
+	    // 키워드 검색이 있는 경우
+	    if (keyword != null && !keyword.trim().isEmpty()) {
+	        List<Board> baseBoards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
+	        total = boardRepository.countByKeyword(keyword);
 
-		List<BoardResponseDto> boardDtos = boards.stream()
-				.map(BoardResponseDto::fromEntity)
-				.collect(Collectors.toList());
+	        // 기본 게시글 및 답변 게시글 추가
+	        for (Board baseBoard : baseBoards) {
+	            // 기본 게시글 추가
+	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
+	            
+	            // 답변 게시글 추가
+	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
+	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
+	        }
+	    }
+	    // 카테고리가 있는 경우
+	    else if (category != null) {
+	        List<Board> baseBoards;
+	        if ("views".equals(sort)) {
+	            baseBoards = boardRepository.findByCategoryOrderedByViews(category.name(), startRow, endRow, Pageable.unpaged());
+	        } else {
+	            baseBoards = boardRepository.findByCategoryOrderedByBoardIdx(category.name(), startRow, endRow, Pageable.unpaged());
+	        }
+	        total = boardRepository.countByCategory(category);
 
-		return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
+	        // 기본 게시글 및 답변 게시글 추가
+	        for (Board baseBoard : baseBoards) {
+	            // 기본 게시글 추가
+	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
+	            
+	            // 답변 게시글 추가
+	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
+	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
+	        }
+	    }
+	    // 카테고리가 없는 경우
+	    else {
+	        List<Board> baseBoards;
+	        if ("views".equals(sort)) {
+	            baseBoards = boardRepository.findAllOrderedByViews(startRow, endRow, Pageable.unpaged());
+	        } else {
+	            baseBoards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
+	        }
+	        total = boardRepository.count();
+
+	        // 기본 게시글 및 답변 게시글 추가
+	        for (Board baseBoard : baseBoards) {
+	            // 기본 게시글 추가
+	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
+
+	            // 답변 게시글 추가
+	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
+	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
+	        }
+	    }
+
+	    // 게시글 수가 size를 넘지 않도록 제한하여 반환
+	    List<BoardResponseDto> paginatedList = boardDtos.stream().limit(size).collect(Collectors.toList());
+
+	    // 페이징된 게시글과 총 게시글 수를 기반으로 Page 객체 반환
+	    return new PageImpl<>(paginatedList, Pageable.ofSize(size).withPage(page), total);
 	}
-	
-	@Override
-	public List<BoardResponseDto> getBoardsByCategoryWithSorting(Category category) {
-		List<Board> boards = boardRepository.findByCategoryOrderByBoardIdxDesc(category);
-		return boards.stream().map(BoardResponseDto::fromEntity).collect(Collectors.toList());
-	}
 
-	@Override
-	public List<BoardResponseDto> getBoardListByViews() {
-		List<Board> boards = boardRepository.findAllByOrderByViewsDesc();
-		return boards.stream().map(BoardResponseDto::fromEntity).collect(Collectors.toList());
-	}
 
-	@Override
-	public List<BoardResponseDto> searchBoards(String keyword) {
-		List<Board> boards = boardRepository.findByTitleContaining(keyword);
-		return boards.stream().map(BoardResponseDto::fromEntity).collect(Collectors.toList());
-	}
+
+
+
+
+
 }

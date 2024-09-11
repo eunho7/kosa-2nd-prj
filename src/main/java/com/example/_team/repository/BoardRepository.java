@@ -13,21 +13,44 @@ import com.example._team.domain.enums.Category;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
-	List<Board> findByTitleContaining(String keyword);
+	// 게시판 조회수별 정렬
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.views DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board", nativeQuery = true)
+	List<Board> findAllOrderedByViews(@Param("startRow") int startRow, @Param("endRow") int endRow, Pageable pageable);
 
-	@Query("SELECT b FROM Board b WHERE b.category = :category ORDER BY b.boardIdx DESC")
-	List<Board> findByCategoryOrderByBoardIdxDesc(@Param("category") Category category);
+	// 게시판 카테고리별 정렬
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY CASE WHEN b.answer_board_idx IS NULL THEN b.board_idx ELSE b.answer_board_idx END DESC, b.answer_board_idx NULLS FIRST, b.board_idx ASC) AS rn FROM board b WHERE b.category = :category) WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board WHERE category = :category", nativeQuery = true)
+	List<Board> findByCategoryOrderedByBoardIdx(@Param("category") String category, @Param("startRow") int startRow,
+			@Param("endRow") int endRow, Pageable pageable);
 
-	List<Board> findAllByOrderByViewsDesc();
+	// 게시판 카테고리별 + 조회수별 정렬
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.views DESC) AS rn FROM board b "
+			+ "WHERE b.category = :category) "
+			+ "WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board WHERE category = :category", nativeQuery = true)
+	List<Board> findByCategoryOrderedByViews(@Param("category") String category, @Param("startRow") int startRow,
+			@Param("endRow") int endRow, Pageable pageable);
 
-//	List<Board> findAll();
-	
-//	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow",
-//	           countQuery = "SELECT COUNT(*) FROM board",
-//	           nativeQuery = true)
-@Query(value = "SELECT * FROM ( SELECT b.*, ROW_NUMBER() OVER (ORDER BY CASE  WHEN b.answer_board_idx IS NULL THEN b.board_idx ELSE b.answer_board_idx END DESC, b.answer_board_idx NULLS FIRST, b.board_idx ASC) AS rn FROM board b START WITH b.answer_board_idx IS NULL CONNECT BY PRIOR b.board_idx = b.answer_board_idx) WHERE rn BETWEEN :startRow AND :endRow",
-		countQuery = "SELECT COUNT(*) FROM board",
-		nativeQuery = true)
-	    List<Board> findAllOrderedByBoardIdx(@Param("startRow") int startRow, @Param("endRow") int endRow, Pageable pageable);
+	// 키워드 검색
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b "
+			+ "WHERE b.title LIKE '%' || :keyword || '%' OR b.content LIKE '%' || :keyword || '%') "
+			+ "WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board WHERE title LIKE '%' || :keyword || '%' OR content LIKE '%' || :keyword || '%'", nativeQuery = true)
+	List<Board> findByKeywordOrderedByBoardIdx(@Param("keyword") String keyword, @Param("startRow") int startRow,
+			@Param("endRow") int endRow, Pageable pageable);
+
+	// 키워드로 검색한 게시글의 개수
+	@Query("SELECT COUNT(b) FROM Board b WHERE b.title LIKE CONCAT('%', :keyword, '%') OR b.content LIKE CONCAT('%', :keyword, '%')")
+	long countByKeyword(@Param("keyword") String keyword);
+
+	// 카테고리로 검색한 게시글의 개수
+	@Query("SELECT COUNT(b) FROM Board b WHERE b.category = :category")
+	long countByCategory(@Param("category") Category category);
+
+	// 답변 게시판 정렬
+	@Query("SELECT b FROM Board b WHERE b.answerBoardIdx.boardIdx = :boardIdx ORDER BY b.createdAt ASC")
+	List<Board> findAnswersByBoard(@Param("boardIdx") Integer boardIdx);
+
+	// 게시판 리스트 정렬
+	@Query(value = "SELECT * FROM ( SELECT b.*, ROW_NUMBER() OVER (ORDER BY CASE  WHEN b.answer_board_idx IS NULL THEN b.board_idx ELSE b.answer_board_idx END DESC, b.answer_board_idx NULLS FIRST, b.board_idx ASC) AS rn FROM board b START WITH b.answer_board_idx IS NULL CONNECT BY PRIOR b.board_idx = b.answer_board_idx) WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board", nativeQuery = true)
+	List<Board> findAllOrderedByBoardIdx(@Param("startRow") int startRow, @Param("endRow") int endRow,
+			Pageable pageable);
 
 }
