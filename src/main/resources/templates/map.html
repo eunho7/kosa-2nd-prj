@@ -147,6 +147,7 @@
         places.forEach((place, index) => {
           const listItem = document.createElement("li");
           listItem.textContent = `${place.name} - ${place.formatted_address}`;
+
           listItem.setAttribute("data-place-id", place.place_id);
           listItem.setAttribute("data-index", index);
           listItem.addEventListener("click", () => selectPlace(places[index])); // 마커 번호 전달
