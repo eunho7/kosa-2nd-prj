@@ -3,7 +3,9 @@ package com.example._team.controller;
 import com.example._team.domain.Board;
 import com.example._team.domain.Reports;
 import com.example._team.domain.Users;
+import com.example._team.dto.board.BoardResponseDto;
 import com.example._team.dto.report.ReportsRequestDto;
+import com.example._team.dto.report.ReportsResponseDto;
 import com.example._team.repository.ReportsRepository;
 import com.example._team.service.BoardAnswerService;
 import com.example._team.service.BoardService;
@@ -11,14 +13,13 @@ import com.example._team.service.ReportsService;
 import com.example._team.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.HttpRequestHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,14 +58,25 @@ public class ReportsController {
         return "redirect:/board/list";
     }
 
-    @GetMapping("/reports/list")
-    public String reportsList(Model model){
-        List<Reports> list = reportsService.findAll();
+//    @GetMapping("/reports/list")
+//    public String reportsList(Model model){
+//        List<Reports> list = reportsService.findAll();
+//
+//        model.addAttribute("reportsList",list);
+//
+//        return "view/report/reports-list";
+//
+//    }
 
-        model.addAttribute("reportsList",list);
+    @GetMapping("/reports/list")
+    public String paging( @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "10") int size, Model model) {
+
+        // 게시글 목록 조회
+        Page<ReportsResponseDto> reportsPage = reportsService.paging(page, size, 1);
+        model.addAttribute("reportsList", reportsPage.getContent());
+        model.addAttribute("page", reportsPage);
 
         return "view/report/reports-list";
-
     }
-
 }

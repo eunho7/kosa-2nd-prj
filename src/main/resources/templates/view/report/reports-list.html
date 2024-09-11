@@ -3,6 +3,23 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <style>
+        #container-user {
+            margin: 5px auto;
+            box-sizing: border-box;
+        }
+
+        #container-user div {
+            line-height: 2em;
+            text-align: center;
+        }
+
+        #container-user {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between
+        }
+    </style>
     <title>게시판</title>
 </head>
 <body>
@@ -14,14 +31,17 @@
     <section id="container">
         <form role="form" method="get">
             <table class="table table-hover">
+                <colgroup>
+                    <col width=5%>
+                    <col width=10%>
+                    <col width=27.5%>
+                    <col width=27.5%>
+                    <col width=20%>
+                    <col width=10%>
+                </colgroup>
                 <thead>
                 <tr>
-                    <th>
-                        <label>
-                            <input type="checkbox" id="allCheckBox" onclick="allChecked()">
-                            전체 선택/해제
-                        </label>
-                    </th>
+                    <th></th>
                     <th>신고 번호</th>
                     <th>게시글 제목</th>
                     <th>신고 내용</th>
@@ -35,23 +55,45 @@
                 </tr>
 
                 <tbody>
-                    <tr th:each="reports : ${reportsList}">
-                        <td>
-                            <input type="checkbox" class="chk" name="" value="" onclick="chkClicked()" >
-                        </td>
-                        <td th:text="${reports.reportsIdx}">신고 번호</td>
-                        <td>
-                            <a th:href="@{/board/{id}(id=${reports.boardIdx.getBoardIdx()})}" th:text="${reports.boardIdx.getTitle()}">게시글 제목</a>
-                        </td>
-                        <td th:text="${reports.content}">신고 내용</td>
-                        <td th:text="${#temporals.format(reports.createdAt, 'yyyy-MM-dd')}">신고 날짜</td>
-                        <td th:if="${reports.boardIdx.getStatus()==1}" th:text="O"></td>
-                        <td th:if="${reports.boardIdx.getStatus()==0}" th:text="X"></td>
-                    </tr>
+                <colgroup>
+                    <col width=5%>
+                    <col width=10%>
+                    <col width=27.5%>
+                    <col width=27.5%>
+                    <col width=20%>
+                    <col width=10%>
+                </colgroup>
+                <tr th:each="reports : ${reportsList}">
+                    <td>
+                        <input type="checkbox" class="chk" name="" value="" onclick="chkClicked()" >
+                    </td>
+                    <td th:text="${reports.reportsIdx}">신고 번호</td>
+                    <td>
+                        <a th:href="@{/board/{id}(id=${reports.boardIdx.getBoardIdx()})}" th:text="${reports.boardIdx.getTitle()}">게시글 제목</a>
+                    </td>
+                    <td th:text="${reports.content}">신고 내용</td>
+                    <td th:text="${#temporals.format(reports.createdAt, 'yyyy-MM-dd')}">신고 날짜</td>
+                    <td th:if="${reports.boardIdx.getStatus()==1}" th:text="O"></td>
+                    <td th:if="${reports.boardIdx.getStatus()==0}" th:text="X"></td>
+                </tr>
                 </tbody>
             </table>
         </form>
-    </section>
+        <section id="container-user">
+            <div class="child">
+                <label>
+                    <input type="checkbox" id="allCheckBox" onclick="allChecked()">
+                    전체 선택/해제
+                </label>
+            </div>
+            <div class="child">
+                페이지네이션
+            </div>
+            <div class="child">
+                버튼
+            </div>
+</div>
+</section>
 </div>
 </body>
 <script>
