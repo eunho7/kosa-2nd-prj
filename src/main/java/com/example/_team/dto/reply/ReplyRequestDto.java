@@ -28,7 +28,7 @@ public class ReplyRequestDto {
     		return Reply.builder()
     				.content(this.content)
     				.userIdx(user)
-    				.boardIdx(board)
+    				.board(board)
     				.build();
     }
 }

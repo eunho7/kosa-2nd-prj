@@ -13,23 +13,23 @@ import com.example._team.domain.enums.Category;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
-
 	// 게시판 조회수별 정렬
-	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.views DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow", 
-		       countQuery = "SELECT COUNT(*) FROM board", 
-		       nativeQuery = true)
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.views DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board", nativeQuery = true)
 	List<Board> findAllOrderedByViews(@Param("startRow") int startRow, @Param("endRow") int endRow, Pageable pageable);
 
 	// 게시판 카테고리별 정렬
 	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b "
-            + "WHERE b.category = :category) "
-            + "WHERE rn BETWEEN :startRow AND :endRow", 
-       countQuery = "SELECT COUNT(*) FROM board WHERE category = :category", 
-       nativeQuery = true)
-	List<Board> findByCategoryOrderedByBoardIdx(@Param("category") String category, 
-                                            @Param("startRow") int startRow,
-                                            @Param("endRow") int endRow, 
-                                            Pageable pageable);
+			+ "WHERE b.category = :category) "
+			+ "WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board WHERE category = :category", nativeQuery = true)
+	List<Board> findByCategoryOrderedByBoardIdx(@Param("category") String category, @Param("startRow") int startRow,
+			@Param("endRow") int endRow, Pageable pageable);
+
+	// 게시판 카테고리별 + 조회수별 정렬
+	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.views DESC) AS rn FROM board b "
+			+ "WHERE b.category = :category) "
+			+ "WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board WHERE category = :category", nativeQuery = true)
+	List<Board> findByCategoryOrderedByViews(@Param("category") String category, @Param("startRow") int startRow,
+			@Param("endRow") int endRow, Pageable pageable);
 
 	// 게시판 리스트 page
 	@Query(value = "SELECT * FROM (SELECT b.*, ROW_NUMBER() OVER (ORDER BY b.board_idx DESC) AS rn FROM board b) WHERE rn BETWEEN :startRow AND :endRow", countQuery = "SELECT COUNT(*) FROM board", nativeQuery = true)

@@ -63,7 +63,7 @@ public class BoardServiceImpl implements BoardService {
 		Board updatedBoard = boardRepository.save(board);
 		return BoardResponseDto.fromEntity(updatedBoard);
 	}
-	
+
 	// 게시글 삭제
 	@Transactional
 	@Override
@@ -73,7 +73,7 @@ public class BoardServiceImpl implements BoardService {
 		boardRepository.delete(board);
 	}
 
-	// 게시글 상세보기 
+	// 게시글 상세보기
 	@Override
 	public BoardResponseDto getBoard(Integer id) {
 		Board board = boardRepository.findById(id)
@@ -83,39 +83,50 @@ public class BoardServiceImpl implements BoardService {
 		return BoardResponseDto.fromEntity(updatedBoard);
 	}
 
-	// 게시글 리스트
+	// 게시판 리스트 페이지
 	@Override
-    public Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort) {
-        List<Board> boards;
-        int startRow = page * size + 1;
+	public Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort) {
+		List<Board> boards;
+		int startRow = page * size + 1;
 		int endRow = (page + 1) * size;
 		long total;
 
+		// 키워드 검색이 있는 경우
 		if (keyword != null && !keyword.trim().isEmpty()) {
-            // 키워드 검색
-            boards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
-            total = boardRepository.countByKeyword(keyword);
-        } else if (category != null) {
-            // 카테고리 필터
-            boards = boardRepository.findByCategoryOrderedByBoardIdx(category.name(), startRow, endRow, Pageable.unpaged());
-            total = boardRepository.countByCategory(category);
-        } else {
-            // 정렬 방식에 따라 처리
-            if ("views".equals(sort)) {
-                // 조회수 기준 정렬
-                boards = boardRepository.findAllOrderedByViews(startRow, endRow, Pageable.unpaged());
-            } else {
-                // 기본 정렬 (게시글 번호 기준)
-                boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
-            }
-            total = boardRepository.count();
-        }
-        	
-        List<BoardResponseDto> boardDtos = boards.stream()
-				.map(BoardResponseDto::fromEntity)
+			boards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
+			total = boardRepository.countByKeyword(keyword);
+		}
+		// 카테고리가 있는 경우
+		else if (category != null) {
+			if ("views".equals(sort)) {
+				// 카테고리 + 조회수 기준 정렬
+				boards = boardRepository.findByCategoryOrderedByViews(category.name(), startRow, endRow,
+						Pageable.unpaged());
+			} else {
+				// 카테고리 + 게시글 번호 기준 정렬
+				boards = boardRepository.findByCategoryOrderedByBoardIdx(category.name(), startRow, endRow,
+						Pageable.unpaged());
+			}
+			total = boardRepository.countByCategory(category);
+		}
+		// 카테고리가 없는 경우
+		else {
+			// 정렬 방식에 따라 처리
+			if ("views".equals(sort)) {
+				// 조회수 기준 정렬
+				boards = boardRepository.findAllOrderedByViews(startRow, endRow, Pageable.unpaged());
+			} else {
+				// 기본 정렬 (게시글 번호 기준)
+				boards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
+			}
+			total = boardRepository.count();
+		}
+
+		// DTO로 변환
+		List<BoardResponseDto> boardDtos = boards.stream().map(BoardResponseDto::fromEntity)
 				.collect(Collectors.toList());
-        
-        return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
-    }
+
+		return new PageImpl<>(boardDtos, Pageable.ofSize(size).withPage(page), total);
+	}
 
 }

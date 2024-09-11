@@ -1,7 +1,11 @@
 package com.example._team.domain;
 
+import java.util.List;
+
 import com.example._team.domain.common.BaseEntity;
 import com.example._team.domain.enums.Category;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,4 +49,7 @@ public class Board extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "answer_board_idx")
     private Board answerBoardIdx;
+    // 댓글과의 관계 설정
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Reply> replies;
 }

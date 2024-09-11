@@ -1,6 +1,7 @@
 package com.example._team.dto.board;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.example._team.domain.Board;
 import com.example._team.domain.Reply;
@@ -23,11 +24,11 @@ public class BoardResponseDto {
     private Category category;
     private Integer views;
     private Integer status;
-    private long userIdx;
+    private Long userIdx;
     private String nickname; // 작성자의 닉네임 필드 추가
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt; // createdAt 필드 추가
-
+    
     // Static method to convert from entity to DTO
     public static BoardResponseDto fromEntity(Board board) {
         return BoardResponseDto.builder()
