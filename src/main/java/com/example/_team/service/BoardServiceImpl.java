@@ -100,10 +100,11 @@ public class BoardServiceImpl implements BoardService {
 
 	        // 기본 게시글 및 답변 게시글 추가
 	        for (Board baseBoard : baseBoards) {
-	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));  // 기본 게시글 추가
+	            // 기본 게시글 추가
+	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
+	            
+	            // 답변 게시글 추가
 	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
-
-	            // 답변 게시글이 있으면 중복 확인 후 추가
 	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
 	        }
 	    }
@@ -119,10 +120,11 @@ public class BoardServiceImpl implements BoardService {
 
 	        // 기본 게시글 및 답변 게시글 추가
 	        for (Board baseBoard : baseBoards) {
-	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));  // 기본 게시글 추가
+	            // 기본 게시글 추가
+	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
+	            
+	            // 답변 게시글 추가
 	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
-
-	            // 답변 게시글이 있으면 중복 확인 후 추가
 	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
 	        }
 	    }
@@ -138,16 +140,23 @@ public class BoardServiceImpl implements BoardService {
 
 	        // 기본 게시글 및 답변 게시글 추가
 	        for (Board baseBoard : baseBoards) {
-	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));  // 기본 게시글 추가
-	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
+	            // 기본 게시글 추가
+	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
 
-	            // 답변 게시글이 있으면 중복 확인 후 추가
+	            // 답변 게시글 추가
+	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
 	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
 	        }
 	    }
 
-	    return new PageImpl<>(new ArrayList<>(boardDtos), Pageable.ofSize(size).withPage(page), total);
+	    // 게시글 수가 size를 넘지 않도록 제한하여 반환
+	    List<BoardResponseDto> paginatedList = boardDtos.stream().limit(size).collect(Collectors.toList());
+
+	    // 페이징된 게시글과 총 게시글 수를 기반으로 Page 객체 반환
+	    return new PageImpl<>(paginatedList, Pageable.ofSize(size).withPage(page), total);
 	}
+
+
 
 
 
