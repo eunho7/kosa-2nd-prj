@@ -114,12 +114,23 @@
             color: #1a60cc;
             text-decoration: underline;
         }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 <div class="login-card">
     <h2 class="text-center">로그인</h2>
     <p class="text-center">서비스를 사용하려면 로그인을 해주세요!</p>
+
+    <!-- 로그인 실패 시 에러 메시지 출력 -->
+    <div th:if="${param.error}" class="error-message">
+        이메일 혹은 비밀번호가 틀렸습니다.
+    </div>
 
     <form action="/login" method="POST">
         <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
