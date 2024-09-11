@@ -13,27 +13,17 @@ f
 6src/main/java/com/example/_team/domain/BoardFiles.java,3/6/36abf98d869e725b19662a696ea3653fe81b79eb
 a
 1src/main/java/com/example/_team/domain/Reply.java,c/9/c99e23195fdd0cd1f27286fc5589ead622fd9202
-`
-0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-u
-Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
 l
 <src/main/java/com/example/_team/domain/VisitedLocations.java,9/e/9e6914328e7d98519c0885081bafc5a361feeed5
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-r
-Bsrc/main/java/com/example/_team/controller/BoardApiController.java,d/b/db40ee5ecd5c751a855d120db3a8e21bec530688
 m
 =src/main/java/com/example/_team/domain/common/BaseEntity.java,8/2/82ddab7bb98caccab4967517f0623cadd3cd3d4d
-a
-1src/main/java/com/example/_team/domain/Board.java,e/1/e1bd300de1909ebc16c8047149e2617d835a994e
 w
 Gsrc/main/java/com/example/_team/controller/PasswordResetController.java,a/2/a21f3ccf7a5494c6e7fe3889d80e0e8ff928e476
 t
 Dsrc/main/java/com/example/_team/exception/DataNotFoundException.java,5/5/55968168cf2fbde658242fd76ac24cdda1a0ec99
-g
-7src/main/java/com/example/_team/domain/TravelLikes.java,9/e/9ebc51bbceb47285abafc8aad885efe821a842e5
 i
 9src/main/java/com/example/_team/service/EmailService.java,a/5/a5ca4e6906136c39af19e7eb64d65c6af0c1d469
 o

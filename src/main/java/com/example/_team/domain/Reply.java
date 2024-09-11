@@ -9,11 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reply extends BaseEntity {
@@ -26,8 +28,11 @@ public class Reply extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_idx")
     private Users userIdx;
+//    @ManyToOne
+//    @JoinColumn(name="board_idx")
+//    private Board boardIdx;
     @ManyToOne
     @JoinColumn(name="board_idx")
-    private Board boardIdx;
+    private Board board;
 
 }

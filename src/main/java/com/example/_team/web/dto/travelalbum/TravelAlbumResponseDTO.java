@@ -26,10 +26,14 @@ public class TravelAlbumResponseDTO {
     public static class TravelAlbumDetailResponseDTO {
         Integer id;
         String nickname;
+        Long userIdx;
         String dateRange;   // 여행날짜
+        String content;
         String region;
         String thumbnail;
         String title;
+        Long postLikeCount;  // 좋아요
+        boolean likedByCurrentUser; // 현재 사용자가 좋아요 눌렀는지 여부
         List<TravelAlbumImageListDTO> travelAlbumImageList;
         List<TravelThemeListDTO> travelThemeList;
     }

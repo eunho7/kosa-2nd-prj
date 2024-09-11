@@ -1,5 +1,13 @@
 package com.example._team.controller;
 
+import com.example._team.service.ReportsService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import com.example._team.domain.Board;
 import com.example._team.domain.Reports;
 import com.example._team.domain.Users;
@@ -8,9 +16,8 @@ import com.example._team.dto.report.ReportsRequestDto;
 import com.example._team.dto.report.ReportsResponseDto;
 import com.example._team.repository.ReportsRepository;
 import com.example._team.service.BoardAnswerService;
-import com.example._team.service.BoardService;
-import com.example._team.service.ReportsService;
 import com.example._team.service.UserService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

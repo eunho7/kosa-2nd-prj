@@ -3,7 +3,7 @@ package com.example._team.dto.board;
 import com.example._team.domain.Board;
 import com.example._team.domain.Users;
 import com.example._team.domain.enums.Category;
-import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

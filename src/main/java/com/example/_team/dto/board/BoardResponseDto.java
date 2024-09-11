@@ -1,6 +1,7 @@
 package com.example._team.dto.board;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import com.example._team.domain.Board;
 import com.example._team.domain.enums.Category;
@@ -22,11 +23,11 @@ public class BoardResponseDto {
     private Category category;
     private Integer views;
     private Integer status;
-    private long userIdx;
+    private Long userIdx;
     private String nickname; // 작성자의 닉네임 필드 추가
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt; // createdAt 필드 추가
-
+    
     // Static method to convert from entity to DTO
     public static BoardResponseDto fromEntity(Board board) {
         return BoardResponseDto.builder()
@@ -41,5 +42,18 @@ public class BoardResponseDto {
                 .updatedAt(board.getUpdatedAt())
                 .createdAt(board.getCreatedAt()) // createdAt 필드 설정
                 .build();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoardResponseDto that = (BoardResponseDto) o;
+        return Objects.equals(boardIdx, that.boardIdx);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(boardIdx);
     }
 }

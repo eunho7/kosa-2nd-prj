@@ -3,13 +3,14 @@ package com.example._team.controller;
 import com.example._team.domain.Users;
 import com.example._team.domain.enums.Region;
 import com.example._team.global.s3.AmazonS3Manager;
+import com.example._team.repository.TravelLikesRepository;
 import com.example._team.service.TravelService;
 import com.example._team.service.UserService;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
-import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
+import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -24,17 +25,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/travel")
 public class TravelController {
@@ -42,6 +42,7 @@ public class TravelController {
     private final TravelService travelService;
     private final UserService userService;
     private final AmazonS3Manager s3ImgService;
+    private final TravelLikesRepository travelLikesRepository;
 
     @GetMapping("/searchform")
     public String travelTheme() {
@@ -99,26 +100,36 @@ public class TravelController {
         return "view/travel/TravelAlbumRandom";
     }
 
-    @PostMapping("/likes/{travelIdx}")
-    public TravelAlbumLikesResultDTO postTravelAlbumLikes(@PathVariable(name = "travelIdx")Integer travelIdx) {
-        TravelAlbumLikesResultDTO response = travelService.postAlbumLikes(travelIdx);
-        return response;
+    @PostMapping("/like/{travelIdx}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> addLike(@PathVariable Integer travelIdx, @RequestBody Map<String, Integer> payload) {
+        Integer userIdx = payload.get("userIdx");
+        boolean success = travelService.addLike(travelIdx, Long.valueOf(userIdx));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", success);
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/likes/{travelIdx}")
-    public TravelAlbumLikesResultDTO deleteTravelAlbumLikes(@PathVariable(name = "travelIdx") Integer travelIdx) {
-        TravelAlbumLikesResultDTO response = travelService.cancelTravelAlbumLikes(travelIdx);
-        return response;
+    @DeleteMapping("/like/{travelIdx}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> removeLike(@PathVariable Integer travelIdx, @RequestBody Map<String, Integer> payload) {
+        Integer userIdx = payload.get("userIdx");
+        boolean success = travelService.removeLike(travelIdx, Long.valueOf(userIdx));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", success);
+        return ResponseEntity.ok(response);
     }
 
-    /*
-        여행앨범 생성
-     */
+
+   // 여행앨범 생성
     @PostMapping("/create")
-    public String createTravelAlbum(@ModelAttribute("request")createTravelAlbumDTO request) {
+    public String createTravelAlbum(@ModelAttribute("request")createTravelAlbumDTO request, RedirectAttributes redirectAttributes) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        travelService.postTravelAlbum(email, request);
-        return "view/travel/TravelUpload";
+        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
+        redirectAttributes.addAttribute("id", response.getTravelIdx());
+        return "redirect:/api/travel/detail/{id}";
     }
     @GetMapping("/upload")
     public String showUploadForm(Model model) {
@@ -142,5 +153,29 @@ public class TravelController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    // 단건조회
+    @GetMapping("/detail/{id}")
+    public String getTravelBoard(@PathVariable Integer id, Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userService.findByEmail(email);
+
+        TravelAlbumDetailResponseDTO response = travelService.getTravelBoard(id, user);
+        model.addAttribute("response", response);
+
+        List<UserListByPostLikesDTO> userList = travelService.getTravelLikesByUsers(id);
+        model.addAttribute("userList", userList);
+        model.addAttribute("connectUser", user);
+
+        return "view/travel/TravelDetail";
+    }
+
+    // 삭제
+    @PostMapping("/delete/{travelIdx}")
+    public String deleteTravelBoard(@PathVariable Integer travelIdx) {
+
+        travelService.deleteTravelBoard(travelIdx);
+        return "redirect:/api/travel/random";
     }
 }
