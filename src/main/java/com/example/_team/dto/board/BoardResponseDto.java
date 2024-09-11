@@ -1,10 +1,9 @@
 package com.example._team.dto.board;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import com.example._team.domain.Board;
-import com.example._team.domain.Reply;
 import com.example._team.domain.enums.Category;
 
 import lombok.AllArgsConstructor;
@@ -43,5 +42,18 @@ public class BoardResponseDto {
                 .updatedAt(board.getUpdatedAt())
                 .createdAt(board.getCreatedAt()) // createdAt 필드 설정
                 .build();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoardResponseDto that = (BoardResponseDto) o;
+        return Objects.equals(boardIdx, that.boardIdx);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(boardIdx);
     }
 }

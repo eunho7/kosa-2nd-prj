@@ -50,9 +50,13 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/signup/send-code"),
                                 new AntPathRequestMatcher("/signup/verify"),
                                 new AntPathRequestMatcher("/signup/complete"),
-                                new AntPathRequestMatcher("/api/**")
+                                new AntPathRequestMatcher("/api/**"),
+                                new AntPathRequestMatcher("/api/travel/create"),
+                                new AntPathRequestMatcher("/map/view"),
+                                new AntPathRequestMatcher("/map")
 //                                new AntPathRequestMatcher("/api/travel/likes/{travelIdx}")
                         ).permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // 신은호 추가, admin 권한
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")

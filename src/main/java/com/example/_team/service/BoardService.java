@@ -1,14 +1,10 @@
 package com.example._team.service;
 
-import com.example._team.domain.Board;
+import org.springframework.data.domain.Page;
+
 import com.example._team.domain.enums.Category;
 import com.example._team.dto.board.BoardRequestDto;
 import com.example._team.dto.board.BoardResponseDto;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface BoardService {
 

@@ -49,6 +49,9 @@ public class Board extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "answer_board_idx")
     private Board answerBoardIdx;
+    
+    @OneToMany(mappedBy = "answerBoardIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Board> answerBoards;
     // 댓글과의 관계 설정
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Reply> replies;
