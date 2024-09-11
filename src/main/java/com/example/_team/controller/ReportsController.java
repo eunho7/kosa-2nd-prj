@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Controller
 public class ReportsController {
@@ -27,6 +29,7 @@ public class ReportsController {
     private final BoardAnswerService boardService;
     private final ReportsRepository reportsRepository;
     private final UserService userService;
+    private final ReportsService reportsService;
 
     // 신고 입력 폼
     @GetMapping("/reports/{id}")
@@ -53,4 +56,15 @@ public class ReportsController {
 
         return "redirect:/board/list";
     }
+
+    @GetMapping("/reports/list")
+    public String reportsList(Model model){
+        List<Reports> list = reportsService.findAll();
+
+        model.addAttribute("reportsList",list);
+
+        return "view/report/reports-list";
+
+    }
+
 }

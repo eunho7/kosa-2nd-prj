@@ -5,6 +5,8 @@ import com.example._team.repository.ReportsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ReportsService {
@@ -12,5 +14,9 @@ public class ReportsService {
 
     public void saveReports(Reports reports) {
         reportsRepository.save(reports);
+    }
+
+    public List<Reports> findAll() {
+        return reportsRepository.findAll();
     }
 }
