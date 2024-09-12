@@ -29,7 +29,7 @@
     </header>
     <hr>
     <section id="container">
-        <form role="form" method="get">
+        <form id="inactive" th:action="@{/reports/inactive}" method="POST">
             <table class="table table-hover">
                 <colgroup>
                     <col width=5%>
@@ -65,11 +65,12 @@
                 </colgroup>
                 <tr th:each="reports : ${reportsList}">
                     <td>
-                        <input type="checkbox" class="chk" name="" value="" onclick="chkClicked()" >
+                        <input type="checkbox" class="chk" name="inactiveBoardIdx" th:value="${reports.boardIdx.getBoardIdx()}" onclick="chkClicked()">
                     </td>
                     <td th:text="${reports.reportsIdx}">신고 번호</td>
                     <td>
-                        <a th:href="@{/board/{id}(id=${reports.boardIdx.getBoardIdx()})}" th:text="${reports.boardIdx.getTitle()}">게시글 제목</a>
+                        <a th:href="@{/board/{id}(id=${reports.boardIdx.getBoardIdx()})}"
+                           th:text="${reports.boardIdx.getTitle()}">게시글 제목</a>
                     </td>
                     <td th:text="${reports.content}">신고 내용</td>
                     <td th:text="${#temporals.format(reports.createdAt, 'yyyy-MM-dd')}">신고 날짜</td>
@@ -86,14 +87,37 @@
                     전체 선택/해제
                 </label>
             </div>
-            <div class="child">
-                페이지네이션
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center"
+                 th:if="${page.totalPages > 1}">
+                <ul class="pagination">
+                    <!-- 이전 버튼 -->
+                    <li class="page-item"
+                        th:class="${page.number == 0} ? 'disabled'"><a
+                            class="page-link" th:style="${page.number == 0} ? 'pointer-events: none;'"
+                            th:href="@{/reports/list(page=${page.number-1})}">이전</a>
+                    </li>
+
+                    <!-- 페이지 번호 출력 -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+                        th:classappend="${i == page.number + 1} ? 'active'"><a
+                            class="page-link"
+                            th:href="@{/reports/list(page=${i-1})}"
+                            th:text="${i}">1</a></li>
+
+                    <!-- 다음 버튼 -->
+                    <li class="page-item"
+                        th:class="${page.number == page.totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:style="${page.number == page.totalPages - 1} ? 'pointer-events: none;'"
+                           th:href="@{/reports/list(page=${page.number+1})}">다음</a>
+                    </li>
+                </ul>
             </div>
             <div class="child">
-                버튼
+                <button type="submit" form="inactive" class="btn btn-primary">비활성화</button>
             </div>
-</div>
-</section>
+        </section>
 </div>
 </body>
 <script>
