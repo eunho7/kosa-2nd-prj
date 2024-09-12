@@ -34,4 +34,8 @@ public class BoardAnswerService {
         return boardRepository.findById(id).get();
     }
 
+    public void save(Board board) {
+        boardRepository.save(board);
+    }
+
 }

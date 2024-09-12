@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example._team.domain.Board;
 import com.example._team.domain.Reports;
 import com.example._team.domain.Users;
-import com.example._team.dto.board.BoardResponseDto;
 import com.example._team.dto.report.ReportsRequestDto;
 import com.example._team.dto.report.ReportsResponseDto;
 import com.example._team.repository.ReportsRepository;
@@ -21,11 +20,6 @@ import com.example._team.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +32,7 @@ public class ReportsController {
     private final ReportsRepository reportsRepository;
     private final UserService userService;
     private final ReportsService reportsService;
+    private final BoardAnswerService boardAnswerService;
 
     // 신고 입력 폼
     @GetMapping("/reports/{id}")
@@ -51,7 +46,7 @@ public class ReportsController {
         model.addAttribute("url", url);
         model.addAttribute("board", board);
 
-        return "view/report/reportsForm";
+        return "view/report/reports-form";
     }
 
     @PostMapping("/reports")
@@ -65,16 +60,6 @@ public class ReportsController {
         return "redirect:/board/list";
     }
 
-//    @GetMapping("/reports/list")
-//    public String reportsList(Model model){
-//        List<Reports> list = reportsService.findAll();
-//
-//        model.addAttribute("reportsList",list);
-//
-//        return "view/report/reports-list";
-//
-//    }
-
     @GetMapping("/reports/list")
     public String paging( @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "10") int size, Model model) {
@@ -85,5 +70,20 @@ public class ReportsController {
         model.addAttribute("page", reportsPage);
 
         return "view/report/reports-list";
+    }
+
+    @PostMapping("/reports/inactive")
+    public String inactive(@RequestParam("inactiveBoardIdx") List<Integer> boardIdx) {
+
+        if (!boardIdx.isEmpty()) {
+            for (int i = 0; i < boardIdx.size(); i++) {
+                Board board = boardService.findById(boardIdx.get(i));
+                if (board.getStatus() == 1) {
+                    board.setStatus(0);
+                    boardAnswerService.save(board);
+                }
+            }
+        }
+        return "redirect:/reports/list";
     }
 }
