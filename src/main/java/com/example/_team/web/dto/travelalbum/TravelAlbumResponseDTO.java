@@ -1,5 +1,6 @@
 package com.example._team.web.dto.travelalbum;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,5 +72,18 @@ public class TravelAlbumResponseDTO {
     @AllArgsConstructor
     public static class TravelAlbumResultDTO {
         Integer travelIdx;
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class myTravelAlbumListDTO {
+        Integer id;
+        String thumbnail;
+        String title;
+        String dateRange;
+        int likes;
+        LocalDateTime createdAt;
     }
 }
