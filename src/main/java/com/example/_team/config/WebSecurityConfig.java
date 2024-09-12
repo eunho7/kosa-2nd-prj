@@ -73,7 +73,7 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/mypage", true)
+                        .defaultSuccessUrl("/api/travel/random", true)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
