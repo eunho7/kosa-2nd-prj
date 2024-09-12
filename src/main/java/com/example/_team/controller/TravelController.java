@@ -3,13 +3,13 @@ package com.example._team.controller;
 import com.example._team.domain.Users;
 import com.example._team.domain.enums.Region;
 import com.example._team.global.s3.AmazonS3Manager;
-import com.example._team.repository.TravelLikesRepository;
 import com.example._team.service.TravelService;
 import com.example._team.service.UserService;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +43,7 @@ public class TravelController {
     private final UserService userService;
     private final AmazonS3Manager s3ImgService;
 
+    // 테마, 지역별 검색
     @GetMapping("/search")
     public String searchByRegionOrTheme(
             @RequestParam(value = "theme", required = false) String theme,
@@ -52,30 +53,22 @@ public class TravelController {
         List<TravelAlbumListDTO> albums;
 
         if (theme != null && !theme.trim().isEmpty() && region != null && !region.trim().isEmpty()) {
-            // 테마와 지역 모두 검색
             try {
-                // 공백 제거 및 대문자로 변환
                 Region regionEnum = Region.valueOf(region.trim().toUpperCase());
                 albums = travelService.searchTravelListByThemeAndRegion(theme, regionEnum, 1);
             } catch (IllegalArgumentException e) {
-                // 유효하지 않은 지역 값
-                albums = List.of(); // 빈 리스트 반환
+                albums = List.of();
             }
         } else if (theme != null && !theme.trim().isEmpty()) {
-            // 테마 검색
             albums = travelService.searchTravelListByTheme(theme, 1);
         } else if (region != null && !region.trim().isEmpty()) {
-            // 지역 검색
             try {
-                // 공백 제거 및 대문자로 변환
                 Region regionEnum = Region.valueOf(region.trim().toUpperCase());
                 albums = travelService.searchTravelListByRegion(regionEnum, 1);
             } catch (IllegalArgumentException e) {
-                // 유효하지 않은 지역 값
-                albums = List.of(); // 빈 리스트 반환
+                albums = List.of();
             }
         } else {
-            // 테마와 지역이 모두 없는 경우
             albums = List.of();
         }
 
@@ -86,6 +79,7 @@ public class TravelController {
     }
 
 
+    // 여행앨범 랜덤 리스트 조회
     @GetMapping("/random")
     public String getRandomTravelAlbum(Model model) {
 
@@ -96,7 +90,8 @@ public class TravelController {
 
     @PostMapping("/like/{travelIdx}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> addLike(@PathVariable Integer travelIdx, @RequestBody Map<String, Integer> payload) {
+    public ResponseEntity<Map<String, Object>> addLike(@PathVariable Integer travelIdx,
+                                                       @RequestBody Map<String, Integer> payload) {
         Integer userIdx = payload.get("userIdx");
         boolean success = travelService.addLike(travelIdx, Long.valueOf(userIdx));
 
@@ -107,7 +102,8 @@ public class TravelController {
 
     @DeleteMapping("/like/{travelIdx}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> removeLike(@PathVariable Integer travelIdx, @RequestBody Map<String, Integer> payload) {
+    public ResponseEntity<Map<String, Object>> removeLike(@PathVariable Integer travelIdx,
+                                                          @RequestBody Map<String, Integer> payload) {
         Integer userIdx = payload.get("userIdx");
         boolean success = travelService.removeLike(travelIdx, Long.valueOf(userIdx));
 
@@ -117,14 +113,17 @@ public class TravelController {
     }
 
 
-   // 여행앨범 생성
+    // 여행앨범 생성
     @PostMapping("/create")
-    public String createTravelAlbum(@ModelAttribute("request")createTravelAlbumDTO request, RedirectAttributes redirectAttributes) {
+    public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request,
+                                    RedirectAttributes redirectAttributes) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
         redirectAttributes.addAttribute("id", response.getTravelIdx());
         return "redirect:/api/travel/detail/{id}";
     }
+
+    // 여행앨범 생성
     @GetMapping("/upload")
     public String showUploadForm(Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -132,6 +131,8 @@ public class TravelController {
         model.addAttribute("user", user);
         return "view/travel/TravelUpload";
     }
+
+    // 여행앨범 content 내부 이미지 리스트 업로드
     @PostMapping("/upload-image")
     @ResponseBody
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
@@ -171,5 +172,18 @@ public class TravelController {
 
         travelService.deleteTravelBoard(travelIdx);
         return "redirect:/api/travel/random";
+    }
+
+    // 나의 앨범 리스트 조회(좋아요, 최신순 정렬)
+    @GetMapping("/myTravel")
+    public String getMyTravelBoardSort(Model model,
+                                       @RequestParam(defaultValue = "latest") String sort) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userService.findByEmail(email);
+
+        List<myTravelAlbumListDTO> response = travelService.getMyTravelBoardSortList(user, sort);
+        model.addAttribute("response", response);
+
+        return "view/travel/myTravelAlbumList";
     }
 }
