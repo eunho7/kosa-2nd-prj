@@ -97,10 +97,6 @@
             margin: 10px auto;
         }
 
-        .rotate-up {
-            transform: rotate(180deg);
-        }
-
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
@@ -209,62 +205,62 @@
 <body>
 <main>
     <section class="user-container fade-in">
-    <div class="container">
-        <div class="search-toggle" style="text-align: center; margin-bottom: 10px;">검색하기
-            <button id="toggle-search" class="arrow-button" onclick="toggleSearchSection()">
-                ▼
-            </button>
-        </div>
-
-        <div id="search-section" style="display: none;">
-            <p class="search-title">여행 앨범 검색</p>
-
-            <div class="mb-3 text-center">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" id="theme-option" name="searchOption" value="theme"
-                           onclick="toggleInputFields()">
-                    <label class="form-check-label option-label" for="theme-option">테마별 검색</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" id="region-option" name="searchOption" value="region"
-                           onclick="toggleInputFields()">
-                    <label class="form-check-label option-label" for="region-option">지역별 검색</label>
-                </div>
+        <div class="container">
+            <div class="search-toggle" style="text-align: center; margin-bottom: 10px;">검색하기
+                <button id="toggle-search" class="arrow-button" onclick="toggleSearchSection()">
+                    ▼
+                </button>
             </div>
 
-            <form th:action="@{/api/travel/search}" method="get" class="search-form">
-                <input type="hidden" name="isPublic" value="1"/>
+            <div id="search-section" style="display: none;">
+                <p class="search-title">여행 앨범 검색</p>
 
-                <div id="theme-container" class="mb-3" style="display: none;">
-                    <label for="theme-input" class="form-label">테마</label>
-                    <input id="theme-input" name="theme" type="text" class="form-control" placeholder="테마를 입력해주세요">
+                <div class="mb-3 text-center">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="theme-option" name="searchOption" value="theme"
+                               onclick="toggleInputFields()">
+                        <label class="form-check-label option-label" for="theme-option">테마별 검색</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="region-option" name="searchOption" value="region"
+                               onclick="toggleInputFields()">
+                        <label class="form-check-label option-label" for="region-option">지역별 검색</label>
+                    </div>
                 </div>
 
-                <div id="region-container" class="mb-3" style="display: none;">
-                    <label for="region-select" class="form-label">지역</label>
-                    <select id="region-select" name="region" class="form-select">
-                        <option value="" disabled selected>지역을 선택해주세요.</option>
-                        <option value="서울">서울</option>
-                        <option value="인천">인천</option>
-                        <option value="부산">부산</option>
-                        <option value="대구">대구</option>
-                        <option value="광주">광주</option>
-                        <option value="대전">대전</option>
-                        <option value="울산">울산</option>
-                        <option value="세종">세종</option>
-                        <option value="경기도">경기도</option>
-                        <option value="강원도">강원도</option>
-                        <option value="충청도">충청도</option>
-                        <option value="전라도">전라도</option>
-                        <option value="경상도">경상도</option>
-                        <option value="제주도">제주도</option>
-                    </select>
-                </div>
+                <form th:action="@{/api/travel/search}" method="get" class="search-form">
+                    <input type="hidden" name="isPublic" value="1"/>
 
-                <button type="submit" class="search-button">Search</button>
-            </form>
+                    <div id="theme-container" class="mb-3" style="display: none;">
+                        <label for="theme-input" class="form-label">테마</label>
+                        <input id="theme-input" name="theme" type="text" class="form-control" placeholder="테마를 입력해주세요">
+                    </div>
+
+                    <div id="region-container" class="mb-3" style="display: none;">
+                        <label for="region-select" class="form-label">지역</label>
+                        <select id="region-select" name="region" class="form-select">
+                            <option value="" disabled selected>지역을 선택해주세요.</option>
+                            <option value="서울">서울</option>
+                            <option value="인천">인천</option>
+                            <option value="부산">부산</option>
+                            <option value="대구">대구</option>
+                            <option value="광주">광주</option>
+                            <option value="대전">대전</option>
+                            <option value="울산">울산</option>
+                            <option value="세종">세종</option>
+                            <option value="경기도">경기도</option>
+                            <option value="강원도">강원도</option>
+                            <option value="충청도">충청도</option>
+                            <option value="전라도">전라도</option>
+                            <option value="경상도">경상도</option>
+                            <option value="제주도">제주도</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
         </div>
-    </div>
 
         <h1 class="text-center">랜덤 여행 앨범</h1>
         <a th:href="@{/api/travel/detail/{id}(id=${response.id})}" class="album-link">
@@ -283,7 +279,9 @@
 
             <div class="image-list">
                 <div>
-                    <img th:src="@{${response.travelAlbumImageList[0].imagePath}}" alt="Travel Image"
+                    <img th:if="${#lists.size(response.travelAlbumImageList) > 0}"
+                         th:src="@{${response.travelAlbumImageList[0].imagePath}}"
+                         alt="Travel Image"
                          class="travel-image img-thumbnail"/>
                 </div>
 
