@@ -70,7 +70,7 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/map")
 //                                new AntPathRequestMatcher("/api/travel/likes/{travelIdx}")
                         ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // 신은호 추가, admin 권한
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // 작성자 : 신은호, admin 권한 추가
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
