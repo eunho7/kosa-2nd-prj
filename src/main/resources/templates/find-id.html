@@ -5,68 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>아이디 찾기</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Arial', sans-serif;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
         }
 
-        .find-id-card {
+        .main-section {
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 400px;
             width: 100%;
-            animation: fadeIn 1s ease-in-out;
+            max-width: 420px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 40px 20px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
         }
 
         h2 {
-            font-size: 28px;
+            text-align: center;
             font-weight: bold;
             color: #333;
-            margin-bottom: 30px;
-            text-align: center;
+            margin-bottom: 20px;
         }
 
         .form-group label {
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
         }
 
         .form-control {
             border-radius: 8px;
             padding: 12px;
-            font-size: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 16px;
+            background-color: #f7f7f7;
         }
 
         .form-control:focus {
-            border-color: #2575fc;
-            box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
+            border-color: #4a90e2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.2);
         }
 
         .btn-primary {
-            background-color: #2575fc;
-            border-color: #2575fc;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            color: white;
             border-radius: 8px;
-            transition: background-color 0.3s ease;
+            padding: 12px 25px;
+            font-size: 18px;
+            width: 100%;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #1a60cc;
-            border-color: #1a60cc;
+            background-color: #357ABD;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
         }
 
         .footer-text {
@@ -77,25 +81,23 @@
         }
 
         .footer-text a {
-            color: #2575fc;
+            color: #4a90e2;
             text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
         }
 
         .footer-text a:hover {
-            color: #1a60cc;
             text-decoration: underline;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
     </style>
 </head>
 <body>
-<div class="find-id-card">
+<div class="main-section">
     <h2>아이디 찾기</h2>
     <form th:action="@{/user/find-id}" method="POST">
         <div class="form-group">
@@ -111,6 +113,8 @@
 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Font Awesome Script for icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 </body>
 </html>
