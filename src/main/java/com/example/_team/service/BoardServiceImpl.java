@@ -1,11 +1,14 @@
 package com.example._team.service;
 
 import com.example._team.domain.Board;
+import com.example._team.domain.BoardFiles;
 import com.example._team.domain.Users;
 import com.example._team.domain.enums.Category;
 import com.example._team.dto.board.BoardRequestDto;
 import com.example._team.dto.board.BoardResponseDto;
 import com.example._team.exception.DataNotFoundException;
+import com.example._team.global.s3.AmazonS3Manager;
+import com.example._team.repository.BoardFileRepository;
 import com.example._team.repository.BoardRepository;
 import com.example._team.repository.UserRepository;
 
@@ -19,10 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,38 +40,130 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private BoardFileRepository boardFileRepository;
+	
+	@Autowired
+	private AmazonS3Manager amazonS3Manager;
 
-	// 게시글 작성
+//	// 게시글 작성
+//	@Transactional
+//	@Override
+//	public BoardResponseDto createBoard(BoardRequestDto boardDto) {
+//		// 현재 로그인한 사용자의 정보를 가져옴
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		String email = authentication.getName();
+//
+//		// 이메일을 사용해서 해당 사용자의 정보를 조회
+//		Users user = userRepository.findByEmail(email)
+//				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+//
+//		// 게시글 생성 시 userIdx를 직접 넣는 대신, 로그인한 사용자의 정보를 사용
+//		Board board = boardDto.toEntity(user, null);
+//		Board savedBoard = boardRepository.save(board);
+//
+//		return BoardResponseDto.fromEntity(savedBoard);
+//	}
+	
+	//게시글작성
 	@Transactional
 	@Override
 	public BoardResponseDto createBoard(BoardRequestDto boardDto) {
-		// 현재 로그인한 사용자의 정보를 가져옴
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
+	    // 현재 로그인한 사용자의 정보를 가져옴
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String email = authentication.getName();
 
-		// 이메일을 사용해서 해당 사용자의 정보를 조회
-		Users user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+	    // 이메일을 사용해서 해당 사용자의 정보를 조회
+	    Users user = userRepository.findByEmail(email)
+	            .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-		// 게시글 생성 시 userIdx를 직접 넣는 대신, 로그인한 사용자의 정보를 사용
-		Board board = boardDto.toEntity(user, null);
-		Board savedBoard = boardRepository.save(board);
+	    // 게시글 생성
+	    Board board = boardDto.toEntity(user, null);
+	    Board savedBoard = boardRepository.save(board);
 
-		return BoardResponseDto.fromEntity(savedBoard);
+	 // 이미지 파일 업로드 처리 (다중 파일 처리)
+	    if (boardDto.getImgFile() != null && !boardDto.getImgFile().isEmpty()) {
+	        for (MultipartFile file : boardDto.getImgFile()) {
+	            // 파일이 비어있지 않은 경우에만 업로드 처리
+	            if (!file.isEmpty()) {
+	                // S3에 파일 업로드 후 파일 URL 반환
+	                String filePath = amazonS3Manager.uploadFile("boards/" + savedBoard.getBoardIdx(), file);
+
+	                // 업로드된 파일 정보를 BoardFiles 엔티티에 저장
+	                BoardFiles boardFile = new BoardFiles();
+	                boardFile.setBoard(savedBoard);  // 게시글과 파일 연결
+	                boardFile.setFilepath(filePath);  // S3에 저장된 파일의 URL
+	                boardFile.setUploadedAt(LocalDateTime.now());
+	                boardFileRepository.save(boardFile);  // 파일 정보 저장
+	            }
+	        }
+	    }
+
+	    return BoardResponseDto.fromEntity(savedBoard);
 	}
 
+
+
+//	// 게시글 수정
+//	@Transactional
+//	@Override
+//	public BoardResponseDto updateBoard(Integer id, BoardRequestDto dto) {
+//		Board board = boardRepository.findById(id)
+//				.orElseThrow(() -> new DataNotFoundException("Board not found with ID: " + id));
+//		board.setTitle(dto.getTitle());
+//		board.setContent(dto.getContent());
+//		board.setCategory(dto.getCategory());
+//		Board updatedBoard = boardRepository.save(board);
+//		return BoardResponseDto.fromEntity(updatedBoard);
+//	}
+	
+	
 	// 게시글 수정
 	@Transactional
 	@Override
 	public BoardResponseDto updateBoard(Integer id, BoardRequestDto dto) {
-		Board board = boardRepository.findById(id)
-				.orElseThrow(() -> new DataNotFoundException("Board not found with ID: " + id));
-		board.setTitle(dto.getTitle());
-		board.setContent(dto.getContent());
-		board.setCategory(dto.getCategory());
-		Board updatedBoard = boardRepository.save(board);
-		return BoardResponseDto.fromEntity(updatedBoard);
+	    Board board = boardRepository.findById(id)
+	            .orElseThrow(() -> new DataNotFoundException("Board not found with ID: " + id));
+
+	    board.setTitle(dto.getTitle());
+	    board.setContent(dto.getContent());
+	    board.setCategory(dto.getCategory());
+
+	    // 삭제할 이미지 처리
+	    if (dto.getDeleteImgs() != null && !dto.getDeleteImgs().isEmpty()) {
+	        for (String filePath : dto.getDeleteImgs()) {
+	            Optional<BoardFiles> fileOptional = boardFileRepository.findByFilepath(filePath);
+	            if (fileOptional.isPresent()) {
+	                BoardFiles file = fileOptional.get();
+	                boardFileRepository.delete(file); // 데이터베이스에서 파일 정보 삭제
+	            }
+	        }
+	    }
+
+	    // 새로 추가할 이미지 처리
+	    if (dto.getImgFile() != null && !dto.getImgFile().isEmpty()) {
+	        for (MultipartFile file : dto.getImgFile()) {
+	            if (!file.isEmpty()) {
+	                String filePath = amazonS3Manager.uploadFile("boards/" + board.getBoardIdx(), file);
+
+	                BoardFiles boardFile = new BoardFiles();
+	                boardFile.setBoard(board);
+	                boardFile.setFilepath(filePath);
+	                boardFile.setUploadedAt(LocalDateTime.now());
+	                boardFileRepository.save(boardFile);
+	            }
+	        }
+	    }
+
+	    Board updatedBoard = boardRepository.save(board);
+
+	    return BoardResponseDto.fromEntity(updatedBoard);
 	}
+
+
+
+
 
 	// 게시글 삭제
 	@Transactional
