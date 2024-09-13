@@ -15,7 +15,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -54,5 +53,7 @@ public class TravelBoard extends BaseEntity {
     private List<Theme> themes = new ArrayList<>();
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TravelImages> imagesList = new ArrayList<>();
+    @Column(nullable = false)
+    private int likeCount;
 
 }

@@ -4,22 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Fonts 로드 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/travel/RandomAlbum.css}">
     <title>Search Travel Albums</title>
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: 'Roboto', sans-serif; /* 본문에 Roboto 적용 */
+            font-family: 'Roboto', sans-serif;
         }
 
         h1, h2 {
-            font-family: 'Noto Sans', sans-serif; /* 제목에 Noto Sans 적용 */
+            font-family: 'Noto Sans', sans-serif;
         }
 
         .user-container {
@@ -101,10 +97,6 @@
             margin: 10px auto;
         }
 
-        .rotate-up {
-            transform: rotate(180deg);
-        }
-
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
@@ -117,49 +109,223 @@
                 opacity: 1;
             }
         }
+
+        .search-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-form select, .search-form input {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .search-form .form-select {
+            background-color: #f7f9fc;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+        }
+
+        .search-button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+
+        .search-button {
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .option-label {
+            font-size: 1rem;
+            color: #555;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked + .form-check-label {
+            color: #007bff;
+        }
+
+        .search-form .form-check-input {
+            margin-right: 10px;
+        }
+
+        .form-check-inline {
+            margin-right: 15px;
+        }
+
+        /* 화살표 버튼 스타일 */
+        .arrow-button {
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .arrow-button:focus {
+            outline: none;
+        }
+
+        /* 검색창 트랜지션 효과 */
+        #search-section {
+            transition: all 0.3s ease;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
     </style>
 </head>
 <body>
-<header th:replace="fragments/header :: header"></header>
 <main>
     <section class="user-container fade-in">
+        <div class="container">
+            <div class="search-toggle" style="text-align: center; margin-bottom: 10px;">검색하기
+                <button id="toggle-search" class="arrow-button" onclick="toggleSearchSection()">
+                    ▼
+                </button>
+            </div>
+
+            <div id="search-section" style="display: none;">
+                <p class="search-title">여행 앨범 검색</p>
+
+                <div class="mb-3 text-center">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="theme-option" name="searchOption" value="theme"
+                               onclick="toggleInputFields()">
+                        <label class="form-check-label option-label" for="theme-option">테마별 검색</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="region-option" name="searchOption" value="region"
+                               onclick="toggleInputFields()">
+                        <label class="form-check-label option-label" for="region-option">지역별 검색</label>
+                    </div>
+                </div>
+
+                <form th:action="@{/api/travel/search}" method="get" class="search-form">
+                    <input type="hidden" name="isPublic" value="1"/>
+
+                    <div id="theme-container" class="mb-3" style="display: none;">
+                        <label for="theme-input" class="form-label">테마</label>
+                        <input id="theme-input" name="theme" type="text" class="form-control" placeholder="테마를 입력해주세요">
+                    </div>
+
+                    <div id="region-container" class="mb-3" style="display: none;">
+                        <label for="region-select" class="form-label">지역</label>
+                        <select id="region-select" name="region" class="form-select">
+                            <option value="" disabled selected>지역을 선택해주세요.</option>
+                            <option value="서울">서울</option>
+                            <option value="인천">인천</option>
+                            <option value="부산">부산</option>
+                            <option value="대구">대구</option>
+                            <option value="광주">광주</option>
+                            <option value="대전">대전</option>
+                            <option value="울산">울산</option>
+                            <option value="세종">세종</option>
+                            <option value="경기도">경기도</option>
+                            <option value="강원도">강원도</option>
+                            <option value="충청도">충청도</option>
+                            <option value="전라도">전라도</option>
+                            <option value="경상도">경상도</option>
+                            <option value="제주도">제주도</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
+        </div>
+
         <h1 class="text-center">랜덤 여행 앨범</h1>
         <a th:href="@{/api/travel/detail/{id}(id=${response.id})}" class="album-link">
             <img th:src="@{${response.thumbnail}}" alt="Album image" class="result-image img-thumbnail">
             <h2 th:text="${response.title}">Album Title</h2>
             <p class="text-muted" th:text="${response.dateRange}">Date Range</p>
 
-            <!-- 테마 리스트 출력 -->
             <div class="theme-list">
                 <ul>
                     <li th:each="theme : ${response.travelThemeList}">
-                        <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}" th:text="${theme.name}" class="text-white"></a>
+                        <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
+                           th:text="${theme.name}" class="text-white"></a>
                     </li>
                 </ul>
             </div>
 
             <div class="image-list">
-                <!-- 첫 번째 이미지만 먼저 표시 -->
                 <div>
-                    <img th:src="@{${response.travelAlbumImageList[0].imagePath}}" alt="Travel Image" class="travel-image img-thumbnail" />
+                    <img th:if="${#lists.size(response.travelAlbumImageList) > 0}"
+                         th:src="@{${response.travelAlbumImageList[0].imagePath}}"
+                         alt="Travel Image"
+                         class="travel-image img-thumbnail"/>
                 </div>
 
-                <!-- 나머지 이미지는 클릭 시 표시 -->
                 <div class="more-images" id="moreImages">
                     <div th:each="image, iterStat : ${response.travelAlbumImageList}" th:if="${iterStat.index > 0}">
-                        <img th:src="@{${image.imagePath}}" alt="Travel Image" class="travel-image img-thumbnail" />
+                        <img th:src="@{${image.imagePath}}" alt="Travel Image" class="travel-image img-thumbnail"/>
                     </div>
                 </div>
 
-                <!-- 화살표 아이콘 -->
                 <i class="fas fa-chevron-down show-icon" id="toggleIcon" onclick="toggleImages()"></i>
             </div>
         </a>
     </section>
 </main>
+<div th:replace="fragments/footer :: footer"></div>
 
-<!-- Bootstrap JS and dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleSearchSection() {
+        const searchSection = document.getElementById('search-section');
+        const toggleButton = document.getElementById('toggle-search');
+
+        if (searchSection.style.display === 'none') {
+            searchSection.style.display = 'block';
+            toggleButton.innerHTML = '▲'; // 위로 화살표로 변경
+        } else {
+            searchSection.style.display = 'none';
+            toggleButton.innerHTML = '▼'; // 아래로 화살표로 변경
+        }
+    }
+
+    function toggleInputFields() {
+        const themeContainer = document.getElementById("theme-container");
+        const regionContainer = document.getElementById("region-container");
+
+        if (document.getElementById("theme-option").checked) {
+            themeContainer.style.display = "block";
+            regionContainer.style.display = "none";
+        } else if (document.getElementById("region-option").checked) {
+            themeContainer.style.display = "none";
+            regionContainer.style.display = "block";
+        }
+    }
+</script>
 <script>
     function toggleImages() {
         const moreImages = document.getElementById('moreImages');
@@ -174,9 +340,10 @@
         }
     }
 
-    window.onload = function() {
+    window.onload = function () {
         document.getElementById('moreImages').style.display = 'none';
     };
 </script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>

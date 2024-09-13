@@ -49,5 +49,4 @@ public class AnswerController {
 
         return "redirect:/board/list";  // 다시 게시글 작성 페이지로 리디렉션
     }
-
 }

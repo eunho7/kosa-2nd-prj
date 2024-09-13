@@ -13,6 +13,7 @@ import com.example._team.repository.TravelImageRepository;
 import com.example._team.repository.TravelLikesRepository;
 import com.example._team.repository.TravelRepository;
 import com.example._team.repository.UserRepository;
+import com.example._team.service.global.DateUtils;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
@@ -20,6 +21,7 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumL
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -304,23 +306,21 @@ public class TravelService {
     }
 
     public List<UserListByPostLikesDTO> getTravelLikesByUsers(Integer id) {
-        // 여행 앨범을 조회합니다.
         TravelBoard travelBoard = travelRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
 
-        // 여행 앨범에 좋아요를 누른 유저 리스트를 조회합니다.
         List<TravelLikes> users = travelLikesRepository.findUsersByTravelIdx(travelBoard);
 
-        // 유저 정보를 UserListByPostLikesDTO 리스트로 변환합니다.
         List<UserListByPostLikesDTO> userList = users.stream()
                 .map(user -> UserListByPostLikesDTO.builder()
-                        .userIdx(user.getUserIdx().getUserIdx()) // 유저의 ID를 설정합니다.
-                        .nickname(user.getUserIdx().getNickname()) // 유저의 닉네임을 설정합니다.
+                        .userIdx(user.getUserIdx().getUserIdx())
+                        .nickname(user.getUserIdx().getNickname())
                         .build())
                 .collect(Collectors.toList());
 
         return userList;
     }
+
     public boolean addLike(Integer travelIdx, Long userIdx) {
         TravelBoard travelBoard = travelRepository.findById(travelIdx)
                 .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
@@ -350,5 +350,39 @@ public class TravelService {
         }
 
         return false;
+    }
+
+    public List<myTravelAlbumListDTO> getMyTravelBoardList(Users user) {
+        List<TravelBoard> travelBoards = travelRepository.findAllByUserIdx(user);
+
+        List<myTravelAlbumListDTO> travelBoardDTOs = travelBoards.stream()
+                .map(board -> {
+                    myTravelAlbumListDTO dto = new myTravelAlbumListDTO();
+                    dto.setId(board.getId());
+                    dto.setThumbnail(board.getThumbnail()); // Thumbnail 필드 이름 수정
+                    dto.setTitle(board.getTitle());
+                    // 날짜 포맷팅
+                    dto.setDateRange(DateUtils.formatDateRange(board.getStatDate(), board.getEndDate()));
+                    dto.setLikes(board.getLikeCount());
+                    dto.setCreatedAt(board.getUpdatedAt());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return travelBoardDTOs;
+    }
+    public List<myTravelAlbumListDTO> getMyTravelBoardSortList(Users user, String sort) {
+        List<TravelBoard> travelBoards = travelRepository.findAllByUserIdxSorted(user, sort);
+
+        return travelBoards.stream().map(board -> {
+            myTravelAlbumListDTO dto = new myTravelAlbumListDTO();
+            dto.setId(board.getId());
+            dto.setThumbnail(board.getThumbnail());
+            dto.setTitle(board.getTitle());
+            dto.setDateRange(DateUtils.formatDateRange(board.getStatDate(), board.getEndDate()));
+            dto.setLikes(board.getLikeCount());
+            dto.setCreatedAt(board.getUpdatedAt());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
