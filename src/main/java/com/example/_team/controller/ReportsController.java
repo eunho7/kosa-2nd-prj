@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -65,21 +66,38 @@ public class ReportsController {
                           @RequestParam(defaultValue = "10") int size, Model model) {
 
         // 게시글 목록 조회
-        Page<ReportsResponseDto> reportsPage = reportsService.paging(page, size, 1);
+        Page<ReportsResponseDto> reportsPage = reportsService.paging(page, size);
         model.addAttribute("reportsList", reportsPage.getContent());
         model.addAttribute("page", reportsPage);
 
         return "view/report/reports-list";
     }
 
+    @PostMapping("/admin/reports/delete")
+    public String deleteById(@RequestParam("deleteBoardIdx") List<Integer> boardIdx) {
+        if (!boardIdx.isEmpty()) {
+            for (int i = 0; i < boardIdx.size(); i++) {
+//                Board board = boardService.findById(boardIdx.get(i));
+                reportsService.deleteReports(boardIdx.get(i));
+            }
+        }
+        return "redirect:/admin/reports/list";
+    }
+
     @PostMapping("/admin/reports/inactive")
     public String inactive(@RequestParam("inactiveBoardIdx") List<Integer> boardIdx) {
 
-        if (!boardIdx.isEmpty()) {
-            for (int i = 0; i < boardIdx.size(); i++) {
-                Board board = boardService.findById(boardIdx.get(i));
+        // 중복 제거
+        List<Integer> list = boardIdx.stream().distinct().collect(Collectors.toList());
+
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                Board board = boardService.findById(list.get(i));
                 if (board.getStatus() == 1) {
                     board.setStatus(0);
+                    boardAnswerService.save(board);
+                } else if(board.getStatus() == 0) {
+                    board.setStatus(1);
                     boardAnswerService.save(board);
                 }
             }
