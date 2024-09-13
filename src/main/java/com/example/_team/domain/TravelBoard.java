@@ -2,6 +2,8 @@ package com.example._team.domain;
 
 import com.example._team.domain.common.BaseEntity;
 import com.example._team.domain.enums.Region;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +22,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -46,12 +49,18 @@ public class TravelBoard extends BaseEntity {
     private Integer isPublic;
     @Column(nullable = true)
     private String thumbnail;
+
     @ManyToOne
+    @ToString.Exclude
+    @JsonIgnore
     @JoinColumn(name="user_idx")
     private Users userIdx;
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
     private List<Theme> themes = new ArrayList<>();
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonManagedReference  // 부모 엔티티에 적용
     private List<TravelImages> imagesList = new ArrayList<>();
     @Column(nullable = true)
     private int likeCount;

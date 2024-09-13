@@ -24,6 +24,12 @@
             align-items: center;
         }
 
+        #map {
+            width: 100%;
+            height: 500px;
+            margin-top: 20px;
+        }
+
         .result-image {
             width: 100%;
             max-width: 600px;
@@ -31,7 +37,7 @@
             border-radius: 12px;
             object-fit: cover;
             margin-bottom: 20px;
-            filter: drop-shadow(5px 5px 5px #000)
+            filter: drop-shadow(5px 5px 5px #000);
         }
 
         .theme-list ul {
@@ -80,7 +86,7 @@
             position: relative;
             display: flex;
             align-items: center;
-            gap: 10px; /* 버튼들 사이의 간격 조정 */
+            gap: 10px;
         }
 
         .like-section .icon-button {
@@ -144,8 +150,12 @@
                 </li>
             </ul>
         </div>
+
         <!-- 콘텐츠 출력 (TinyMCE 사용) -->
         <div class="content" th:utext="${response.content}"></div>
+
+        <!-- 지도 영역 추가 -->
+        <div id="map"></div>
 
         <!-- 좋아요 및 수정, 삭제 버튼 -->
         <div class="like-section">
@@ -179,53 +189,58 @@
         <input type="hidden" id="travelIdx" th:value="${response.id}"/>
         <input type="hidden" id="userIdx" th:value="${connectUser.userIdx}"/>
 
+        <!-- Thymeleaf로 마커 데이터를 JavaScript 배열에 전달 -->
+        <script th:inline="javascript">
+    // 마커 리스트를 JSON 형식으로 받아옴
+    var markersList = /*[[${markers}]]*/ '[]';
+
+    // 마커 데이터를 확인
+    console.log("Markers List:", markersList);
+
+    // JSON 문자열을 실제 객체로 변환
+    var markers = JSON.parse(markersList);
+
+    // 구글 맵에 마커 추가
+    function initMap() {
+        const seoul = { lat: 37.5665, lng: 126.9780 };
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: seoul,
+            zoom: 10
+        });
+
+        // 마커 데이터를 반복문으로 추가
+        markers.forEach(function(markerData) {
+            addMarker(markerData, map);
+        });
+    }
+
+    // 마커를 추가하는 함수
+    function addMarker(markerData, map) {
+        const marker = new google.maps.Marker({
+            position: { lat: markerData.latitude, lng: markerData.longitude },
+            map: map,
+            title: markerData.placeName
+        });
+
+        const infowindow = new google.maps.InfoWindow({
+            content: `<div><strong>${markerData.placeName}</strong><br>${markerData.address}</div>`
+        });
+
+        marker.addListener('click', function() {
+            infowindow.open(map, marker);
+        });
+    }
+</script>
+
+
+
+
     </section>
 </main>
 <div th:replace="fragments/footer :: footer"></div>
 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log("DOMContentLoaded event fired");
-        const likeIcon = document.querySelector('.like-section .fa-heart');
-        const likeCount = document.querySelector('.like-section span');
-        const travelIdx = document.querySelector('#travelIdx').value;
-        const userIdx = document.querySelector('#userIdx').value;
-        console.log("user " + userIdx);
-
-        likeIcon.addEventListener('click', function () {
-            const isLiked = likeIcon.classList.contains('filled');
-
-            // AJAX 요청을 보내어 좋아요 상태를 변경
-            fetch(`/api/travel/like/${travelIdx}`, {
-                method: isLiked ? 'DELETE' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({userIdx: userIdx})
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // 버튼 상태 업데이트
-                        if (isLiked) {
-                            likeIcon.classList.remove('filled');
-                            likeIcon.classList.add('empty');
-                            likeCount.textContent = String(parseInt(likeCount.textContent) - 1);
-                        } else {
-                            likeIcon.classList.remove('empty');
-                            likeIcon.classList.add('filled');
-                            likeCount.textContent = String(parseInt(likeCount.textContent) + 1);
-                        }
-                    } else {
-                        alert('좋아요 처리에 실패했습니다.');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-</script>
-<script src="/js/scripts.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmUNKi79QJtTDCBYn4DHDnOi9gnT0KaII&callback=initMap" async defer></script>
 </body>
 </html>

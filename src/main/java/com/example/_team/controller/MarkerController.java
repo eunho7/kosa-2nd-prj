@@ -51,4 +51,12 @@ public class MarkerController {
         List<Marker> markers = markerRepository.findAll();
         return ResponseEntity.ok(markers);
     }
+
+    // 특정 앨범에 해당하는 마커 데이터 조회
+    @GetMapping("/album/{albumId}")
+    public ResponseEntity<List<Marker>> getMarkersByAlbumId(@PathVariable Long albumId) {
+        TravelBoard travelBoard = travelRepository.findById(Math.toIntExact(albumId)).orElseThrow(() -> new DataNotFoundException("X"));
+        List<Marker> markers = markerRepository.findByTravelBoard(travelBoard);
+        return ResponseEntity.ok(markers);
+    }
 }
