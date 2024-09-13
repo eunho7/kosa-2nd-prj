@@ -28,9 +28,6 @@ public class Reply extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="user_idx")
     private Users userIdx;
-//    @ManyToOne
-//    @JoinColumn(name="board_idx")
-//    private Board boardIdx;
     @ManyToOne
     @JoinColumn(name="board_idx")
     private Board board;

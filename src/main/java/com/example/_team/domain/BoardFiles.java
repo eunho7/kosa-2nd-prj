@@ -9,11 +9,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardFiles {
@@ -26,5 +28,5 @@ public class BoardFiles {
     private LocalDateTime uploadedAt;
     @ManyToOne
     @JoinColumn(name = "board_idx")
-    private Board boardIdx;
+    private Board board;
 }
