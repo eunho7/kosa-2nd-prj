@@ -6,6 +6,7 @@ import com.example._team.global.s3.AmazonS3Manager;
 import com.example._team.service.TravelService;
 import com.example._team.service.UserService;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
@@ -115,19 +116,27 @@ public class TravelController {
 
     // 여행앨범 생성
     @PostMapping("/create")
-    public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request,
-                                    RedirectAttributes redirectAttributes) {
+    @ResponseBody  // JSON 반환을 위해 ResponseBody 사용
+    public TravelAlbumResultDTO createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
-        redirectAttributes.addAttribute("id", response.getTravelIdx());
-        return "redirect:/api/travel/detail/{id}";
+        return response;  // TravelAlbumResultDTO를 JSON으로 반환
     }
+//    public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request,
+//                                    RedirectAttributes redirectAttributes) {
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
+//        redirectAttributes.addAttribute("id", response.getTravelIdx());
+//        return "redirect:/api/travel/detail/{id}";
+//    }
 
     // 여행앨범 생성
     @GetMapping("/upload")
     public String showUploadForm(Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userService.findByEmail(email);
+        TravelAlbumResponseDTO.TravelAlbumResultMapDTO data = travelService.createNullData();
+        model.addAttribute("data", data);
         model.addAttribute("user", user);
         return "view/travel/TravelUpload";
     }

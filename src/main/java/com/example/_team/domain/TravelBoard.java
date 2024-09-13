@@ -29,22 +29,22 @@ public class TravelBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRAVEL_BOARD_SEQ_GENERATOR")
     private Integer id;
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = true)
     private String title;
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private Region region;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate statDate;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate endDate;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer isPublic;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String thumbnail;
     @ManyToOne
     @JoinColumn(name="user_idx")
@@ -53,7 +53,7 @@ public class TravelBoard extends BaseEntity {
     private List<Theme> themes = new ArrayList<>();
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TravelImages> imagesList = new ArrayList<>();
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int likeCount;
 
 }

@@ -93,6 +93,12 @@
       let polyline;
       let markerCounter = 1; // 마커 번호를 저장하는 전역 변수
 
+      // URL에서 albumId 값을 추출하는 함수
+      function getAlbumIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('albumId'); // URL에서 albumId 값을 가져옴
+      }
+
       function initMap() {
         const seoul = new google.maps.LatLng(37.5665, 126.9780); // 서울 중심 좌표
 
@@ -166,8 +172,28 @@
         placeList.appendChild(noResultsItem);
       }
 
+      function saveMarkerToDB(markerData) {
+      console.log(markerData);
+        fetch('/api/markers/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(markerData),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Marker saved:', data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      }
+
       function selectPlace(place) {
         const location = place.geometry.location;
+        const albumId = getAlbumIdFromUrl();  // 앨범 ID를 URL에서 추출
+        console.log(albumId);
 
         // 지도 중심을 선택한 장소로 이동
         map.setCenter(location);
@@ -186,6 +212,19 @@
 
         // 마커 번호를 증가시켜 다음 마커에 다른 번호가 적용되도록 함
         markerCounter++;
+
+        // 장소 정보 저장을 위한 데이터
+        const markerData = {
+            placeName: place.name,
+            address: place.formatted_address,
+            latitude: location.lat(),
+            longitude: location.lng(),
+            markerNumber: markerCounter,
+            travelBoardId: albumId
+        };
+console.log(markerData);
+        // 마커를 DB에 저장
+        saveMarkerToDB(markerData);
 
         // 장소 정보창
         infowindow.setContent(place.name + "<br>" + place.formatted_address);

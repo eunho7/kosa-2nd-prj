@@ -15,6 +15,7 @@ import com.example._team.repository.TravelRepository;
 import com.example._team.repository.UserRepository;
 import com.example._team.service.global.DateUtils;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
@@ -384,5 +385,15 @@ public class TravelService {
             dto.setCreatedAt(board.getUpdatedAt());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public TravelAlbumResponseDTO.TravelAlbumResultMapDTO createNullData() {
+
+        TravelBoard travelBoard = new TravelBoard();
+        TravelBoard response = travelRepository.save(travelBoard);
+        Long idx = Long.valueOf(response.getId());
+        return TravelAlbumResponseDTO.TravelAlbumResultMapDTO.builder()
+                .travelIdx(idx)
+                .build();
     }
 }
