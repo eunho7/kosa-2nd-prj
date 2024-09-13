@@ -60,7 +60,7 @@ public class ReportsController {
         return "redirect:/board/list";
     }
 
-    @GetMapping("/reports/list")
+    @GetMapping("/admin/reports/list")
     public String paging( @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "10") int size, Model model) {
 
@@ -72,7 +72,7 @@ public class ReportsController {
         return "view/report/reports-list";
     }
 
-    @PostMapping("/reports/inactive")
+    @PostMapping("/admin/reports/inactive")
     public String inactive(@RequestParam("inactiveBoardIdx") List<Integer> boardIdx) {
 
         if (!boardIdx.isEmpty()) {
@@ -84,6 +84,6 @@ public class ReportsController {
                 }
             }
         }
-        return "redirect:/reports/list";
+        return "redirect:/admin/reports/list";
     }
 }
