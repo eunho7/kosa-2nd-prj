@@ -1,0 +1,120 @@
+/* 기본 스타일 - 모바일 우선 접근 */
+html, body {
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px; /* 데스크탑에서 최대 너비 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 10px; /* 내부 여백 */
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.main-section {
+    background-color: #ffffff;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.results-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.result-item {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+}
+
+.result-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.result-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0 5px;
+}
+
+.result-date {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.back-btn:hover {
+    color: #0056b3;
+}
+
+/* 반응형 스타일 - 태블릿 */
+@media (max-width: 768px) {
+    .results-header {
+        font-size: 1.2rem;
+    }
+
+    .result-item {
+        padding: 15px;
+    }
+}
+
+/* 반응형 스타일 - 모바일 */
+@media (max-width: 576px) {
+    .results-header {
+        font-size: 1rem;
+    }
+
+    .back-btn {
+        font-size: 1.2rem;
+    }
+}

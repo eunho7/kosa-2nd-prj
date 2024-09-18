@@ -75,7 +75,7 @@ public class TravelController {
         model.addAttribute("albums", albums);
         model.addAttribute("region", region);
         model.addAttribute("theme", theme);
-        return "view/travel/TravelListByTheme";
+        return "view/travel/region-theme-list";
     }
 
 
@@ -85,33 +85,34 @@ public class TravelController {
 
         TravelAlbumDetailResponseDTO response = travelService.getRandomTravelAlbum();
         model.addAttribute("response", response);
-        return "view/travel/TravelAlbumRandom";
+        return "view/travel/random-list";
     }
 
     @PostMapping("/like/{travelIdx}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> addLike(@PathVariable Integer travelIdx,
                                                        @RequestBody Map<String, Integer> payload) {
-        Integer userIdx = payload.get("userIdx");
-        boolean success = travelService.addLike(travelIdx, Long.valueOf(userIdx));
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", success);
-        return ResponseEntity.ok(response);
+        return handleLikeAction(travelIdx, payload.get("userIdx"), true);
     }
 
     @DeleteMapping("/like/{travelIdx}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> removeLike(@PathVariable Integer travelIdx,
                                                           @RequestBody Map<String, Integer> payload) {
-        Integer userIdx = payload.get("userIdx");
-        boolean success = travelService.removeLike(travelIdx, Long.valueOf(userIdx));
+        return handleLikeAction(travelIdx, payload.get("userIdx"), false);
+    }
+    private ResponseEntity<Map<String, Object>> handleLikeAction(Integer travelIdx, Integer userIdx, boolean isLike) {
+        boolean success;
+        if (isLike) {
+            success = travelService.addLike(travelIdx, Long.valueOf(userIdx));
+        } else {
+            success = travelService.removeLike(travelIdx, Long.valueOf(userIdx));
+        }
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
         return ResponseEntity.ok(response);
     }
-
 
     // 여행앨범 생성
     @PostMapping("/create")
@@ -129,7 +130,7 @@ public class TravelController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userService.findByEmail(email);
         model.addAttribute("user", user);
-        return "view/travel/TravelUpload";
+        return "view/travel/upload";
     }
 
     // 여행앨범 content 내부 이미지 리스트 업로드
@@ -163,7 +164,7 @@ public class TravelController {
         model.addAttribute("userList", userList);
         model.addAttribute("connectUser", user);
 
-        return "view/travel/TravelDetail";
+        return "view/travel/detail";
     }
 
     // 삭제
@@ -184,6 +185,6 @@ public class TravelController {
         List<myTravelAlbumListDTO> response = travelService.getMyTravelBoardSortList(user, sort);
         model.addAttribute("response", response);
 
-        return "view/travel/myTravelAlbumList";
+        return "view/travel/my-random-list";
     }
 }

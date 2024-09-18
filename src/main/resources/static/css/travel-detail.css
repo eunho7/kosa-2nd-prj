@@ -1,0 +1,178 @@
+body {
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 650px;
+    width: 100%;
+    max-width: 420px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+    position: relative;
+    box-sizing: border-box;
+    padding: 0; /* 패딩 제거 */
+    margin: 0; /* 마진 제거 */
+}
+
+.main-section {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 420px; /* Matches the max width of the main section */
+    height: 650px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.container {
+    position: relative;
+    max-width: 350px;
+    width: 100%;
+}
+
+.result-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    background-color: #f0f0f0;
+}
+
+.theme-list ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.theme-list li {
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin: 5px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.theme-list li:hover {
+    background-color: #0056b3;
+}
+
+.content {
+    margin-top: 20px;
+}
+
+.content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.like-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.like-section .icon-button {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-list-container {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 200px;
+    z-index: 1000;
+}
+
+.icon-button:hover + .user-list-container {
+    display: block; /* 버튼에 마우스를 올리면 표시 */
+}
+
+.user-list-container .user-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.user-list-container .user-list li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.user-list-container .user-list li:last-child {
+    border-bottom: none;
+}
+
+.like-section:hover .user-list-container {
+    display: block;
+}
+
+.action-buttons .btn {
+    margin-left: 10px;
+}
+.fa-heart {
+    font-size: 24px; /* 아이콘 크기 조정 */
+    cursor: pointer;
+}
+
+.fa-heart.empty {
+    color: gray; /* 빈 하트의 색상 */
+}
+
+.fa-heart.filled {
+    color: red; /* 꽉 찬 하트의 색상 */
+}
+
+.back-btn {
+    margin-right: 10px;
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.back-btn:hover {
+    color: #0056b3;
+}

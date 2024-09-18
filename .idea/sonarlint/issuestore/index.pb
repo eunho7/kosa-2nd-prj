@@ -38,8 +38,6 @@ h
 8src/main/java/com/example/_team/domain/enums/Region.java,7/6/762de9eb9b38bc48ac1b2b4f92dc50b84b8d3f54
 o
 ?src/main/java/com/example/_team/dto/board/BoardResponseDto.java,2/3/2347054e375022741a21311c86efd304b0eae63f
-g
-7src/main/java/com/example/_team/domain/TravelLikes.java,9/e/9ebc51bbceb47285abafc8aad885efe821a842e5
 o
 ?src/main/java/com/example/_team/repository/ThemeRepository.java,5/0/509a28250a3225a53e96032daea12c6f4515a8c6
 `
@@ -48,12 +46,8 @@ h
 8src/main/java/com/example/_team/domain/TravelImages.java,f/d/fd68efc3e578389fbf83ef5531347234a4b8f79f
 u
 Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
-u
-Esrc/main/java/com/example/_team/repository/TravelLikesRepository.java,2/c/2c89650697c2471918e282fe1e0e2df6ccd90fc7
 n
 >src/main/java/com/example/_team/global/s3/AmazonS3Manager.java,8/1/81b0bd0c6fd61e86c7ff0afbf18544383bca1d73
-q
-Asrc/main/java/com/example/_team/web/dto/user/UserResponseDTO.java,8/0/80466c103256f853b6fe5fe38013cfa81d80c57e
 h
 8src/main/java/com/example/_team/config/AmazonConfig.java,7/b/7b1843f7a355ebdcc2c18176c50f8e39d3c84b38
 k
@@ -66,8 +60,6 @@ i
 9src/main/java/com/example/_team/service/BoardService.java,a/b/abd6c27c977bf3dccdea4b079a223c28dc2e34db
 o
 ?src/main/java/com/example/_team/repository/BoardRepository.java,d/c/dcd80e8b057fcd438068ae13000670da2e58553d
-
-Osrc/main/java/com/example/_team/web/dto/travelalbum/TravelAlbumResponseDTO.java,6/5/653c9b8e33f29598106b9d87f29aa5571becb644
 q
 Asrc/main/java/com/example/_team/controller/UserApiController.java,9/2/92c0f61d5df27a016ccd60b69593e02aa155bd08
 r
@@ -86,5 +78,3 @@ p
 @src/main/java/com/example/_team/repository/TravelRepository.java,6/2/62f4100e7f800486ba91a78c70e91c25ce3b78c6
 7
 pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
-p
-@src/main/java/com/example/_team/controller/TravelController.java,f/b/fbcb9b37c908d43a7051ed8201b5ce05985e096a

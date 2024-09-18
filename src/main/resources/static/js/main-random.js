@@ -1,18 +1,16 @@
-// Toggle visibility of the search section
 function toggleSearchSection() {
     const searchSection = document.getElementById('search-section');
     const toggleButton = document.getElementById('toggle-search');
 
-    if (searchSection.style.display === 'none' || searchSection.style.display === '') {
+    if (searchSection.style.display === 'none') {
         searchSection.style.display = 'block';
-        toggleButton.innerHTML = '▲'; // Change to up arrow
+        toggleButton.innerHTML = '▲'; // 위로 화살표로 변경
     } else {
         searchSection.style.display = 'none';
-        toggleButton.innerHTML = '▼'; // Change to down arrow
+        toggleButton.innerHTML = '▼'; // 아래로 화살표로 변경
     }
 }
 
-// Toggle visibility of input fields based on selected radio button
 function toggleInputFields() {
     const themeContainer = document.getElementById("theme-container");
     const regionContainer = document.getElementById("region-container");
@@ -20,66 +18,58 @@ function toggleInputFields() {
     if (document.getElementById("theme-option").checked) {
         themeContainer.style.display = "block";
         regionContainer.style.display = "none";
+        // 지역 선택 시 테마 필드를 초기화
+        document.getElementById("region-select").value = "";
     } else if (document.getElementById("region-option").checked) {
         themeContainer.style.display = "none";
         regionContainer.style.display = "block";
-    } else {
-        // Default to hide both if no option is selected
-        themeContainer.style.display = "none";
-        regionContainer.style.display = "none";
+        // 테마 선택 시 지역 필드를 초기화
+        document.getElementById("theme-input").value = "";
     }
 }
 
-// Toggle visibility of more images
 function toggleImages() {
     const moreImages = document.getElementById('moreImages');
     const toggleIcon = document.getElementById('toggleIcon');
 
     if (moreImages.style.display === 'none' || moreImages.style.display === '') {
         moreImages.style.display = 'block';
-        toggleIcon.classList.remove('fa-chevron-down');
-        toggleIcon.classList.add('fa-chevron-up');
+        toggleIcon.classList.add('rotate-up');
     } else {
         moreImages.style.display = 'none';
-        toggleIcon.classList.remove('fa-chevron-up');
-        toggleIcon.classList.add('fa-chevron-down');
+        toggleIcon.classList.remove('rotate-up');
     }
 }
 
-// Initialize the state of the images and popup menu
 document.addEventListener('DOMContentLoaded', function() {
     const moreImages = document.getElementById('moreImages');
-    moreImages.style.display = 'none'; // Ensure images are hidden initially
+    moreImages.style.display = 'none';
 
     const popupMenu = document.getElementById('popupMenu');
-    popupMenu.style.display = 'none'; // Ensure the menu is hidden initially
+    popupMenu.style.display = 'none';
+
+    // Reset the search options
+    document.getElementById('theme-option').checked = false;
+    document.getElementById('region-option').checked = false;
+    document.getElementById('theme-container').style.display = 'none';
+    document.getElementById('region-container').style.display = 'none';
 });
 
-// Toggle visibility of the popup menu
 function toggleMenu(event) {
-    event.preventDefault(); // Prevent the default action of the link
+    event.preventDefault();
     const popupMenu = document.getElementById('popupMenu');
-    const isMenuVisible = popupMenu.style.display === 'block';
-
-    // Hide all menus if they are currently visible
-    const allMenus = document.querySelectorAll('.popup-menu');
-    allMenus.forEach(menu => {
-        menu.style.display = 'none';
-    });
-
-    // Toggle the menu if it was hidden
-    if (!isMenuVisible) {
+    if (popupMenu.style.display === 'none' || popupMenu.style.display === '') {
         popupMenu.style.display = 'block';
+    } else {
+        popupMenu.style.display = 'none';
     }
 }
 
-// Close the popup menu if clicking outside
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     const popupMenu = document.getElementById('popupMenu');
     const homeButton = document.getElementById('homeButton');
     const isClickInside = homeButton.contains(event.target);
-
-    if (!isClickInside && popupMenu.style.display === 'block') {
+    if (!isClickInside) {
         popupMenu.style.display = 'none';
     }
 });
