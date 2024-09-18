@@ -1,19 +1,27 @@
 function toggleMenu(event) {
     event.preventDefault();
     const popupMenu = document.getElementById('popupMenu');
-    if (popupMenu.style.display === 'none' || popupMenu.style.display === '') {
-        popupMenu.style.display = 'block';
-    } else {
-        popupMenu.style.display = 'none';
-    }
+
+    // Toggle the display of the popup menu
+    popupMenu.style.display = (popupMenu.style.display === 'block') ? 'none' : 'block';
 }
 
-// 페이지 외부 클릭 시 메뉴 닫기
+// Close the menu if clicked outside
 document.addEventListener('click', function (event) {
     const popupMenu = document.getElementById('popupMenu');
     const homeButton = document.getElementById('homeButton');
-    const isClickInside = homeButton.contains(event.target);
-    if (!isClickInside) {
+
+    // Check if the click was outside the home button or popup menu
+    const isClickInsideMenu = popupMenu.contains(event.target);
+    const isClickOnHomeButton = homeButton.contains(event.target);
+
+    // Close the menu if click is outside
+    if (!isClickOnHomeButton && !isClickInsideMenu) {
         popupMenu.style.display = 'none';
     }
 });
+
+// Initialize the state of the more images container
+window.onload = function () {
+    document.getElementById('moreImages').style.display = 'none';
+};

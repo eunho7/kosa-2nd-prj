@@ -5,54 +5,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <title>Search Results</title>
     <style>
-        .btn-custom {
-            background-color: cornflowerblue;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
+        html, body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
 
-        .btn-custom:hover {
-            background-color: #45a049;
+        body {
+            width: 100%;
         }
+
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 650px;
+            width: 100%;
+            max-width: 420px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            padding: 0; /* 패딩 제거 */
+            margin: 0; /* 마진 제거 */
+        }
+
+        .main-section {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 420px; /* Matches the max width of the main section */
+            height: 650px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: auto;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .results-header {
+            flex-grow: 1;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-left: -1.5rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 60px;
+        }
+
+        .result-item {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .result-image {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .result-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0 5px;
+        }
+
+        .result-date {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .back-btn {
+            margin-right: 10px;
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .back-btn:hover {
+            color: #0056b3;
+        }
+
     </style>
 </head>
 <body>
-<main>
-    <section class="results-container">
-        <h1 class="text-center mb-4">
+<div class="page-wrapper">
+    <div class="main-section">
+        <div class="header-container">
+            <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+            <h3 class="results-header">
             <span th:if="${theme != null and theme != '' and region != null and region != ''}"
-                  th:text="${region} + '와(과) ' + ${theme} + '에 대한 앨범 검색'">Theme and Region Search Results</span>
-            <span th:if="${theme != null and theme != '' and (region == null or region == '')}"
-                  th:text="${theme} + '에 대한 앨범 검색'">Theme Search Results</span>
-            <span th:if="${(theme == null or theme == '') and region != null and region != ''}"
-                  th:text="${region} + '에 대한 앨범 검색'">Region Search Results</span>
-            <span th:if="${(theme == null or theme == '') and (region == null or region == '')}"
-                  th:text="'검색 결과'">Search Results</span>
-        </h1>
-        <ul class="list-unstyled">
-            <li th:each="album : ${albums}" class="mb-4">
+                  th:text="${region} + '와(과) ' + ${theme} + '에 대한 앨범 검색'">테마와 지역에 대한 앨범 검색</span>
+                <span th:if="${theme != null and theme != '' and (region == null or region == '')}"
+                      th:text="${theme} + '에 대한 앨범 검색'">테마에 대한 앨범 검색</span>
+                <span th:if="${(theme == null or theme == '') and region != null and region != ''}"
+                      th:text="${region} + '에 대한 앨범 검색'">지역에 대한 앨범 검색</span>
+                <span th:if="${(theme == null or theme == '') and (region == null or region == '')}"
+                      th:text="'검색 결과'">검색 결과</span>
+            </h3>
+        </div>
+        <div class="results-grid">
+            <div th:each="album : ${albums}" class="result-item">
                 <a th:href="@{/api/travel/detail/{id}(id=${album.id})}" class="text-decoration-none text-dark">
-                    <img th:src="${album.thumbnail}" alt="Album Image" class="result-image">
+                    <img th:src="${album.thumbnail}" alt="앨범 이미지" class="result-image">
                     <div>
-                        <h2 th:text="${album.title}" class="result-title">Album Title</h2>
-                        <p th:text="${album.dateRange}" class="text-muted">Travel Date</p>
+                        <h2 th:text="${album.title}" class="result-title">앨범 제목</h2>
+                        <p th:text="${album.dateRange}" class="result-date">여행 날짜</p>
                     </div>
                 </a>
-            </li>
-        </ul>
-        <button class="btn-custom" onclick="window.location.href='/api/travel/random'">뒤로가기</button>
-    </section>
-</main>
-<div th:replace="fragments/footer :: footer"></div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/footer :: bottomMenu"></div>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 <script src="/js/scripts.js"></script>
+<script>
+    function toggleMenu(event) {
+        event.preventDefault();
+        const popupMenu = document.getElementById('popupMenu');
+        popupMenu.style.display = (popupMenu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function (event) {
+        const popupMenu = document.getElementById('popupMenu');
+        const homeButton = document.getElementById('homeButton');
+        const isClickInsideMenu = popupMenu.contains(event.target);
+        const isClickOnHomeButton = homeButton.contains(event.target);
+        if (!isClickOnHomeButton && !isClickInsideMenu) {
+            popupMenu.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>
