@@ -151,51 +151,51 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort) {
 	    Set<BoardResponseDto> boardDtos = new LinkedHashSet<>(); // 중복 방지를 위한 Set 사용
-	    int startRow = page * size + 1;
-	    int endRow = (page + 1) * size;
-	    long total;
+	    int startRow = page * size + 1; // 시작 행 번호
+	    int endRow = (page + 1) * size; // 종료 행 번호
+	    long total = 0; // 총 게시글 수
+
+	    // 메인 게시글과 답변 게시글을 합친 전체 게시글 리스트
+	    List<Board> baseBoards;
 
 	    // 키워드 검색이 있는 경우 (공개된 게시글만 포함)
 	    if (keyword != null && !keyword.trim().isEmpty()) {
-	        List<Board> baseBoards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
-	        total = boardRepository.countByKeywordAndStatus(keyword, 1);  // 공개된 게시글만 계산
-
-	        for (Board baseBoard : baseBoards) {
-	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
-	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
-	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer))); // 중복이 Set으로 방지됨
-	        }
+	        baseBoards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
+	        total = boardRepository.countByKeywordAndStatus(keyword, 1); // 공개된 게시글만 계산
 	    }
 	    // 카테고리가 있는 경우 (공개된 게시글만 포함)
 	    else if (category != null) {
-	        List<Board> baseBoards;
 	        if ("views".equals(sort)) {
 	            baseBoards = boardRepository.findByCategoryOrderedByViews(category.name(), startRow, endRow, Pageable.unpaged());
 	        } else {
 	            baseBoards = boardRepository.findByCategoryOrderedByBoardIdx(category.name(), startRow, endRow, Pageable.unpaged());
 	        }
-	        total = boardRepository.countByCategoryAndStatus(category, 1);  // 공개된 게시글만 계산
-
-	        for (Board baseBoard : baseBoards) {
-	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
-	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
-	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
-	        }
+	        total = boardRepository.countByCategoryAndStatus(category, 1); // 공개된 게시글만 계산
 	    }
 	    // 카테고리가 없는 경우 (공개된 게시글만 포함)
 	    else {
-	        List<Board> baseBoards;
 	        if ("views".equals(sort)) {
 	            baseBoards = boardRepository.findAllOrderedByViews(startRow, endRow, Pageable.unpaged());
 	        } else {
 	            baseBoards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
 	        }
-	        total = boardRepository.countByStatus(1);  // 공개된 게시글만 계산
+	        total = boardRepository.countByStatus(1); // 공개된 게시글만 계산
+	    }
 
-	        for (Board baseBoard : baseBoards) {
-	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
-	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
-	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
+	    // 메인 게시글과 그에 해당하는 답변 게시글을 모두 포함하여 처리
+	    for (Board baseBoard : baseBoards) {
+	        if (boardDtos.size() >= size) {
+	            break; // 10개 초과 시 중단
+	        }
+	        boardDtos.add(BoardResponseDto.fromEntity(baseBoard)); // 메인 게시글 추가
+
+	        // 해당 메인 게시글의 답변 게시글 추가
+	        List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
+	        for (Board answer : answers) {
+	            if (boardDtos.size() >= size) {
+	                break; // 10개 초과 시 중단
+	            }
+	            boardDtos.add(BoardResponseDto.fromEntity(answer)); // 답변 게시글 추가
 	        }
 	    }
 
@@ -207,9 +207,10 @@ public class BoardServiceImpl implements BoardService {
 	        page = totalPages - 1; // 존재하지 않는 페이지 요청 시 마지막 페이지로 보정
 	    }
 
-	    // PageImpl 객체 반환
-	    return new PageImpl<>(new ArrayList<>(boardDtos), PageRequest.of(page, size), total); // Set을 다시 List로 변환하여 반환
+	    // Set에서 List로 변환하여 PageImpl 반환
+	    return new PageImpl<>(new ArrayList<>(boardDtos), PageRequest.of(page, size), total); // 중복 방지된 Set을 List로 변환하여 반환
 	}
+
 
 
 }
