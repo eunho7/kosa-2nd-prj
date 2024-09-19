@@ -15,15 +15,16 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultMapDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +87,7 @@ public class TravelController {
         model.addAttribute("albums", albums);
         model.addAttribute("region", region);
         model.addAttribute("theme", theme);
-        return "view/travel/TravelListByTheme";
+        return "view/travel/region-theme-list";
     }
 
 
@@ -96,42 +97,37 @@ public class TravelController {
 
         TravelAlbumDetailResponseDTO response = travelService.getRandomTravelAlbum();
         model.addAttribute("response", response);
-        return "view/travel/TravelAlbumRandom";
+        return "view/travel/random-list";
     }
 
     @PostMapping("/like/{travelIdx}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> addLike(@PathVariable Integer travelIdx,
                                                        @RequestBody Map<String, Integer> payload) {
-        Integer userIdx = payload.get("userIdx");
-        boolean success = travelService.addLike(travelIdx, Long.valueOf(userIdx));
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", success);
-        return ResponseEntity.ok(response);
+        return handleLikeAction(travelIdx, payload.get("userIdx"), true);
     }
 
     @DeleteMapping("/like/{travelIdx}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> removeLike(@PathVariable Integer travelIdx,
                                                           @RequestBody Map<String, Integer> payload) {
-        Integer userIdx = payload.get("userIdx");
-        boolean success = travelService.removeLike(travelIdx, Long.valueOf(userIdx));
+        return handleLikeAction(travelIdx, payload.get("userIdx"), false);
+    }
+    private ResponseEntity<Map<String, Object>> handleLikeAction(Integer travelIdx, Integer userIdx, boolean isLike) {
+        boolean success;
+        if (isLike) {
+            success = travelService.addLike(travelIdx, Long.valueOf(userIdx));
+        } else {
+            success = travelService.removeLike(travelIdx, Long.valueOf(userIdx));
+        }
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
         return ResponseEntity.ok(response);
     }
 
-
     // 여행앨범 생성
     @PostMapping("/create")
-    /*@ResponseBody  // JSON 반환을 위해 ResponseBody 사용
-    public TravelAlbumResultDTO createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
-        return response;  // TravelAlbumResultDTO를 JSON으로 반환
-    }*/
     public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request, @RequestParam("albumId") Long albumId,
                                     RedirectAttributes redirectAttributes) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -145,13 +141,14 @@ public class TravelController {
     public String showUploadForm(Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userService.findByEmail(email);
+        TravelAlbumResultMapDTO data = travelService.createNullData();
         TravelAlbumResponseDTO.TravelAlbumResultMapDTO data = travelService.createNullData();
         Long albumId = data.getTravelIdx();
         System.out.println(albumId);
         model.addAttribute("albumId", albumId);
         model.addAttribute("data", data);
         model.addAttribute("user", user);
-        return "view/travel/TravelUpload";
+        return "view/travel/upload";
     }
 
     // 여행앨범 content 내부 이미지 리스트 업로드
@@ -198,30 +195,15 @@ public class TravelController {
         model.addAttribute("markers", markerJson);
         model.addAttribute("connectUser", user);
 
-        return "view/travel/TravelDetail";
+        return "view/travel/detail";
     }
-
-//    @GetMapping("/detail/{id}")
-//    public String getTravelBoard(@PathVariable Integer id, Model model) {
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        Users user = userService.findByEmail(email);
-//
-//        TravelAlbumDetailResponseDTO response = travelService.getTravelBoard(id, user);
-//        model.addAttribute("response", response);
-//
-//        List<UserListByPostLikesDTO> userList = travelService.getTravelLikesByUsers(id);
-//        model.addAttribute("userList", userList);
-//        model.addAttribute("connectUser", user);
-//
-//        return "view/travel/TravelDetail";
-//    }
 
     // 삭제
     @PostMapping("/delete/{travelIdx}")
     public String deleteTravelBoard(@PathVariable Integer travelIdx) {
 
         travelService.deleteTravelBoard(travelIdx);
-        return "redirect:/api/travel/random";
+        return "redirect:/api/travel/random-list";
     }
 
     // 나의 앨범 리스트 조회(좋아요, 최신순 정렬)
@@ -234,6 +216,6 @@ public class TravelController {
         List<myTravelAlbumListDTO> response = travelService.getMyTravelBoardSortList(user, sort);
         model.addAttribute("response", response);
 
-        return "view/travel/myTravelAlbumList";
+        return "view/travel/my-random-list";
     }
 }

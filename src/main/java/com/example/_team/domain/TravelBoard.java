@@ -60,9 +60,18 @@ public class TravelBoard extends BaseEntity {
     private List<Theme> themes = new ArrayList<>();
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
-    @JsonManagedReference  // 부모 엔티티에 적용
+    @JsonManagedReference
     private List<TravelImages> imagesList = new ArrayList<>();
     @Column(nullable = true)
     private int likeCount;
 
+    @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.ALL)
+    private List<TravelLikes> likes = new ArrayList<>();
+    public void addLike() {
+        this.likeCount++;
+    }
+
+    public void removeLike() {
+        this.likeCount--;
+    }
 }

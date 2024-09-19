@@ -22,7 +22,6 @@ public class Marker {
     private double longitude;
     private int markerNumber;
     @ManyToOne
-    @JoinColumn(name="travel_idx")
+    @JoinColumn(name = "travel_idx")
     private TravelBoard travelBoard;
-
 }

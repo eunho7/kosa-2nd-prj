@@ -1,3 +1,108 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Travel Album Upload</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">-->
+<!--    <link rel="stylesheet" th:href="@{/css/upload.css}">-->
+<!--</head>-->
+<!--<body>-->
+<!--<script src="https://cdn.tiny.cloud/1/ajckn3vmt9uxztu8lb8qylzs2i0zmacodhm03vttrtcs1q88/tinymce/5/tinymce.min.js"-->
+<!--        referrerpolicy="origin"></script>-->
+<!--<script th:src="@{/js/upload.js}"></script>-->
+
+<!--<script th:inline="javascript">-->
+<!--    const albumId = /*[[${albumId}]]*/;  // 서버에서 받은 albumId-->
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        document.getElementById('addLocation').addEventListener('click', function () {-->
+<!--            openMapPopup();  // 앨범 ID를 이용하여 팝업 호출-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--<div class="container">-->
+<!--    <button class="back-btn" onclick="history.back()">-->
+<!--        <i class="fas fa-arrow-left"></i>-->
+<!--    </button>-->
+<!--    <h1>여행 앨범 업로드</h1>-->
+
+<!--    <form th:action="@{/api/travel/create}" method="post" enctype="multipart/form-data">-->
+<!--        <div class="mb-3">-->
+<!--            <label for="title" class="form-label">앨범 제목</label>-->
+<!--            <input type="text" class="form-control" id="title" name="title" required>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="region" class="form-label">지역</label>-->
+<!--            <select id="region" name="region" class="form-select" required>-->
+<!--                <option value="서울">서울</option>-->
+<!--                <option value="인천">인천</option>-->
+<!--                <option value="부산">부산</option>-->
+<!--                <option value="대구">대구</option>-->
+<!--                <option value="광주">광주</option>-->
+<!--                <option value="대전">대전</option>-->
+<!--                <option value="울산">울산</option>-->
+<!--                <option value="세종">세종</option>-->
+<!--                <option value="경기도">경기도</option>-->
+<!--                <option value="강원도">강원도</option>-->
+<!--                <option value="충청도">충청도</option>-->
+<!--                <option value="전라도">전라도</option>-->
+<!--                <option value="경상도">경상도</option>-->
+<!--                <option value="제주도">제주도</option>-->
+<!--            </select>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="statDate" class="form-label">여행 시작일</label>-->
+<!--            <input type="date" class="form-control" id="statDate" name="statDate" required>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="endDate" class="form-label">여행 종료일</label>-->
+<!--            <input type="date" class="form-control" id="endDate" name="endDate" required onchange="validateEndDate()">-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="thumbnail" class="form-label">대표사진</label>-->
+<!--            <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" required/>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="content" class="form-label">여행 내용</label>-->
+<!--            <textarea id="content" class="form-control" name="content"></textarea>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="addLocation" class="form-label">위치추가</label>-->
+<!--            <button type="button" class="btn btn-secondary" onclick="openMapPopup()">위치추가</button>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label class="form-label">공개 여부</label>-->
+<!--            <div>-->
+<!--                <label class="radio-inline">-->
+<!--                    <input type="radio" name="isPublic" value="true" required> 공개-->
+<!--                </label>-->
+<!--                <label class="radio-inline">-->
+<!--                    <input type="radio" name="isPublic" value="false"> 비공개-->
+<!--                </label>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="themeInput" class="form-label">테마</label>-->
+<!--            <input type="text" id="themeInput" class="form-control"-->
+<!--                   placeholder="Enter theme and press Space"/>-->
+<!--            <div id="tagContainer" class="mt-2"></div>-->
+<!--        </div>-->
+<!--        <div id="hiddenFieldsContainer"></div>-->
+
+<!--        <button type="submit" class="btn btn-primary">앨범 업로드</button>-->
+<!--    </form>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>

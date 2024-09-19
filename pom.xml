@@ -94,7 +94,6 @@
             <version>2.14.0</version> <!-- 최신 버전으로 변경하세요 -->
         </dependency>
 
-
         <!-- Spring Security 테스트 의존성 -->
         <dependency>
             <groupId>org.springframework.security</groupId>
