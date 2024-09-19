@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example._team.domain.Board;
 import com.example._team.domain.Reports;
 import com.example._team.domain.Users;
-import com.example._team.dto.board.BoardResponseDto;
 import com.example._team.dto.report.ReportsRequestDto;
 import com.example._team.dto.report.ReportsResponseDto;
 import com.example._team.repository.ReportsRepository;
@@ -21,14 +20,10 @@ import com.example._team.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -38,6 +33,7 @@ public class ReportsController {
     private final ReportsRepository reportsRepository;
     private final UserService userService;
     private final ReportsService reportsService;
+    private final BoardAnswerService boardAnswerService;
 
     // 신고 입력 폼
     @GetMapping("/reports/{id}")
@@ -51,9 +47,10 @@ public class ReportsController {
         model.addAttribute("url", url);
         model.addAttribute("board", board);
 
-        return "view/report/reportsForm";
+        return "view/report/reports-form";
     }
 
+    // 신고 제출
     @PostMapping("/reports")
     public String saveReport(@ModelAttribute ReportsRequestDto requestDto) {
         System.out.println(requestDto.toString());
@@ -65,25 +62,55 @@ public class ReportsController {
         return "redirect:/board/list";
     }
 
-//    @GetMapping("/reports/list")
-//    public String reportsList(Model model){
-//        List<Reports> list = reportsService.findAll();
-//
-//        model.addAttribute("reportsList",list);
-//
-//        return "view/report/reports-list";
-//
-//    }
-
-    @GetMapping("/reports/list")
+    // 신고 게시판 리스트 업
+    @GetMapping("/admin/reports/list")
     public String paging( @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "10") int size, Model model) {
 
         // 게시글 목록 조회
-        Page<ReportsResponseDto> reportsPage = reportsService.paging(page, size, 1);
+        Page<ReportsResponseDto> reportsPage = reportsService.paging(page, size);
         model.addAttribute("reportsList", reportsPage.getContent());
         model.addAttribute("page", reportsPage);
 
         return "view/report/reports-list";
+    }
+
+    // 신고 게시글 삭제
+    @PostMapping("/admin/reports/delete")
+    public String deleteById(@RequestParam("BoardIdx") List<Integer> boardIdx) {
+
+        // 중복 제거
+        List<Integer> list = boardIdx.stream().distinct().collect(Collectors.toList());
+
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                reportsService.deleteReports(boardIdx.get(i));
+            }
+        }
+
+        return "redirect:/admin/reports/list";
+    }
+
+    //활성/비활성 버튼
+    @PostMapping("/admin/reports/inactive")
+    public String inactive(@RequestParam("BoardIdx") List<Integer> boardIdx) {
+
+        // 중복 제거
+        List<Integer> list = boardIdx.stream().distinct().collect(Collectors.toList());
+
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                Reports report = reportsService.findById(list.get(i));
+                Board board = boardService.findById(report.getBoardIdx().getBoardIdx());
+                if (board.getStatus() == 1) {
+                    board.setStatus(0);
+                    boardAnswerService.save(board);
+                } else if(board.getStatus() == 0) {
+                    board.setStatus(1);
+                    boardAnswerService.save(board);
+                }
+            }
+        }
+        return "redirect:/admin/reports/list";
     }
 }

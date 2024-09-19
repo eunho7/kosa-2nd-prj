@@ -60,7 +60,5 @@ o
 ?src/main/java/com/example/_team/repository/BoardRepository.java,d/c/dcd80e8b057fcd438068ae13000670da2e58553d
 e
 5src/main/java/com/example/_team/config/WebConfig.java,2/b/2bc62d806d6bf7cb3c77f4bdd084e8d9fb6ca596
-o
-?src/main/java/com/example/_team/controller/ReplyController.java,f/6/f663ef7f437a1ee469755f9546e61fbb6426333b
 r
 Bsrc/main/java/com/example/_team/controller/BoardApiController.java,d/b/db40ee5ecd5c751a855d120db3a8e21bec530688

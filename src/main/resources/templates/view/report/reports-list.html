@@ -4,46 +4,171 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     <style>
-        #container-user {
-            margin: 5px auto;
-            box-sizing: border-box;
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #container-user div {
-            line-height: 2em;
+        .main-section {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            height: 970px; /* 높이를 970px로 고정 */
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* 내용이 높이를 초과할 경우 스크롤 표시 */
+            transition: all 0.5s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 20px; /* padding 추가 */
+        }
+
+        .register-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%; /* 가로 크기 조정 */
+        }
+
+        .container {
+            position: relative;
+            max-width: 100%;
+            width: 100%;
+            height: 650px;
+            margin-bottom: 20px;
+        }
+
+        .headr-title {
+            padding-bottom: 20px;
+            text-align: center; /* 가운데 정렬 */
+        }
+
+        .btn-primary,
+        .btn-danger {
+            padding: 10px 15px;
+            font-size: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+        }
+
+        .btn-danger {
+            background-color: #d9534f;
+            border-color: #d43f3a;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+            background-color: #f7f7f7;
+        }
+
+        .form-control:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.2);
+        }
+
+        /* 화살표 뒤로가기 버튼 */
+        .back-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            color: #4a90e2;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .back-btn:hover {
+            color: #357ABD;
+        }
+
+        /* 아래쪽에 위치할 요소 스타일 */
+        #container-user {
+            margin-top: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        #container-user .left-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        #container-user .center-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #container-user .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        th, td {
             text-align: center;
         }
-
-        #container-user {
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: space-between
-        }
     </style>
-    <title>게시판</title>
+    <title>신고글 관리자 게시판</title>
 </head>
+
 <body>
-<div class="container">
-    <header>
-        <h1>▶ 신고글 게시판</h1>
-    </header>
-    <hr>
-    <section id="container">
-        <form role="form" method="get">
+<div class="main-section">
+    <section class="register-section" id="container">
+        <header class="headr-title">
+            <h1>신고글 관리자 게시판</h1>
+        </header>
+        <form id="actionForm" class="container" method="POST">
             <table class="table table-hover">
                 <colgroup>
                     <col width=5%>
                     <col width=10%>
-                    <col width=27.5%>
-                    <col width=27.5%>
+                    <col width=40%>
                     <col width=20%>
+                    <col width=15%>
                     <col width=10%>
                 </colgroup>
                 <thead>
                 <tr>
                     <th></th>
-                    <th>신고 번호</th>
-                    <th>게시글 제목</th>
+                    <th>신고 No.</th>
+                    <th style="text-align: center">게시글 제목</th>
                     <th>신고 내용</th>
                     <th>신고 날짜</th>
                     <th>활성화</th>
@@ -58,44 +183,68 @@
                 <colgroup>
                     <col width=5%>
                     <col width=10%>
-                    <col width=27.5%>
-                    <col width=27.5%>
+                    <col width=40%>
                     <col width=20%>
+                    <col width=15%>
                     <col width=10%>
                 </colgroup>
                 <tr th:each="reports : ${reportsList}">
                     <td>
-                        <input type="checkbox" class="chk" name="" value="" onclick="chkClicked()" >
+                        <input type="checkbox" class="chk" name="BoardIdx" th:value="${reports.reportsIdx}" onclick="chkClicked()">
                     </td>
-                    <td th:text="${reports.reportsIdx}">신고 번호</td>
+                    <td th:text="${reports.reportsIdx}">신고 번호</td> <input type="hidden" name="deleteBoardIdx" th:value="${reports.reportsIdx}" />
                     <td>
-                        <a th:href="@{/board/{id}(id=${reports.boardIdx.getBoardIdx()})}" th:text="${reports.boardIdx.getTitle()}">게시글 제목</a>
+                        <a th:href="@{/board/{id}(id=${reports.boardIdx.getBoardIdx()})}"
+                           th:text="${reports.boardIdx.getTitle()}">게시글 제목</a>
                     </td>
                     <td th:text="${reports.content}">신고 내용</td>
                     <td th:text="${#temporals.format(reports.createdAt, 'yyyy-MM-dd')}">신고 날짜</td>
-                    <td th:if="${reports.boardIdx.getStatus()==1}" th:text="O"></td>
-                    <td th:if="${reports.boardIdx.getStatus()==0}" th:text="X"></td>
+                    <td style="color: blue;" th:if="${reports.boardIdx.getStatus()==1}" th:text="활성"></td>
+                    <td style="color: red;" th:if="${reports.boardIdx.getStatus()==0}" th:text="비활성"></td>
                 </tr>
                 </tbody>
             </table>
         </form>
         <section id="container-user">
-            <div class="child">
+            <!-- Left section for 전체 선택/해제 -->
+            <div class="left-section">
                 <label>
                     <input type="checkbox" id="allCheckBox" onclick="allChecked()">
                     전체 선택/해제
                 </label>
             </div>
-            <div class="child">
-                페이지네이션
+            <!-- Center section for pagination -->
+            <div class="center-section" th:if="${page.totalPages > 1}">
+                <ul class="pagination">
+                    <!-- 이전 버튼 -->
+                    <li class="page-item" th:class="${page.number == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:style="${page.number == 0} ? 'pointer-events: none;'"
+                           th:href="@{/reports/list(page=${page.number-1})}">이전</a>
+                    </li>
+
+                    <!-- 페이지 번호 출력 -->
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+                        th:classappend="${i == page.number + 1} ? 'active'">
+                        <a class="page-link" th:href="@{/reports/list(page=${i-1})}" th:text="${i}">1</a>
+                    </li>
+
+                    <!-- 다음 버튼 -->
+                    <li class="page-item" th:class="${page.number == page.totalPages - 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:style="${page.number == page.totalPages - 1} ? 'pointer-events: none;'"
+                           th:href="@{/reports/list(page=${page.number+1})}">다음</a>
+                    </li>
+                </ul>
             </div>
-            <div class="child">
-                버튼
+            <!-- Right section for buttons -->
+            <div class="right-section">
+                <button type="button" class="btn btn-danger" onclick="submitForm('/admin/reports/delete')">삭제</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm('/admin/reports/inactive')">활성/비활성</button>
             </div>
+        </section>
+    </section>
 </div>
-</section>
-</div>
-</body>
 <script>
     //체크박스 전체 선택 클릭 이chkClicked벤트
     function allChecked(target) {
@@ -105,7 +254,7 @@
         //전체 체크박스 제외한 모든 체크박스
         if (is_checked) {  // 체크박스 전체 체크
             chkAllChecked()
-        } else { 	     //체크박스 전체 해제
+        } else {         //체크박스 전체 해제
             chkAllUnChecked()
         }
     }
@@ -140,6 +289,13 @@
         document.querySelectorAll(".chk").forEach(function (v, i) {
             v.checked = false;
         });
+    }
+
+    //버튼 2개 다르게 동작
+    function submitForm(action) {
+        const form = document.getElementById('actionForm');
+        form.action = action; // 버튼 클릭에 따라 action을 변경
+        form.submit(); // 폼 제출
     }
 </script>
 </html>

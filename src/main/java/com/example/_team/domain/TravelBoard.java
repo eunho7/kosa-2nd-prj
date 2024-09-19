@@ -49,6 +49,7 @@ public class TravelBoard extends BaseEntity {
     private Integer isPublic;
     @Column(nullable = true)
     private String thumbnail;
+
     @ManyToOne
     @ToString.Exclude
     @JsonIgnore

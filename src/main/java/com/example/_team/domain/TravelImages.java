@@ -29,6 +29,7 @@ public class TravelImages {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "travel_idx")
-    @JsonBackReference
+    @JsonBackReference    // 자식 엔티티에 적용
     private TravelBoard travelIdx;
 }
+

@@ -1,12 +1,10 @@
 package com.example._team.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example._team.domain.Users;
@@ -56,16 +55,23 @@ public class BoardApiController {
 		model.addAttribute("user", user); // 사용자 정보를 모델에 추가
 		return "view/board/board-create"; // 게시글 작성 페이지로 이동
 	}
-
+	
 	// 게시글 작성 메소드
 	@PostMapping("/create")
-	public String createPost(@ModelAttribute BoardRequestDto boardRequestDto) {
-		// title 값이 제대로 들어왔는지 로그 출력해 확인
-		System.out.println("제목: " + boardRequestDto.getTitle());
+	public String createPost(@ModelAttribute BoardRequestDto boardRequestDto, @RequestParam("imgFile") List<MultipartFile> files) {
+	    // title 값이 제대로 들어왔는지 로그 출력해 확인
+	    System.out.println("제목: " + boardRequestDto.getTitle());
 
-		boardService.createBoard(boardRequestDto); // 게시글 생성 서비스 호출
-		return "redirect:/board/list"; // 다시 게시글 작성 페이지로 리디렉션
+	    // 업로드된 파일들을 DTO에 설정
+	    boardRequestDto.setImgFile(files);
+
+	    // 게시글 생성 서비스 호출
+	    boardService.createBoard(boardRequestDto);
+
+	    // 게시글 목록 페이지로 리디렉션
+	    return "redirect:/board/list";
 	}
+
 
 	// 게시글 수정 폼 페이지
 	@GetMapping("/edit/{id}")
@@ -85,12 +91,21 @@ public class BoardApiController {
 		return "view/board/board-edit"; // 권한이 있으면 수정 페이지로 이동
 	}
 
+	
 	// 게시글 수정 메소드
 	@PostMapping("/edit/{id}")
-	public String updatePost(@PathVariable Integer id, @ModelAttribute BoardRequestDto boardDto, Principal principal) {
+	public String updatePost(@PathVariable Integer id, @ModelAttribute BoardRequestDto boardDto,
+	                         @RequestParam(value = "deleteImgs", required = false) List<String> deleteImgs,
+	                         @RequestParam(value = "imgFile", required = false) List<MultipartFile> imgFiles,
+	                         Principal principal) {
 
-		boardService.updateBoard(id, boardDto);
-		return "redirect:/board/" + id; // 수정 후 상세 페이지로 이동
+	    // 이미지를 포함한 게시글 업데이트 처리
+	    boardDto.setDeleteImgs(deleteImgs); // 삭제할 이미지 경로 리스트를 DTO에 추가
+	    boardDto.setImgFile(imgFiles); // 업로드할 이미지 리스트를 DTO에 추가
+
+	    boardService.updateBoard(id, boardDto);
+	    
+	    return "redirect:/board/" + id; // 수정 후 상세 페이지로 이동
 	}
 
 	// 게시글 삭제 메소드
@@ -113,7 +128,7 @@ public class BoardApiController {
 	public String getBoards(@RequestParam(value = "category", required = false) String categoryStr,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
 			@RequestParam(required = false) String keyword,
-			@RequestParam(value = "sort", defaultValue = "createdAt") String sort, Model model) {
+			@RequestParam(defaultValue = "createdAt") String sort, Model model) {
 
 		// 로그인한 사용자 정보 가져오기
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -132,11 +147,6 @@ public class BoardApiController {
 			}
 		}
 
-		// 정렬 기준 설정 (조회수 또는 생성일)
-		Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
-
-		// Pageable 설정 (정렬 추가)
-		Pageable pageable = PageRequest.of(page, size, sortBy);
 
 		Page<BoardResponseDto> boardPage = boardService.getBoardList(keyword, page, size, category, sort);
 		model.addAttribute("boardList", boardPage);
@@ -205,7 +215,7 @@ public class BoardApiController {
 	// 댓글 리스트 페이지
 	@GetMapping("/{id}")
 	public String getPost(@PathVariable Integer id, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size, Model model) {
+			@RequestParam(defaultValue = "3") int size, Model model) {
 
 		// 게시글 정보 가져오기
 		BoardResponseDto board = boardService.getBoard(id);
