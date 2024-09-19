@@ -1,4 +1,5 @@
- let currentSlide = 0;
+
+    let currentSlide = 0;
     const slides = document.querySelectorAll('.onboarding-slide');
     const totalSlides = slides.length;
 
