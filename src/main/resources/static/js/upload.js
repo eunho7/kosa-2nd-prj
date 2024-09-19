@@ -161,3 +161,23 @@ document.getElementById('themeInput').addEventListener('keydown', function (even
         addTag();
     }
 });
+
+function openMapPopup() {
+    const albumElement = document.getElementById('albumElement');
+    if (albumElement) {
+        const albumId = albumElement.dataset.albumId;  // 서버에서 전달된 albumId 값
+        if (!albumId) {
+            console.error("albumId is undefined or null.");
+            return;
+        }
+        const url = `/mapview?albumId=${albumId}`;
+        const options = "width=800,height=600,scrollbars=yes,resizable=yes";
+        window.open(url, "mapPopup", options);
+    } else {
+        alert('앨범 ID를 확인할 수 없습니다.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.btn-secondary').addEventListener('click', openMapPopup);
+});

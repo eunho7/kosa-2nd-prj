@@ -29,10 +29,15 @@ import java.io.IOException;
 public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    // 작성자 : 신은호, 내용 : 권한에 따른 로그인 다음 페이지 핸들러
+    // 사용 방법 : CustomAuthenticationSuccessHandler.java(config 패키지)에 들어가서 url 수정.
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+    // 작성자 : 신은호, 내용 : CustomAuthenticationSuccessHandler 객체 생성자
     @Autowired
-    public WebSecurityConfig(UserDetailsService userDetailsService) {
+    public WebSecurityConfig(UserDetailsService userDetailsService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
     public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
@@ -45,7 +50,7 @@ public class WebSecurityConfig {
     // 스프링 시큐리티 기능 비활성화
     @Bean
     public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring().requestMatchers("/static/**","/images/**");
+        return (web) -> web.ignoring().requestMatchers("/static/**","/images/**","/css/**","/js/**");
     }
 
     //특정 Http 요청에 대한 웹 기반 보안 구성
@@ -69,16 +74,19 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/map")
 //                                new AntPathRequestMatcher("/api/travel/likes/{travelIdx}")
                         ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // 신은호 추가, admin 권한
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // 작성자 : 신은호, 내용 : ADMIN 권한 추가
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/api/travel/random", true)
+                        // 작성자 : 신은호, 내용 : 실제 로그인 후 권한에 따라 다른 페이지 실행
+                        // 사용 방법 : CustomAuthenticationSuccessHandler.java(config 패키지)에 들어가서 url 수정.
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(new CustomAuthenticationFailureHandler())
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true))
-                .csrf(AbstractHttpConfigurer::disable)  // CSRF 보호 비활성
+                .csrf(AbstractHttpConfigurer::disable)
                 .build();
     }
 
@@ -86,7 +94,7 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManger(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder,
                                                       UserDetailService userService)
-        throws Exception{
+            throws Exception{
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(bCryptPasswordEncoder);

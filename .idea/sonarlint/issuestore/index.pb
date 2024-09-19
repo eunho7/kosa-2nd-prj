@@ -42,8 +42,6 @@ o
 ?src/main/java/com/example/_team/repository/ThemeRepository.java,5/0/509a28250a3225a53e96032daea12c6f4515a8c6
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-h
-8src/main/java/com/example/_team/domain/TravelImages.java,f/d/fd68efc3e578389fbf83ef5531347234a4b8f79f
 u
 Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
 n
@@ -60,17 +58,9 @@ i
 9src/main/java/com/example/_team/service/BoardService.java,a/b/abd6c27c977bf3dccdea4b079a223c28dc2e34db
 o
 ?src/main/java/com/example/_team/repository/BoardRepository.java,d/c/dcd80e8b057fcd438068ae13000670da2e58553d
-r
-Bsrc/main/java/com/example/_team/controller/UserViewController.java,1/a/1afcae1f374c2a82c83046ebba1d37c0a21000ad
 e
 5src/main/java/com/example/_team/config/WebConfig.java,2/b/2bc62d806d6bf7cb3c77f4bdd084e8d9fb6ca596
-m
-=src/main/java/com/example/_team/config/WebSecurityConfig.java,a/c/ac182c183695be7bc84484a3e519fdac8e2b7441
 o
 ?src/main/java/com/example/_team/controller/ReplyController.java,f/6/f663ef7f437a1ee469755f9546e61fbb6426333b
 r
 Bsrc/main/java/com/example/_team/controller/BoardApiController.java,d/b/db40ee5ecd5c751a855d120db3a8e21bec530688
-~
-Nsrc/main/java/com/example/_team/web/dto/travelalbum/TravelAlbumRequestDTO.java,b/a/ba45347105f167a7b5baf823f57ecb864c2d0216
-7
-pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec

@@ -8,64 +8,298 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <link rel="stylesheet" type="text/css" href="/css/travel-detail.css">
+<!--    <link rel="stylesheet" type="text/css" href="/css/map.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f0f4f8;-->
+<!--            font-family: 'Arial', sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            background-color: #ffffff;-->
+<!--            border-radius: 15px;-->
+<!--            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 40px 30px;-->
+<!--            margin-top: 40px;-->
+<!--            max-width: 900px;-->
+<!--            height: 970px;-->
+<!--            max-height: 970px;-->
+<!--            overflow: auto;-->
+<!--        }-->
+
+<!--        .result-image {-->
+<!--            width: 100%;-->
+<!--            height: 200px; /* 고정된 높이 */-->
+<!--            border-radius: 8px;-->
+<!--            object-fit: contain; /* 이미지가 잘리지 않게 조정 */-->
+<!--            background-color: #f0f0f0;-->
+<!--            margin: 0 auto;-->
+<!--        }-->
+
+<!--        .theme-list ul {-->
+<!--            list-style-type: none;-->
+<!--            padding: 0;-->
+<!--            display: flex;-->
+<!--            flex-wrap: wrap;-->
+<!--            margin-bottom: 15px; /* 여백 조정 */-->
+<!--        }-->
+
+<!--        .theme-list li {-->
+<!--            background-color: #007bff;-->
+<!--            color: white;-->
+<!--            border-radius: 20px;-->
+<!--            padding: 5px 12px; /* 패딩 조정 */-->
+<!--            margin: 5px;-->
+<!--            font-size: 12px; /* 기본 폰트 사이즈 */-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            transition: background-color 0.3s ease;-->
+<!--        }-->
+
+<!--        .theme-list li:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+
+<!--        .content {-->
+<!--            margin-top: 15px; /* 여백 조정 */-->
+<!--        }-->
+
+<!--        .content img {-->
+<!--            max-width: 100%;-->
+<!--            height: auto;-->
+<!--            display: block;-->
+<!--            margin: 0 auto;-->
+<!--        }-->
+
+<!--        .like-section {-->
+<!--            position: relative;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 10px;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        .like-section .icon-button {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .user-list-container {-->
+<!--            display: none;-->
+<!--            position: absolute;-->
+<!--            top: 100%;-->
+<!--            left: 0;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);-->
+<!--            padding: 8px;-->
+<!--            width: 180px; /* 너비 조정 */-->
+<!--            z-index: 1000;-->
+<!--            bottom: 100%;-->
+<!--        }-->
+
+<!--        .icon-button:hover + .user-list-container {-->
+<!--            display: block; /* 버튼에 마우스를 올리면 표시 */-->
+<!--        }-->
+
+<!--        .user-list-container .user-list ul {-->
+<!--            list-style-type: none;-->
+<!--            padding: 0;-->
+<!--            margin: 0;-->
+<!--        }-->
+
+<!--        .user-list-container .user-list li {-->
+<!--            padding: 5px 8px; /* 패딩 조정 */-->
+<!--            border-bottom: 1px solid #eee;-->
+<!--        }-->
+
+<!--        .user-list-container .user-list li:last-child {-->
+<!--            border-bottom: none;-->
+<!--        }-->
+
+<!--        .like-section:hover .user-list-container {-->
+<!--            display: block;-->
+<!--        }-->
+
+<!--        .action-buttons .btn {-->
+<!--            margin-left: 8px; /* 여백 조정 */-->
+<!--        }-->
+
+<!--        .fa-heart {-->
+<!--            font-size: 20px; /* 아이콘 크기 조정 */-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .fa-heart.empty {-->
+<!--            color: gray; /* 빈 하트의 색상 */-->
+<!--        }-->
+
+<!--        .fa-heart.filled {-->
+<!--            color: red; /* 꽉 찬 하트의 색상 */-->
+<!--        }-->
+
+<!--        .back-btn {-->
+<!--            margin-right: 8px; /* 여백 조정 */-->
+<!--            background: none;-->
+<!--            border: none;-->
+<!--            color: #007bff;-->
+<!--            font-size: 1.2rem; /* 폰트 크기 조정 */-->
+<!--            cursor: pointer;-->
+<!--            padding: 5px;-->
+<!--        }-->
+
+<!--        .back-btn:hover {-->
+<!--            color: #0056b3;-->
+<!--        }-->
+
+<!--        #map{-->
+<!--            width: 100%;-->
+<!--            height: 500px;-->
+<!--            margin-top:20px;-->
+<!--        }-->
+<!--    </style>-->
 </head>
 <body>
 <div class="container">
-        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
-            <!-- 앨범 썸네일 및 제목 -->
-            <h4 class="text-center" th:text="${response.title}">Album Title</h4>
-            <img th:src="@{${response.thumbnail}}" alt="Album image" class="result-image img-thumbnail">
-            <p class="text-muted text-center" th:text="${response.dateRange}">Date Range</p>
+    <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <!-- 앨범 썸네일 및 제목 -->
+    <h4 class="text-center" th:text="${response.title}">Album Title</h4>
+<!--    <img th:src="@{${response.thumbnail}}" alt="Album image" class="result-image img-thumbnail">-->
+    <p class="text-muted text-center" th:text="${response.dateRange}">Date Range</p>
 
-            <!-- 테마 리스트 출력 -->
-            <div class="theme-list">
+    <!-- 테마 리스트 출력 -->
+    <div class="theme-list">
+        <ul>
+            <li th:each="theme : ${response.travelThemeList}">
+                <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
+                   th:text="${theme.name}" class="text-white"></a>
+            </li>
+        </ul>
+    </div>
+    <!-- 콘텐츠 출력 (TinyMCE 사용) -->
+    <div class="content" th:utext="${response.content}"></div>
+
+    <div id="map"></div>
+
+    <div class="like-section">
+        <div class="icon-button" onclick="toggleLike()">
+            <i class="fas fa-heart" id="likeIcon"></i>
+            <span id="likeCount" th:text="${response.postLikeCount}"></span>
+        </div>
+
+        <!-- 삭제 버튼 추가 -->
+        <div class="d-flex justify-content-end"
+             th:if="${connectUser != null and connectUser.userIdx == response.userIdx}">
+            <form th:action="@{/api/travel/delete/{id}(id=${response.id})}" method="post"
+                  onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                <button type="submit" class="btn btn-danger ms-2">삭제</button>
+            </form>
+        </div>
+
+        <div class="user-list-container" id="userListContainer">
+            <div class="user-list">
+                <h5>좋아요 누른 유저들</h5>
                 <ul>
-                    <li th:each="theme : ${response.travelThemeList}">
-                        <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
-                           th:text="${theme.name}" class="text-white"></a>
+                    <li th:each="user : ${userList}" data-user-idx="${user.userIdx}">
+                        <span th:text="${user.nickname}"></span>
                     </li>
                 </ul>
             </div>
-            <!-- 콘텐츠 출력 (TinyMCE 사용) -->
-            <div class="content" th:utext="${response.content}"></div>
+        </div>
+    </div>
 
-            <div class="like-section">
-                <div class="icon-button" onclick="toggleLike()">
-                    <i class="fas fa-heart" id="likeIcon"></i>
-                    <span id="likeCount" th:text="${response.postLikeCount}"></span>
-                </div>
-
-                <!-- 삭제 버튼 추가 -->
-                <div class="d-flex justify-content-end" th:if="${connectUser != null and connectUser.userIdx == response.userIdx}">
-                    <form th:action="@{/api/travel/delete/{id}(id=${response.id})}" method="post"
-                          onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-                        <button type="submit" class="btn btn-danger ms-2">삭제</button>
-                    </form>
-                </div>
-
-                <div class="user-list-container" id="userListContainer">
-                    <div class="user-list">
-                        <h5>좋아요 누른 유저들</h5>
-                        <ul>
-                            <li th:each="user : ${userList}" data-user-idx="${user.userIdx}">
-                                <span th:text="${user.nickname}"></span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- JavaScript에서 사용할 travelIdx와 userIdx를 HTML 속성으로 추가 -->
-            <input type="hidden" id="travelIdx" th:value="${response.id}"/>
-            <input type="hidden" id="userIdx" th:value="${connectUser.userIdx}"/>
-            <input type="hidden" id="initialLikeStatus" th:value="${response.likedByCurrentUser}"/>
+    <!-- JavaScript에서 사용할 travelIdx와 userIdx를 HTML 속성으로 추가 -->
+    <input type="hidden" id="travelIdx" th:value="${response.id}"/>
+    <input type="hidden" id="userIdx" th:value="${connectUser.userIdx}"/>
+    <input type="hidden" id="initialLikeStatus" th:value="${response.likedByCurrentUser}"/>
 
     <div th:replace="fragments/footer :: bottomMenu"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="/js/scripts.js"></script>
 <script src="/js/travel-detail.js"></script>
+
+<script th:inline="javascript">
+    // 마커 리스트를 JSON 형식으로 받아옴
+    var markersList = /*[[${markers}]]*/ '[]';
+
+    // 마커 데이터를 확인
+    console.log("Markers List:", markersList);
+
+    // JSON 문자열을 실제 객체로 변환
+    var markers = JSON.parse(markersList);
+
+    // 구글 맵에 마커 추가
+    function initMap() {
+        const seoul = { lat: 37.5665, lng: 126.9780 };
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: seoul,
+            zoom: 10
+        });
+
+        // 마커 데이터를 저장할 배열
+        const markerPositions = [];
+
+        // 마커 데이터를 반복문으로 추가 (순서를 나타내기 위한 카운터 추가)
+        markers.forEach(function(markerData, index) {
+            const markerPosition = { lat: markerData.latitude, lng: markerData.longitude };
+            markerPositions.push(markerPosition); // 마커 위치 배열에 추가
+            addMarker(markerData, markerPosition, map, index + 1); // 순서대로 숫자 추가
+        });
+
+        // 마커들을 잇는 선(Polyline)을 그리기 위한 함수 호출
+        drawPolyline(markerPositions, map);
+    }
+
+    // 마커를 추가하는 함수 (index 추가)
+    function addMarker(markerData, position, map, index) {
+        const marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            label: {
+                text: index.toString(), // 마커에 순서대로 번호 추가
+                color: "white", // 레이블 색상
+                fontSize: "16px",
+                fontWeight: "bold",
+            },
+            title: markerData.placeName,
+            icon: {
+                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // 아이콘을 커스터마이징할 경우 사용
+                labelOrigin: new google.maps.Point(15, 10) // 레이블 위치 조정
+            }
+        });
+
+        const infowindow = new google.maps.InfoWindow({
+            content: `<div><strong>${markerData.placeName}</strong><br>${markerData.address}</div>`
+        });
+
+        marker.addListener('click', function() {
+            infowindow.open(map, marker);
+        });
+    }
+
+    // Polyline을 그려주는 함수
+    function drawPolyline(markerPositions, map) {
+        const path = new google.maps.Polyline({
+            path: markerPositions, // 마커들의 위치 배열을 경로로 설정
+            geodesic: true,
+            strokeColor: "#FF0000", // 선의 색상
+            strokeOpacity: 1.0,
+            strokeWeight: 2, // 선의 두께
+        });
+
+        path.setMap(map); // 지도에 Polyline을 추가
+    }
+
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmUNKi79QJtTDCBYn4DHDnOi9gnT0KaII&callback=initMap" async defer></script>
 </body>
 </html>

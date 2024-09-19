@@ -78,6 +78,14 @@ public class TravelAlbumResponseDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TravelAlbumResultMapDTO {
+        Long travelIdx;
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class myTravelAlbumListDTO {
         Integer id;
         String thumbnail;
