@@ -23,8 +23,5 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             response.sendRedirect("/api/travel/random");
         }
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 54215f4a2f781d4a3132070d7969f01ac67cd5ef

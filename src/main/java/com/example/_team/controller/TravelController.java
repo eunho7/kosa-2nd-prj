@@ -141,7 +141,6 @@ public class TravelController {
     public String showUploadForm(Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userService.findByEmail(email);
-        TravelAlbumResultMapDTO data = travelService.createNullData();
         TravelAlbumResponseDTO.TravelAlbumResultMapDTO data = travelService.createNullData();
         Long albumId = data.getTravelIdx();
         System.out.println(albumId);

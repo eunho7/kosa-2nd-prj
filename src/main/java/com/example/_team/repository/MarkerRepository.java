@@ -14,3 +14,4 @@ public interface MarkerRepository extends JpaRepository<Marker,Long> {
 
     @Query(value = "select * from marker where travel_idx = :travel_board", nativeQuery = true)
     List<Marker> findByTravelBoard1(@Param("travel_board") Integer travel_board);
+}
