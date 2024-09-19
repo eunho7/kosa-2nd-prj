@@ -29,9 +29,10 @@ public class BoardResponseDto {
     private Long userIdx;
     private String nickname; // 작성자의 닉네임 필드 추가
     private LocalDateTime updatedAt;
-    private LocalDateTime createdAt; // createdAt 필드 추가
+    private LocalDateTime createdAt; 
     private List<String> fileUrls; // 이미지 파일 URL 목록 추가
     private List<BoardFiles> files;
+    private Integer answerBoardIdx;
 
     // Static method to convert from entity to DTO
     public static BoardResponseDto fromEntity(Board board) {
@@ -51,6 +52,7 @@ public class BoardResponseDto {
                 .fileUrls(board.getFiles() != null ? board.getFiles().stream()
                         .map(BoardFiles::getFilepath) // 파일 경로 가져오기
                         .collect(Collectors.toList()) : null)
+                .answerBoardIdx(board.getAnswerBoardIdx() != null ? board.getAnswerBoardIdx().getBoardIdx() : null)  // 답변 글 ID 처리
                 .build();
     }
 

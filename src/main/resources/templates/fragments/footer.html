@@ -1,14 +1,18 @@
-<footer class="btn btn-primary">
-    <div class="footer-menu">
-        <a href="/board/list" class="text-white"><i class="fas fa-list"></i><br>게시판</a>
-        <div>
-            <a href="#" id="homeButton" class="text-white" onclick="toggleMenu(event)"><i class="fas fa-home"></i><br>홈</a>
-            <ul class="popup-menu" id="popupMenu">
-                <li onclick="window.location.href='/api/travel/upload'">여행앨범 글 작성하기</li>
-                <li onclick="window.location.href='/api/travel/myTravel'">나의 앨범 리스트 조회하기</li>
-                <li onclick="window.location.href='/api/travel/random'">홈으로 이동</li>
-            </ul>
-        </div>
-        <a href="/mypage" class="text-white"><i class="fas fa-user"></i><br>마이페이지</a>
+<div th:fragment="bottomMenu" class="bottom-menu">
+    <a href="/board/list" class="text-white">
+        <i class="fas fa-list"></i><br>게시판
+    </a>
+    <div class="menu-container">
+        <a href="#" id="homeButton" class="text-white" onclick="toggleMenu(event)">
+            <i class="fas fa-home"></i><br>
+        </a>
+        <ul class="popup-menu" id="popupMenu">
+            <li onclick="window.location.href='/api/travel/upload'">여행앨범 글 작성하기</li>
+            <li onclick="window.location.href='/api/travel/myTravel'">나의 앨범 리스트 조회하기</li>
+            <li onclick="window.location.href='/api/travel/random'">홈으로 이동</li>
+        </ul>
     </div>
-</footer>
+    <a href="/mypage" class="text-white">
+        <i class="fas fa-user"></i><br>마이페이지
+    </a>
+</div>

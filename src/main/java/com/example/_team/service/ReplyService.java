@@ -13,6 +13,7 @@ public interface ReplyService {
 	// 댓글 삭제
 	void deleteReply(Integer replyIdx);
 
+	// 댓글 수정
 	ReplyResponseDto updateReply(Integer replyIdx, ReplyRequestDto replyRequestDto, String email);
 
 	// 댓글 조회
