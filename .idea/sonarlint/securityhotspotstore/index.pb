@@ -44,8 +44,6 @@ o
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
 u
 Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
-h
-8src/main/java/com/example/_team/config/AmazonConfig.java,7/b/7b1843f7a355ebdcc2c18176c50f8e39d3c84b38
 n
 >src/main/java/com/example/_team/global/s3/AmazonS3Manager.java,8/1/81b0bd0c6fd61e86c7ff0afbf18544383bca1d73
 k
@@ -58,7 +56,5 @@ i
 9src/main/java/com/example/_team/service/BoardService.java,a/b/abd6c27c977bf3dccdea4b079a223c28dc2e34db
 m
 =src/main/java/com/example/_team/service/BoardServiceImpl.java,a/3/a33aedc55b410fb75d6f22626c788763e794f4c7
-e
-5src/main/java/com/example/_team/config/WebConfig.java,2/b/2bc62d806d6bf7cb3c77f4bdd084e8d9fb6ca596
 r
 Bsrc/main/java/com/example/_team/controller/BoardApiController.java,d/b/db40ee5ecd5c751a855d120db3a8e21bec530688
