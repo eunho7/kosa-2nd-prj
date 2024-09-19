@@ -30,6 +30,9 @@ public class ReportsService {
         return reportsRepository.findAll();
     }
 
+    // 신고글 찾기
+    public Reports findById(Integer reportsIdx) { return reportsRepository.findById(reportsIdx).orElse(null);}
+
     // 페이징
     public Page<ReportsResponseDto> paging(int page, int size) {
         int startRow = page * size + 1;

@@ -1,16 +1,11 @@
 package com.example._team.service;
 
-import com.example._team.domain.Board;
-import com.example._team.domain.BoardFiles;
-import com.example._team.domain.Users;
-import com.example._team.domain.enums.Category;
-import com.example._team.dto.board.BoardRequestDto;
-import com.example._team.dto.board.BoardResponseDto;
-import com.example._team.exception.DataNotFoundException;
-import com.example._team.global.s3.AmazonS3Manager;
-import com.example._team.repository.BoardFileRepository;
-import com.example._team.repository.BoardRepository;
-import com.example._team.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,13 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.example._team.domain.Board;
+import com.example._team.domain.BoardFiles;
+import com.example._team.domain.Users;
+import com.example._team.domain.enums.Category;
+import com.example._team.dto.board.BoardRequestDto;
+import com.example._team.dto.board.BoardResponseDto;
+import com.example._team.exception.DataNotFoundException;
+import com.example._team.global.s3.AmazonS3Manager;
+import com.example._team.repository.BoardFileRepository;
+import com.example._team.repository.BoardRepository;
+import com.example._team.repository.UserRepository;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -47,24 +46,6 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private AmazonS3Manager amazonS3Manager;
 
-//	// 게시글 작성
-//	@Transactional
-//	@Override
-//	public BoardResponseDto createBoard(BoardRequestDto boardDto) {
-//		// 현재 로그인한 사용자의 정보를 가져옴
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		String email = authentication.getName();
-//
-//		// 이메일을 사용해서 해당 사용자의 정보를 조회
-//		Users user = userRepository.findByEmail(email)
-//				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-//
-//		// 게시글 생성 시 userIdx를 직접 넣는 대신, 로그인한 사용자의 정보를 사용
-//		Board board = boardDto.toEntity(user, null);
-//		Board savedBoard = boardRepository.save(board);
-//
-//		return BoardResponseDto.fromEntity(savedBoard);
-//	}
 	
 	//게시글작성
 	@Transactional
@@ -104,21 +85,6 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 
-
-//	// 게시글 수정
-//	@Transactional
-//	@Override
-//	public BoardResponseDto updateBoard(Integer id, BoardRequestDto dto) {
-//		Board board = boardRepository.findById(id)
-//				.orElseThrow(() -> new DataNotFoundException("Board not found with ID: " + id));
-//		board.setTitle(dto.getTitle());
-//		board.setContent(dto.getContent());
-//		board.setCategory(dto.getCategory());
-//		Board updatedBoard = boardRepository.save(board);
-//		return BoardResponseDto.fromEntity(updatedBoard);
-//	}
-	
-	
 	// 게시글 수정
 	@Transactional
 	@Override
@@ -162,9 +128,6 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 
-
-
-
 	// 게시글 삭제
 	@Transactional
 	@Override
@@ -184,29 +147,26 @@ public class BoardServiceImpl implements BoardService {
 		return BoardResponseDto.fromEntity(updatedBoard);
 	}
 
+	// 게시글 리스트
 	@Override
 	public Page<BoardResponseDto> getBoardList(String keyword, int page, int size, Category category, String sort) {
-	    Set<BoardResponseDto> boardDtos = new LinkedHashSet<>(); // Set으로 중복 제거
+	    Set<BoardResponseDto> boardDtos = new LinkedHashSet<>(); // 중복 방지를 위한 Set 사용
 	    int startRow = page * size + 1;
 	    int endRow = (page + 1) * size;
 	    long total;
 
-	    // 키워드 검색이 있는 경우
+	    // 키워드 검색이 있는 경우 (공개된 게시글만 포함)
 	    if (keyword != null && !keyword.trim().isEmpty()) {
 	        List<Board> baseBoards = boardRepository.findByKeywordOrderedByBoardIdx(keyword, startRow, endRow, Pageable.unpaged());
-	        total = boardRepository.countByKeyword(keyword);
+	        total = boardRepository.countByKeywordAndStatus(keyword, 1);  // 공개된 게시글만 계산
 
-	        // 기본 게시글 및 답변 게시글 추가
 	        for (Board baseBoard : baseBoards) {
-	            // 기본 게시글 추가
 	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
-	            
-	            // 답변 게시글 추가
 	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
-	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
+	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer))); // 중복이 Set으로 방지됨
 	        }
 	    }
-	    // 카테고리가 있는 경우
+	    // 카테고리가 있는 경우 (공개된 게시글만 포함)
 	    else if (category != null) {
 	        List<Board> baseBoards;
 	        if ("views".equals(sort)) {
@@ -214,19 +174,15 @@ public class BoardServiceImpl implements BoardService {
 	        } else {
 	            baseBoards = boardRepository.findByCategoryOrderedByBoardIdx(category.name(), startRow, endRow, Pageable.unpaged());
 	        }
-	        total = boardRepository.countByCategory(category);
+	        total = boardRepository.countByCategoryAndStatus(category, 1);  // 공개된 게시글만 계산
 
-	        // 기본 게시글 및 답변 게시글 추가
 	        for (Board baseBoard : baseBoards) {
-	            // 기본 게시글 추가
 	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
-	            
-	            // 답변 게시글 추가
 	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
 	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
 	        }
 	    }
-	    // 카테고리가 없는 경우
+	    // 카테고리가 없는 경우 (공개된 게시글만 포함)
 	    else {
 	        List<Board> baseBoards;
 	        if ("views".equals(sort)) {
@@ -234,30 +190,26 @@ public class BoardServiceImpl implements BoardService {
 	        } else {
 	            baseBoards = boardRepository.findAllOrderedByBoardIdx(startRow, endRow, Pageable.unpaged());
 	        }
-	        total = boardRepository.count();
+	        total = boardRepository.countByStatus(1);  // 공개된 게시글만 계산
 
-	        // 기본 게시글 및 답변 게시글 추가
 	        for (Board baseBoard : baseBoards) {
-	            // 기본 게시글 추가
 	            boardDtos.add(BoardResponseDto.fromEntity(baseBoard));
-
-	            // 답변 게시글 추가
 	            List<Board> answers = boardRepository.findAnswersByBoard(baseBoard.getBoardIdx());
 	            answers.forEach(answer -> boardDtos.add(BoardResponseDto.fromEntity(answer)));
 	        }
 	    }
 
-	    // 게시글 수가 size를 넘지 않도록 제한하여 반환
-	    List<BoardResponseDto> paginatedList = boardDtos.stream().limit(size).collect(Collectors.toList());
+	    // 총 페이지 수 계산
+	    int totalPages = (int) Math.ceil((double) total / size);
 
-	    // 페이징된 게시글과 총 게시글 수를 기반으로 Page 객체 반환
-	    return new PageImpl<>(paginatedList, Pageable.ofSize(size).withPage(page), total);
+	    // 페이지 보정 처리
+	    if (page >= totalPages && totalPages > 0) {
+	        page = totalPages - 1; // 존재하지 않는 페이지 요청 시 마지막 페이지로 보정
+	    }
+
+	    // PageImpl 객체 반환
+	    return new PageImpl<>(new ArrayList<>(boardDtos), PageRequest.of(page, size), total); // Set을 다시 List로 변환하여 반환
 	}
-
-
-
-
-
 
 
 }

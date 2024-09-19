@@ -50,6 +50,7 @@ public class ReportsController {
         return "view/report/reports-form";
     }
 
+    // 신고 제출
     @PostMapping("/reports")
     public String saveReport(@ModelAttribute ReportsRequestDto requestDto) {
         System.out.println(requestDto.toString());
@@ -61,6 +62,7 @@ public class ReportsController {
         return "redirect:/board/list";
     }
 
+    // 신고 게시판 리스트 업
     @GetMapping("/admin/reports/list")
     public String paging( @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "10") int size, Model model) {
@@ -73,26 +75,33 @@ public class ReportsController {
         return "view/report/reports-list";
     }
 
+    // 신고 게시글 삭제
     @PostMapping("/admin/reports/delete")
-    public String deleteById(@RequestParam("deleteBoardIdx") List<Integer> boardIdx) {
-        if (!boardIdx.isEmpty()) {
-            for (int i = 0; i < boardIdx.size(); i++) {
-//                Board board = boardService.findById(boardIdx.get(i));
-                reportsService.deleteReports(boardIdx.get(i));
-            }
-        }
-        return "redirect:/admin/reports/list";
-    }
-
-    @PostMapping("/admin/reports/inactive")
-    public String inactive(@RequestParam("inactiveBoardIdx") List<Integer> boardIdx) {
+    public String deleteById(@RequestParam("BoardIdx") List<Integer> boardIdx) {
 
         // 중복 제거
         List<Integer> list = boardIdx.stream().distinct().collect(Collectors.toList());
 
         if (!list.isEmpty()) {
             for (int i = 0; i < list.size(); i++) {
-                Board board = boardService.findById(list.get(i));
+                reportsService.deleteReports(boardIdx.get(i));
+            }
+        }
+
+        return "redirect:/admin/reports/list";
+    }
+
+    //활성/비활성 버튼
+    @PostMapping("/admin/reports/inactive")
+    public String inactive(@RequestParam("BoardIdx") List<Integer> boardIdx) {
+
+        // 중복 제거
+        List<Integer> list = boardIdx.stream().distinct().collect(Collectors.toList());
+
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                Reports report = reportsService.findById(list.get(i));
+                Board board = boardService.findById(report.getBoardIdx().getBoardIdx());
                 if (board.getStatus() == 1) {
                     board.setStatus(0);
                     boardAnswerService.save(board);

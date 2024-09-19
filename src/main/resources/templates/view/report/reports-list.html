@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
@@ -19,15 +18,16 @@
         .main-section {
             background-color: #ffffff;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
+            height: 970px; /* 높이를 970px로 고정 */
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            overflow: auto; /* 내용이 높이를 초과할 경우 스크롤 표시 */
             transition: all 0.5s ease;
             position: relative;
             display: flex;
             flex-direction: column;
-            /* 세로 방향으로 요소 배치 */
+            padding: 20px; /* padding 추가 */
         }
 
         .register-section {
@@ -35,30 +35,29 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px 10px;
-            min-height: 650px; /* 로그인 폼에 맞춰 신고 게시판 크기 동일화 */
+            width: 100%; /* 가로 크기 조정 */
         }
 
         .container {
             position: relative;
             max-width: 100%;
             width: 100%;
+            height: 650px;
             margin-bottom: 20px;
-            /* 페이지네이션과의 간격 추가 */
         }
 
         .headr-title {
             padding-bottom: 20px;
+            text-align: center; /* 가운데 정렬 */
         }
 
         .btn-primary,
-        .btn-secondary {
-            width: 100%;
-            padding: 12px;
+        .btn-danger {
+            padding: 10px 15px;
             font-size: 10px;
             border-radius: 8px;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 10px;
+            margin-left: 10px;
         }
 
         .btn-primary {
@@ -71,18 +70,14 @@
             background-color: #357ABD;
         }
 
-        .btn-secondary {
-            background-color: #6c757d;
+        .btn-danger {
+            background-color: #d9534f;
+            border-color: #d43f3a;
             color: #fff;
         }
 
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-        .form-group+.btn-primary {
-            margin-top: 20px;
-            /* 원하는 간격을 추가 */
+        .btn-danger:hover {
+            background-color: #c9302c;
         }
 
         .form-control {
@@ -116,24 +111,34 @@
             color: #357ABD;
         }
 
+        /* 아래쪽에 위치할 요소 스타일 */
         #container-user {
-            margin: 5px auto;
+            margin-top: 20px;
             box-sizing: border-box;
-        }
-
-        #container-user div {
-            line-height: 2em;
-            text-align: center;
-        }
-
-        #container-user {
             display: flex;
-            flex-flow: row wrap;
             justify-content: space-between;
-            max-width: 94%;
-            width: 94%;
-            margin-top: auto;
-            /* 위쪽 요소들 다음에 배치되도록 설정 */
+            align-items: center;
+            width: 100%;
+        }
+
+        #container-user .left-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        #container-user .center-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #container-user .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
         }
 
         th, td {
@@ -149,7 +154,7 @@
         <header class="headr-title">
             <h1>신고글 관리자 게시판</h1>
         </header>
-        <form id="inactive" class="container" th:action="@{/admin/reports/inactive}" method="POST">
+        <form id="actionForm" class="container" method="POST">
             <table class="table table-hover">
                 <colgroup>
                     <col width=5%>
@@ -185,7 +190,7 @@
                 </colgroup>
                 <tr th:each="reports : ${reportsList}">
                     <td>
-                        <input type="checkbox" class="chk" name="inactiveBoardIdx" th:value="${reports.boardIdx.getBoardIdx()}" onclick="chkClicked()">
+                        <input type="checkbox" class="chk" name="BoardIdx" th:value="${reports.reportsIdx}" onclick="chkClicked()">
                     </td>
                     <td th:text="${reports.reportsIdx}">신고 번호</td> <input type="hidden" name="deleteBoardIdx" th:value="${reports.reportsIdx}" />
                     <td>
@@ -201,25 +206,28 @@
             </table>
         </form>
         <section id="container-user">
-            <div class="child">
+            <!-- Left section for 전체 선택/해제 -->
+            <div class="left-section">
                 <label>
                     <input type="checkbox" id="allCheckBox" onclick="allChecked()">
                     전체 선택/해제
                 </label>
             </div>
-            <!-- Pagination -->
-            <div class="d-flex justify-content-center" th:if="${page.totalPages > 1}">
+            <!-- Center section for pagination -->
+            <div class="center-section" th:if="${page.totalPages > 1}">
                 <ul class="pagination">
                     <!-- 이전 버튼 -->
-                    <li class="page-item" th:class="${page.number == 0} ? 'disabled'"><a class="page-link"
-                                                                                         th:style="${page.number == 0} ? 'pointer-events: none;'"
-                                                                                         th:href="@{/reports/list(page=${page.number-1})}">이전</a>
+                    <li class="page-item" th:class="${page.number == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:style="${page.number == 0} ? 'pointer-events: none;'"
+                           th:href="@{/reports/list(page=${page.number-1})}">이전</a>
                     </li>
 
                     <!-- 페이지 번호 출력 -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(1, page.totalPages)}"
-                        th:classappend="${i == page.number + 1} ? 'active'"><a class="page-link"
-                                                                               th:href="@{/reports/list(page=${i-1})}" th:text="${i}">1</a></li>
+                        th:classappend="${i == page.number + 1} ? 'active'">
+                        <a class="page-link" th:href="@{/reports/list(page=${i-1})}" th:text="${i}">1</a>
+                    </li>
 
                     <!-- 다음 버튼 -->
                     <li class="page-item" th:class="${page.number == page.totalPages - 1} ? 'disabled'">
@@ -229,10 +237,13 @@
                     </li>
                 </ul>
             </div>
-            <div class="child">
-                <button type="submit" form="inactive" class="btn btn-primary">활성/비활성</button>
+            <!-- Right section for buttons -->
+            <div class="right-section">
+                <button type="button" class="btn btn-danger" onclick="submitForm('/admin/reports/delete')">삭제</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm('/admin/reports/inactive')">활성/비활성</button>
             </div>
         </section>
+    </section>
 </div>
 <script>
     //체크박스 전체 선택 클릭 이chkClicked벤트
@@ -243,7 +254,7 @@
         //전체 체크박스 제외한 모든 체크박스
         if (is_checked) {  // 체크박스 전체 체크
             chkAllChecked()
-        } else { 	     //체크박스 전체 해제
+        } else {         //체크박스 전체 해제
             chkAllUnChecked()
         }
     }
@@ -280,5 +291,11 @@
         });
     }
 
+    //버튼 2개 다르게 동작
+    function submitForm(action) {
+        const form = document.getElementById('actionForm');
+        form.action = action; // 버튼 클릭에 따라 action을 변경
+        form.submit(); // 폼 제출
+    }
 </script>
 </html>
