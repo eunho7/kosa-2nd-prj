@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 가입</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/signup.css}" rel="stylesheet">
+</head>
+<body>
+<div class="main-section">
+    <h2>회원 가입</h2>
+    <p>이메일 인증을 통해 회원가입을 완료하세요.</p>
+
+    <!-- 인증번호 받기 폼 -->
+    <form th:action="@{/signup/send-code}" method="POST" id="signupForm">
+        <div class="form-group mb-3">
+            <label for="email">이메일 주소</label>
+            <input type="email" class="form-control" id="email" name="email" th:value="${email}" placeholder="이메일을 입력하세요" required>
+            <button type="submit" id="sendCodeButton" class="btn btn-primary mt-3">인증번호 받기</button>
+        </div>
+    </form>
+
+    <!-- 인증번호 입력 필드 -->
+    <form id="verificationForm">
+        <div class="form-group mb-3">
+            <label for="verificationCode">인증번호</label>
+            <input type="text" class="form-control" id="verificationCode" name="verificationCode" placeholder="인증번호를 입력하세요" required>
+            <input type="hidden" id="hiddenCode" th:value="${verificationCode}">
+        </div>
+        <button type="button" id="verifyCodeButton" class="btn btn-primary">인증번호 확인</button>
+    </form>
+
+    <!-- 비밀번호 강도 및 추가 필드 -->
+    <div id="passwordStrength"></div>
+    <form th:action="@{/signup/complete}" method="POST" id="additionalFields">
+        <input type="hidden" name="email" th:value="${email}">
+        <div class="form-group mb-3">
+            <label for="nickname">닉네임</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호를 다시 입력하세요" required>
+            <div id="passwordMatch"></div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="phone">전화번호</label>
+            <input type="tel" class="form-control" id="phone" name="phone" placeholder="010-1234-5678" required>
+            <div id="phoneError"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">회원가입 완료</button>
+    </form>
+</div>
+
+<!-- jQuery 먼저 로드 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS (jQuery 후에 로드) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script th:src="@{/js/signup.js}"></script>
+</body>
+</html>

@@ -50,7 +50,7 @@ public class WebSecurityConfig {
     // 스프링 시큐리티 기능 비활성화
     @Bean
     public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring().requestMatchers("/static/**","/images/**");
+        return (web) -> web.ignoring().requestMatchers("/static/**","/images/**","/css/**","/js/**");
     }
 
     //특정 Http 요청에 대한 웹 기반 보안 구성

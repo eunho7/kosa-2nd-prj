@@ -15,6 +15,7 @@ import com.example._team.repository.TravelRepository;
 import com.example._team.repository.UserRepository;
 import com.example._team.service.global.DateUtils;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
@@ -178,59 +179,121 @@ public class TravelService {
                 .travelLikesIdx(travelLikes.getLikeIdx())
                 .build();
     }
-
-    public TravelAlbumResultDTO postTravelAlbum(String email, createTravelAlbumDTO request) {
+    public TravelAlbumResultDTO postTravelAlbum(String email, createTravelAlbumDTO request, Long travelIdx) {
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new DataNotFoundException("유저가 존재하지 않습니다."));
 
-        TravelBoard newTravel = new TravelBoard();
-        newTravel.setTitle(request.getTitle());
-        newTravel.setContent(request.getContent());
-        newTravel.setRegion(Region.valueOf(request.getRegion()));
-        newTravel.setStatDate(request.getStatDate());
-        newTravel.setEndDate(request.getEndDate());
-        newTravel.setUserIdx(user);
-        newTravel.setIsPublic(request.getIsPublic());
 
-        // 썸네일을 S3에 업로드
+        // travelIdx가 있는 경우 기존 TravelBoard를 가져와서 수정, 없는 경우 새로 생성
+
+        TravelBoard travelBoard = travelRepository.findById(Math.toIntExact(travelIdx)).orElseThrow(()-> new DataNotFoundException("x"));
+
+
+        // TravelBoard 필드 설정
+        travelBoard.setTitle(request.getTitle());
+        travelBoard.setContent(request.getContent());
+        travelBoard.setRegion(Region.valueOf(request.getRegion()));
+        travelBoard.setStatDate(request.getStatDate());
+        travelBoard.setEndDate(request.getEndDate());
+        travelBoard.setUserIdx(user);  // 유저 설정
+        travelBoard.setIsPublic(request.getIsPublic());
+
+        // 썸네일 처리 (새로운 파일이 있으면 덮어씌움)
         MultipartFile thumbnailFile = request.getThumbnail();
+        if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+            String thumbnailFileName =
+                    UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+            String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+            String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+            travelBoard.setThumbnail(thumbnailUrl);  // 썸네일 URL 설정
+        }
 
-        String thumbnailFileName =
-                UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
-        String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
-        String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
-
-        // 썸네일 URL 설정
-        newTravel.setThumbnail(thumbnailUrl);
-        travelRepository.save(newTravel);
+        // TravelBoard 저장 (신규 생성 또는 기존 수정)
+        travelRepository.save(travelBoard);
 
         // 사용자가 입력한 테마 리스트를 처리
         List<Theme> themes = request.getTravelThemeList().stream()
                 .map(themeRequest -> {
                     Theme theme = new Theme();
                     theme.setName(themeRequest.getName());
-                    theme.setTravelIdx(newTravel);  // 테마에 TravelBoard 설정
-                    return themeRepository.save(theme);
+                    theme.setTravelIdx(travelBoard);  // 테마에 TravelBoard 설정
+//                    return themeRepository.save(theme);
+                    return theme;
                 }).collect(Collectors.toList());
 
+        // 본문에서 이미지 URL 추출 및 저장
         List<String> imageUrls = extractImageUrlsFromContent(request.getContent());
         List<TravelImages> savedImgs = imageUrls.stream()
                 .map(imgUrl -> {
                     TravelImages travelImage = new TravelImages();
                     travelImage.setImagePath(imgUrl);
                     travelImage.setUploadedAt(LocalDateTime.now());
-                    travelImage.setTravelIdx(newTravel);  // 새로운 게시글과 연결
+                    travelImage.setTravelIdx(travelBoard);  // TravelBoard와 연결
                     return travelImage;
                 })
                 .collect(Collectors.toList());
 
-        travelImageRepository.saveAll(savedImgs);
         themeRepository.saveAll(themes);
+        travelImageRepository.saveAll(savedImgs);
+
 
         return TravelAlbumResultDTO.builder()
-                .travelIdx(newTravel.getId())
+                .travelIdx(travelBoard.getId())  // TravelBoard의 ID 반환
                 .build();
     }
+
+//    public TravelAlbumResultDTO postTravelAlbum(String email, createTravelAlbumDTO request, Long travelIdx) {
+//        Users user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new DataNotFoundException("유저가 존재하지 않습니다."));
+//
+//        TravelBoard newTravel = new TravelBoard();
+//        newTravel.setTitle(request.getTitle());
+//        newTravel.setContent(request.getContent());
+//        newTravel.setRegion(Region.valueOf(request.getRegion()));
+//        newTravel.setStatDate(request.getStatDate());
+//        newTravel.setEndDate(request.getEndDate());
+//        newTravel.setUserIdx(user);
+//        newTravel.setIsPublic(request.getIsPublic());
+//
+//        // 썸네일을 S3에 업로드
+//        MultipartFile thumbnailFile = request.getThumbnail();
+//
+//        String thumbnailFileName =
+//                UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+//        String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+//        String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+//
+//        // 썸네일 URL 설정
+//        newTravel.setThumbnail(thumbnailUrl);
+//        travelRepository.save(newTravel);
+//
+//        // 사용자가 입력한 테마 리스트를 처리
+//        List<Theme> themes = request.getTravelThemeList().stream()
+//                .map(themeRequest -> {
+//                    Theme theme = new Theme();
+//                    theme.setName(themeRequest.getName());
+//                    theme.setTravelIdx(newTravel);  // 테마에 TravelBoard 설정
+//                    return themeRepository.save(theme);
+//                }).collect(Collectors.toList());
+//
+//        List<String> imageUrls = extractImageUrlsFromContent(request.getContent());
+//        List<TravelImages> savedImgs = imageUrls.stream()
+//                .map(imgUrl -> {
+//                    TravelImages travelImage = new TravelImages();
+//                    travelImage.setImagePath(imgUrl);
+//                    travelImage.setUploadedAt(LocalDateTime.now());
+//                    travelImage.setTravelIdx(newTravel);  // 새로운 게시글과 연결
+//                    return travelImage;
+//                })
+//                .collect(Collectors.toList());
+//
+//        travelImageRepository.saveAll(savedImgs);
+//        themeRepository.saveAll(themes);
+//
+//        return TravelAlbumResultDTO.builder()
+//                .travelIdx(newTravel.getId())
+//                .build();
+//    }
 
     private List<String> extractImageUrlsFromContent(String content) {
         List<String> imageUrls = new ArrayList<>();
@@ -384,5 +447,15 @@ public class TravelService {
             dto.setCreatedAt(board.getUpdatedAt());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public TravelAlbumResponseDTO.TravelAlbumResultMapDTO createNullData() {
+
+        TravelBoard travelBoard = new TravelBoard();
+        TravelBoard response = travelRepository.save(travelBoard);
+        Long idx = Long.valueOf(response.getId());
+        return TravelAlbumResponseDTO.TravelAlbumResultMapDTO.builder()
+                .travelIdx(idx)
+                .build();
     }
 }

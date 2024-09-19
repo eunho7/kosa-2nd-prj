@@ -1,5 +1,8 @@
 package com.example._team.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +28,9 @@ public class TravelImages {
     @Column(nullable = false)
     private LocalDateTime uploadedAt;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "travel_idx")
+    @JsonBackReference    // 자식 엔티티에 적용
     private TravelBoard travelIdx;
 }
+
