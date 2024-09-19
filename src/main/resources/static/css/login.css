@@ -1,27 +1,22 @@
-        body {
+  body {
+            background-color: #f0f4f8;
             font-family: 'Arial', sans-serif;
-            min-height: 100vh;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
-            background-image: url('/images/main.jpg'); /* 배경 이미지 추가 */
-            background-size: cover; /* 이미지가 전체 화면을 덮도록 설정 */
-            background-position: center; /* 배경 이미지가 중앙에 위치하도록 설정 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .main-section {
-            background-color: rgba(255, 255, 255, 0.9); /* 투명도 조절 */
-            width: 100%;
-            max-width: 420px;
+        .container {
+            background-color: #ffffff;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            margin-top: 40px;
+            max-width: 900px;
+            height: 970px;
+            max-height: 970px;
             overflow: hidden;
-            transition: all 0.5s ease;
-            position: relative;
         }
+
 
         /* 온보딩 및 로그인 배경 */
         .onboarding-section, .login-section {
@@ -42,11 +37,11 @@
             display: none; /* 로그인 화면은 처음에는 보이지 않게 설정 */
         }
 
-        .container {
-            position: relative;
-            max-width: 350px;
-            width: 100%;
-        }
+        /*.container {*/
+        /*    position: relative;*/
+        /*    max-width: 350px;*/
+        /*    width: 100%;*/
+        /*}*/
 
         /* 온보딩 슬라이드 */
         .onboarding-slider {
@@ -69,18 +64,6 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             text-align: center;
-        }
-        .corner-text {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        font-size: 1.5rem;
-        color: #333;
-        font-weight: bold;
-        background-color: rgba(255, 255, 255, 0.7);
-        padding: 10px 15px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .onboarding-slide img {

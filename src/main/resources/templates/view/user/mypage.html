@@ -9,9 +9,10 @@
     <!-- Font Awesome for back arrow icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link th:href="@{/css/mypage.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
 </head>
 <body>
-<div class="main-section">
+<div class="container">
     <h2>마이페이지</h2>
     <p class="text-center text-muted">회원님의 정보를 확인하세요</p>
 
@@ -32,7 +33,11 @@
             <button type="submit" class="btn btn-danger">회원 탈퇴</button>
         </form>
     </div>
+
+    <div th:replace="fragments/footer :: bottomMenu"></div>
 </div>
+
+
 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -40,5 +45,6 @@
 <!-- Font Awesome Script for arrow icon -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 <script th:src="@{/js/mypage.js}"></script>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

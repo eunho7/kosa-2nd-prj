@@ -1,111 +1,124 @@
-        body {
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .main-section {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 420px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.5s ease;
-            position: relative;
-            padding: 40px 20px;
-        }
+.container {
+    background-color: #ffffff;
+    width: 900px;
+    max-width: 900px; /* Ensure max width matches .bottom-menu */
+    height: 970px;
+    max-height: 970px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.5s ease;
+    position: relative;
+    padding: 40px 20px;
+    margin-bottom: 60px; /* Add space for the bottom menu */
+}
 
-        h2 {
-            text-align: center;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-        }
+h2 {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
 
-        .card-body {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
+.card-body {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
 
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-        }
+.card-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
 
-        .card-text {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 15px;
-        }
+.card-text {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+}
 
-        .btn-primary, .btn-danger {
-            width: 100%;
-            padding: 12px;
-            font-size: 14px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 10px;
-        }
 
-        .btn-primary {
-            background-color: #4a90e2;
-            border-color: #4a90e2;
-            color: #fff;
-        }
+.btn-primary {
+    width: 100px;
+    padding: 12px;
+    font-size: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 10px;
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+    color: #fff;
+}
 
-        .btn-primary:hover {
-            background-color: #357ABD;
-        }
+.btn-danger {
+    width: 100px;
+    padding: 12px;
+    font-size: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 10px;
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+    color: #fff;
+}
 
-        .btn-danger {
-            background-color: #e74c3c;
-            border-color: #e74c3c;
-            color: #fff;
-        }
+.btn-primary:hover {
+    background-color: #357ABD;
+}
 
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
+.btn-danger {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+}
 
-        .form-inline {
-            display: inline;
-        }
+.btn-danger:hover {
+    background-color: #c0392b;
+}
 
-        .action-buttons {
-            margin-top: 30px;
-            text-align: center;
-        }
+.form-inline {
+    display: inline;
+}
 
-        /* 에러 메시지 */
-        .error-message {
-            color: red;
-            text-align: center;
-            margin-bottom: 10px;
-        }
+.action-buttons {
+    margin-top: 30px;
+    text-align: center;
+}
 
-        /* 화살표 뒤로가기 버튼 */
-        .back-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: none;
-            border: none;
-            color: #4a90e2;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 5px;
-        }
+/* Error message */
+.error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-        .back-btn:hover {
-            color: #357ABD;
-        }
+/* Back button */
+.back-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    color: #4a90e2;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.back-btn:hover {
+    color: #357ABD;
+}
