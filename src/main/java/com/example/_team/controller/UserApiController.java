@@ -31,7 +31,7 @@ public class UserApiController {
     @PostMapping("/user")
     public RedirectView signup(Users request){
         userService.save(request); //회원 가입 메서드 호출
-        return new RedirectView("/login"); //회원 가입이 완료된 이후에 로그인 페이지 이동
+        return new RedirectView("view/user/login"); //회원 가입이 완료된 이후에 로그인 페이지 이동
     }
 
     // 전화번호로 이메일 찾기
@@ -41,10 +41,10 @@ public class UserApiController {
 
         if (email != null) {
             model.addAttribute("email", email);
-            return "find-id-result"; // 리디렉션 없이 바로 결과 페이지 렌더링
+            return "view/user/find-id-result"; // 리디렉션 없이 바로 결과 페이지 렌더링
         } else {
             model.addAttribute("errorMessage", "해당 전화번호로 등록된 이메일이 없습니다.");
-            return "find-id-result"; // 리디렉션 없이 결과 페이지에서 오류 메시지 표시
+            return "view/user/find-id-result"; // 리디렉션 없이 결과 페이지에서 오류 메시지 표시
         }
     }
 
@@ -75,7 +75,7 @@ public class UserApiController {
         session.setAttribute("verificationCode", verificationCode);
         model.addAttribute("email", email);
         model.addAttribute("verificationCode", verificationCode);
-        return "signup"; // 인증번호 입력 후 회원가입 페이지 유지
+        return "view/user/signup"; // 인증번호 입력 후 회원가입 페이지 유지
     }
 
     // 인증번호 확인 및 회원가입 처리
@@ -91,7 +91,7 @@ public class UserApiController {
             return "redirect:/login";  // 인증 성공 후 로그인 페이지로 이동
         } else {
             model.addAttribute("error", "인증번호가 올바르지 않습니다.");
-            return "signup";  // 인증번호가 틀린 경우 다시 회원가입 페이지로 이동
+            return "view/user/signup";  // 인증번호가 틀린 경우 다시 회원가입 페이지로 이동
         }
     }
 
