@@ -10,26 +10,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
+            background-color: #f0f4f8;
             font-family: 'Arial', sans-serif;
-            min-height: 100vh;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .main-section {
+        .container {
             background-color: #ffffff;
-            width: 100%;
-            max-width: 420px;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            margin-top: 40px;
+            max-width: 900px;
+            height: 970px;
+            max-height: 970px;
             overflow: hidden;
-            transition: all 0.5s ease;
-            position: relative;
         }
+
 
         /* 온보딩 및 로그인 배경 */
         .onboarding-section, .login-section {
@@ -50,11 +48,11 @@
             display: none; /* 로그인 화면은 처음에는 보이지 않게 설정 */
         }
 
-        .container {
-            position: relative;
-            max-width: 350px;
-            width: 100%;
-        }
+        /*.container {*/
+        /*    position: relative;*/
+        /*    max-width: 350px;*/
+        /*    width: 100%;*/
+        /*}*/
 
         /* 온보딩 슬라이드 */
         .onboarding-slider {
@@ -188,35 +186,35 @@
     </style>
 </head>
 <body>
-<div class="main-section">
+<div class="container">
     <!-- 온보딩 슬라이드 -->
     <div class="onboarding-section" id="onboardingSection">
-        <div class="container">
-            <div class="onboarding-slider">
-                <div class="onboarding-slides" id="slidesContainer">
-                    <!-- 온보딩 시작 -->
-                    <div class="onboarding-slide">
-                        <img src="/images/image01.png" alt="온보딩 이미지">
-                        <h3>사진 업로드</h3>
-                        <p>여행 속 순간을 사진으로 기록하세요.</p>
-                    </div>
-                    <div class="onboarding-slide">
-                        <img src="/images/image02.png" alt="온보딩 이미지">
-                        <h3>지도에 핀</h3>
-                        <p>사진이 찍힌 장소를 지도에 표시하세요.</p>
-                    </div>
-                    <div class="onboarding-slide">
-                        <img src="/images/image03.png" alt="온보딩 이미지">
-                        <h3>경로 연결</h3>
-                        <p>발걸음을 이어 나만의 지도를 완성하세요.</p>
-                    </div>
-                    <div class="onboarding-slide">
-                        <img src="/images/image04.png" alt="온보딩 이미지">
-                        <h3>친구와 공유</h3>
-                        <p>완성된 여행 경로를 간편하게 공유하세요.</p>
-                    </div>
+        <!--        <div class="container">-->
+        <div class="onboarding-slider">
+            <div class="onboarding-slides" id="slidesContainer">
+                <!-- 온보딩 시작 -->
+                <div class="onboarding-slide">
+                    <img src="/images/image01.png" alt="온보딩 이미지">
+                    <h3>사진 업로드</h3>
+                    <p>여행 속 순간을 사진으로 기록하세요.</p>
+                </div>
+                <div class="onboarding-slide">
+                    <img src="/images/image02.png" alt="온보딩 이미지">
+                    <h3>지도에 핀</h3>
+                    <p>사진이 찍힌 장소를 지도에 표시하세요.</p>
+                </div>
+                <div class="onboarding-slide">
+                    <img src="/images/image03.png" alt="온보딩 이미지">
+                    <h3>경로 연결</h3>
+                    <p>발걸음을 이어 나만의 지도를 완성하세요.</p>
+                </div>
+                <div class="onboarding-slide">
+                    <img src="/images/image04.png" alt="온보딩 이미지">
+                    <h3>친구와 공유</h3>
+                    <p>완성된 여행 경로를 간편하게 공유하세요.</p>
                 </div>
             </div>
+            <!--            </div>-->
             <button class="btn btn-primary" id="loginToggleBtn" onclick="toggleLogin()">로그인</button>
             <button type="button" class="btn btn-secondary" onclick="location.href='/signup'">회원가입</button>
         </div>
@@ -232,11 +230,13 @@
             <form action="/login" method="POST">
                 <div class="form-group">
                     <label for="email">이메일 주소</label>
-                    <input type="email" class="form-control" id="email" name="username" placeholder="이메일을 입력하세요" required>
+                    <input type="email" class="form-control" id="email" name="username" placeholder="이메일을 입력하세요"
+                           required>
                 </div>
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요"
+                           required>
                 </div>
                 <!-- 로그인 실패 시 에러 메시지 출력 -->
                 <div th:if="${param.error}" class="error-message">

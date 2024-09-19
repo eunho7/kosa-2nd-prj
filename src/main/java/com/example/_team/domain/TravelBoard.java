@@ -58,13 +58,11 @@ public class TravelBoard extends BaseEntity {
 
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.ALL)
     private List<TravelLikes> likes = new ArrayList<>();
-//    public void addLike(TravelLikes like) {
-//        this.likes.add(like);
-//        this.likeCount++;
-//    }
-//
-//    public void removeLike(TravelLikes like) {
-//        this.likes.remove(like);
-//        this.likeCount--;
-//    }
+    public void addLike() {
+        this.likeCount++;
+    }
+
+    public void removeLike() {
+        this.likeCount--;
+    }
 }

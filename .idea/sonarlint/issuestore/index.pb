@@ -60,8 +60,6 @@ i
 9src/main/java/com/example/_team/service/BoardService.java,a/b/abd6c27c977bf3dccdea4b079a223c28dc2e34db
 o
 ?src/main/java/com/example/_team/repository/BoardRepository.java,d/c/dcd80e8b057fcd438068ae13000670da2e58553d
-q
-Asrc/main/java/com/example/_team/controller/UserApiController.java,9/2/92c0f61d5df27a016ccd60b69593e02aa155bd08
 r
 Bsrc/main/java/com/example/_team/controller/UserViewController.java,1/a/1afcae1f374c2a82c83046ebba1d37c0a21000ad
 e
@@ -74,7 +72,5 @@ r
 Bsrc/main/java/com/example/_team/controller/BoardApiController.java,d/b/db40ee5ecd5c751a855d120db3a8e21bec530688
 ~
 Nsrc/main/java/com/example/_team/web/dto/travelalbum/TravelAlbumRequestDTO.java,b/a/ba45347105f167a7b5baf823f57ecb864c2d0216
-p
-@src/main/java/com/example/_team/repository/TravelRepository.java,6/2/62f4100e7f800486ba91a78c70e91c25ce3b78c6
 7
 pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec

@@ -146,39 +146,6 @@ public class TravelService {
                 .build();
     }
 
-    public TravelAlbumLikesResultDTO postAlbumLikes(Integer travelIdx) {
-        TravelBoard travelBoard = travelRepository.findById(travelIdx)
-                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
-
-        boolean alreadyLiked = travelLikesRepository.existsByUserIdxAndTravelIdx(travelBoard.getUserIdx(), travelBoard);
-
-        if (alreadyLiked) {
-            throw new IllegalArgumentException("이미 이 앨범에 좋아요를 눌렀습니다.");
-        }
-
-        TravelLikes travelLikes = new TravelLikes();
-        travelLikes.setTravelIdx(travelBoard);
-        travelLikes.setUserIdx(travelBoard.getUserIdx());
-
-        travelLikesRepository.save(travelLikes);
-        return TravelAlbumLikesResultDTO.builder()
-                .travelLikesIdx(travelLikes.getLikeIdx())
-                .build();
-    }
-
-    public TravelAlbumLikesResultDTO cancelTravelAlbumLikes(Integer travelIdx) {
-        TravelBoard travelBoard = travelRepository.findById(travelIdx)
-                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
-
-        TravelLikes travelLikes = travelLikesRepository.findByUserIdxAndTravelIdx(travelBoard.getUserIdx(),
-                travelBoard);
-
-        travelLikesRepository.delete(travelLikes);
-
-        return TravelAlbumLikesResultDTO.builder()
-                .travelLikesIdx(travelLikes.getLikeIdx())
-                .build();
-    }
 
     public TravelAlbumResultDTO postTravelAlbum(String email, createTravelAlbumDTO request) {
         Users user = userRepository.findByEmail(email)
@@ -247,7 +214,6 @@ public class TravelService {
     public TravelAlbumDetailResponseDTO getTravelBoard(Integer id, Users user) {
         TravelBoard travelBoard = travelRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
-        Long postLikesCnt = travelLikesRepository.countAllByTravelIdx(travelBoard);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         String formattedDateRange =
@@ -278,7 +244,7 @@ public class TravelService {
                 .thumbnail(travelBoard.getThumbnail())
                 .region(travelBoard.getRegion().name())
                 .dateRange(formattedDateRange)
-                .postLikeCount(postLikesCnt)
+                .postLikeCount((long) travelBoard.getLikeCount())
                 .likedByCurrentUser(likedByCurrentUser)
                 .travelAlbumImageList(imageList)
                 .travelThemeList(themeList)
@@ -343,13 +309,17 @@ public class TravelService {
             boolean alreadyLiked = travelLikesRepository.existsByUserIdxAndTravelIdx(user, travel);
 
             if (isLike && !alreadyLiked) {
+                travel.addLike();
                 // 좋아요 추가
                 TravelLikes like = new TravelLikes();
                 like.setTravelIdx(travel);
                 like.setUserIdx(user);
+                travelRepository.save(travel);
                 travelLikesRepository.save(like);
                 return true;
             } else if (!isLike && alreadyLiked) {
+                travel.removeLike();
+                travelRepository.save(travel);
                 // 좋아요 취소
                 travelLikesRepository.deleteByTravelIdxAndUserIdx(travel, user);
                 return true;

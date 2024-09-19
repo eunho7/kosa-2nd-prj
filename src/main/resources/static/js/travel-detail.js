@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let isLiked = initialLikeStatus;
+    let likeCount = parseInt(likeCountElement.textContent, 10);
 
     function toggleLike() {
         const url = `/api/travel/like/${travelIdx}`;
@@ -29,6 +30,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     isLiked = !isLiked;
+                    if (isLiked) {
+                        likeCount++;
+                    } else {
+                        likeCount--;
+                    }
                     updateLikeUI();
                 } else {
                     alert('좋아요 처리에 실패했습니다.');
@@ -41,14 +47,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateLikeUI() {
+        likeCountElement.textContent = likeCount;
         if (isLiked) {
             likeIcon.classList.add('filled');
             likeIcon.classList.remove('empty');
-            likeCountElement.textContent = parseInt(likeCountElement.textContent) + (likeCountElement.textContent === '0' ? 1 : 0);
         } else {
             likeIcon.classList.add('empty');
             likeIcon.classList.remove('filled');
-            likeCountElement.textContent = parseInt(likeCountElement.textContent) - (likeCountElement.textContent === '1' ? 1 : 0);
         }
     }
 
