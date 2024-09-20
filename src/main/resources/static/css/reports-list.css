@@ -26,6 +26,14 @@ body {
     text-align: center; /* 가운데 정렬 */
 }
 
+h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+}
+
 .main-section {
     position: relative;
     max-width: 100%;

@@ -1,36 +1,20 @@
 body {
+    background-color: #f0f4f8;
     font-family: 'Arial', sans-serif;
-    min-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.main-section {
+.container {
     background-color: #ffffff;
-    width: 100%;
-    max-width: 800px;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 5em;
+    margin-top: 40px;
+    max-width: 900px;
+    height: 970px;
+    max-height: 970px;
     overflow: hidden;
-    transition: all 0.5s ease;
-    position: relative;
-    display: flex;
-    flex-direction: column; /* 세로 방향으로 요소 배치 */
-}
-
-.mypage-container {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    max-width: 600px;
-    width: 100%;
-    margin: 20px;
-    animation: fadeIn 1s ease-in-out;
 }
 
 h2 {
@@ -91,4 +75,13 @@ h2 {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+legend {
+    font-weight: 700;
+}
+
+label {
+    font-size: 18px; /* 글씨 크기 */
+    margin-top: 10px; /* 간격 조절 */
 }

@@ -12,31 +12,49 @@
     <title>신고 작성</title>
 </head>
 <body>
-<div class="mypage-container">
+<div class="container">
     <h2>게시글 신고</h2>
     <form th:action="@{/reports}" method="POST" class="form-inline" onsubmit="return confirmDeactivation();">
         <fieldset>
             <div class="mb-3">
-                <label for="urlbound" class="form-label">게시글 URL</label>
+                <label for="urlbound" class="form-label">1. 게시글 URL</label>
                 <div th:text="${url}" type="text" id="urlbound" class="form-control">가나다라</div>
             </div>
             <div class="mb-3">
-                <label for="titlebound" class="form-label">게시글 제목</label>
+                <label for="titlebound" class="form-label">2. 게시글 제목</label>
                 <div th:text="${board.title}" type="text" id="titlebound" class="form-control">가나다라</div>
             </div>
             <hr/>
             <div class="mb-3">
                 <legend>신고 내용</legend>
-                <select name="content" class="form-select">
-                    <option value="none">== 선택 ==</option>
-                    <option value="commercial_promotion">영리목적/홍보성</option>
-                    <option value="illegal_information">불법정보</option>
-                    <option value="abuse_personal_attack">욕설/인신공격</option>
-                    <option value="spam_repetition">같은 내용 반복(도배)</option>
-                    <option value="personal_information_exposure">개인 정보 노출</option>
-                    <option value="obscene_content">음란성/선정성</option>
-                    <option value="other">기타</option>
-                </select>
+                <label>
+                    <input type="radio" name="content" value="commercial_promotion">
+                    영리목적/홍보성
+                </label><br>
+                <label>
+                    <input type="radio" name="content" value="illegal_information">
+                    불법정보
+                </label><br>
+                <label>
+                    <input type="radio" name="content" value="abuse_personal_attack">
+                    욕설/인신공격
+                </label><br>
+                <label>
+                    <input type="radio" name="content" value="spam_repetition">
+                    같은 내용 반복(도배)
+                </label><br>
+                <label>
+                    <input type="radio" name="content" value="personal_information_exposure">
+                    개인 정보 노출
+                </label><br>
+                <label>
+                    <input type="radio" name="content" value="obscene_content">
+                    음란성/선정성
+                </label><br>
+                <label>
+                    <input type="radio" name="content" value="other">
+                    기타
+                </label>
             </div>
         </fieldset>
         <div class="action-buttons">

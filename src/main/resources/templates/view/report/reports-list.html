@@ -12,7 +12,7 @@
 <div class="container">
     <section class="register-section" id="container">
         <header class="headr-title">
-            <h1>신고글 관리자 게시판</h1>
+            <h2>신고글 관리자 게시판</h2>
         </header>
         <form id="actionForm" class="main-section" method="POST">
             <table class="table table-hover">
@@ -66,14 +66,14 @@
             </table>
         </form>
         <section id="container-user">
-            <!-- Left section for 전체 선택/해제 -->
+            <!-- 왼쪽 전체 선택/해제 -->
             <div class="left-section">
                 <label>
                     <input type="checkbox" id="allCheckBox" onclick="allChecked()">
                     전체 선택/해제
                 </label>
             </div>
-            <!-- Center section for pagination -->
+            <!-- 가운데 pagination -->
             <div class="center-section" th:if="${page.totalPages > 1}">
                 <ul class="pagination">
                     <!-- 이전 버튼 -->
@@ -97,7 +97,7 @@
                     </li>
                 </ul>
             </div>
-            <!-- Right section for buttons -->
+            <!-- 오른쪽 버튼 -->
             <div class="right-section">
                 <button type="button" class="btn btn-danger" onclick="submitForm('/admin/reports/delete')">삭제</button>
                 <button type="button" class="btn btn-primary" onclick="submitForm('/admin/reports/inactive')">활성/비활성</button>
