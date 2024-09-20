@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <link rel="stylesheet" type="text/css" href="/css/reports-list.css">
     <title>신고글 관리자 게시판</title>
 </head>
-
 <body>
-<div class="main-section">
+<div class="container">
     <section class="register-section" id="container">
         <header class="headr-title">
             <h1>신고글 관리자 게시판</h1>
         </header>
-        <form id="actionForm" class="container" method="POST">
+        <form id="actionForm" class="main-section" method="POST">
             <table class="table table-hover">
                 <colgroup>
                     <col width=5%>
@@ -108,4 +107,5 @@
     <div th:replace="fragments/footer :: bottomMenu"></div>
 </div>
 <script src="/js/reports-list.html.js"></script>
+</body>
 </html>
