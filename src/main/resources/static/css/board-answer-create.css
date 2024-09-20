@@ -1,27 +1,20 @@
 body {
+    background-color: #f0f4f8;
     font-family: 'Arial', sans-serif;
-    min-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: #f0f4f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.post-container {
+.container {
     background-color: #ffffff;
-    width: 100%;
-    max-width: 900px;
-    height: 970px; /* 높이를 970px로 고정 */
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    overflow: auto; /* 내용이 높이를 초과할 경우 스크롤 표시 */
-    transition: all 0.5s ease;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 20px; /* padding 추가 */
+    padding: 5em;
+    margin-top: 40px;
+    max-width: 900px;
+    height: 970px;
+    max-height: 970px;
+    overflow: hidden;
 }
 
 h2 {
