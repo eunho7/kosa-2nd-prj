@@ -46,6 +46,8 @@
     </div>
 
     <div class="action-buttons">
+        <!-- 작성자 : 신은호, 내용 : admin 게시판 버튼 생성 -->
+        <a href="/admin/reports/list" class ="btn btn-danger" th:attr="hidden=${user.getAuthority() != user.authority.ROLE_ADMIN}">신고 게시판</a>
         <a href="/mypage/change-password" class="btn btn-primary">비밀번호 변경</a>
         <a href="/logout" class="btn btn-primary">로그아웃</a>
         <form th:action="@{/mypage/deactivate}" method="POST" class="form-inline" onsubmit="return confirmDeactivation();">
