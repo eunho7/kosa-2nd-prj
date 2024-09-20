@@ -237,12 +237,17 @@
     var markers = JSON.parse(markersList);
 
     // 구글 맵에 마커 추가
-    function initMap() {
-        const seoul = { lat: 37.5665, lng: 126.9780 };
-        const map = new google.maps.Map(document.getElementById('map'), {
-            center: seoul,
-            zoom: 10
-        });
+        function initMap() {
+            // 마커가 있을 경우, 첫 번째 마커의 위치로 중심을 설정
+            let initialCenter = { lat: 37.5665, lng: 126.9780 }; // 기본값: 서울
+            if (markers.length > 0) {
+                initialCenter = { lat: markers[0].latitude, lng: markers[0].longitude }; // 첫 번째 마커의 위치로 중심 설정
+            }
+
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: initialCenter,
+                zoom: 12
+            });
 
         // 마커 데이터를 저장할 배열
         const markerPositions = [];
@@ -271,7 +276,7 @@
             },
             title: markerData.placeName,
             icon: {
-                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // 아이콘을 커스터마이징할 경우 사용
+                url: "http://maps.google.com/mapfiles/ms/icons/red.png", // 아이콘을 커스터마이징할 경우 사용
                 labelOrigin: new google.maps.Point(15, 10) // 레이블 위치 조정
             }
         });

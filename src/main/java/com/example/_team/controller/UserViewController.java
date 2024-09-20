@@ -5,13 +5,11 @@ import com.example._team.service.UserService;
 import jakarta.mail.MessagingException;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserViewController {
@@ -58,10 +56,23 @@ public class UserViewController {
     }
 
     @PostMapping("/mypage/edit")
-    public String updateUserInfo(@ModelAttribute Users updatedUser) {
-        userService.updateUser(updatedUser);  // 인스턴스의 메서드 호출
-        return "redirect:/mypage";  // 정보 수정 후 마이페이지로 리디렉션
+    public ResponseEntity<String> updateUserInfo(@RequestBody Users updatedUser) {
+        if (updatedUser.getUserIdx() == null) {
+            throw new IllegalArgumentException("The given id must not be null");
+        }
+
+        Users user = userService.findByEmail(String.valueOf(updatedUser.getUserIdx()));
+
+
+        user.setNickname(updatedUser.getNickname());
+        user.setPhone(updatedUser.getPhone());
+
+        userService.save(user);
+
+        return ResponseEntity.ok("User updated successfully");
     }
+
+
     // 비밀번호 변경 페이지
     @GetMapping("/mypage/change-password")
     public String changePasswordForm() {

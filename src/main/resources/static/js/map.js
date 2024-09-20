@@ -17,7 +17,7 @@ function initMap() {
 
     map = new google.maps.Map(document.getElementById("map"), {
         center: seoul,
-        zoom: 13
+        zoom: 12
     });
 
     infowindow = new google.maps.InfoWindow();
