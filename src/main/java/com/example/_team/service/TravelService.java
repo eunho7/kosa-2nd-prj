@@ -16,6 +16,7 @@ import com.example._team.repository.UserRepository;
 import com.example._team.service.global.DateUtils;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumByDate;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumLikesResultDTO;
@@ -24,6 +25,7 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumR
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultMapDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumUpdateRequestDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -107,47 +109,55 @@ public class TravelService {
         }).collect(Collectors.toList());
     }
 
-    public TravelAlbumDetailResponseDTO getRandomTravelAlbum() {
+    public List<TravelAlbumDetailResponseDTO> getRandomTravelAlbums() {
         // 여행앨범 랜덤 조회
-        TravelBoard travelBoard = travelRepository.findRandomTravelBoard();
+        List<TravelBoard> travelBoards = travelRepository.findRandomTravelBoards();
 
-        if (travelBoard == null) {
+        if (travelBoards.isEmpty()) {
             throw new DataNotFoundException("여행 앨범이 존재하지 않습니다.");
         }
+
+        List<TravelAlbumDetailResponseDTO> responseList = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        String formattedDateRange =
-                travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
 
-        // 이미지 리스트 조회
-        List<TravelAlbumImageListDTO> imageList = travelImageRepository.findByTravelIdx(travelBoard)
-                .stream()
-                .map(image -> TravelAlbumImageListDTO.builder()
-                        .id(image.getImageIdx())
-                        .imagePath(image.getImagePath())
-                        .build())
-                .collect(Collectors.toList());
+        for (TravelBoard travelBoard : travelBoards) {
+            String formattedDateRange =
+                    travelBoard.getStatDate().format(formatter) + " - " + travelBoard.getEndDate().format(formatter);
 
-        // 테마 리스트 조회
-        List<TravelThemeListDTO> themeList = themeRepository.findByTravelIdx(travelBoard)
-                .stream()
-                .map(theme -> TravelThemeListDTO.builder()
-                        .id(theme.getThemeIdx())
-                        .name(theme.getName())
-                        .build())
-                .collect(Collectors.toList());
+            // 이미지 리스트 조회
+            List<TravelAlbumImageListDTO> imageList = travelImageRepository.findByTravelIdx(travelBoard)
+                    .stream()
+                    .map(image -> TravelAlbumImageListDTO.builder()
+                            .id(image.getImageIdx())
+                            .imagePath(image.getImagePath())
+                            .build())
+                    .collect(Collectors.toList());
 
-        return TravelAlbumDetailResponseDTO.builder()
-                .id(travelBoard.getId())
-                .nickname(travelBoard.getUserIdx().getNickname()) // Users 엔티티의 닉네임
-                .dateRange(formattedDateRange) // 여행 날짜
-                .region(travelBoard.getRegion().toString()) // 지역
-                .thumbnail(travelBoard.getThumbnail()) // 썸네일
-                .title(travelBoard.getTitle()) // 타이틀
-                .travelAlbumImageList(imageList) // 이미지 리스트
-                .travelThemeList(themeList) // 테마 리스트
-                .build();
+            // 테마 리스트 조회
+            List<TravelThemeListDTO> themeList = themeRepository.findByTravelIdx(travelBoard)
+                    .stream()
+                    .map(theme -> TravelThemeListDTO.builder()
+                            .id(theme.getThemeIdx())
+                            .name(theme.getName())
+                            .build())
+                    .collect(Collectors.toList());
+
+            TravelAlbumDetailResponseDTO responseDTO = TravelAlbumDetailResponseDTO.builder()
+                    .id(travelBoard.getId())
+                    .nickname(travelBoard.getUserIdx().getNickname()) // Users 엔티티의 닉네임
+                    .dateRange(formattedDateRange) // 여행 날짜
+                    .region(travelBoard.getRegion().toString()) // 지역
+                    .thumbnail(travelBoard.getThumbnail()) // 썸네일
+                    .title(travelBoard.getTitle()) // 타이틀
+                    .travelAlbumImageList(imageList) // 이미지 리스트
+                    .travelThemeList(themeList) // 테마 리스트
+                    .build();
+
+            responseList.add(responseDTO);
+        }
+
+        return responseList;
     }
-
 
     public TravelAlbumResultDTO postTravelAlbum(String email, createTravelAlbumDTO request, Long travelIdx) {
         Users user = userRepository.findByEmail(email)
@@ -259,6 +269,7 @@ public class TravelService {
                 .dateRange(formattedDateRange)
                 .postLikeCount(postLikesCnt)
                 .likedByCurrentUser(likedByCurrentUser)
+                .isPublic(travelBoard.getIsPublic())
                 .travelAlbumImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
@@ -363,5 +374,58 @@ public class TravelService {
         return TravelAlbumResponseDTO.TravelAlbumResultMapDTO.builder()
                 .travelIdx(idx)
                 .build();
+    }
+
+    public List<TravelAlbumByDate> getTravelAlbumByDate () {
+        List<TravelBoard> travelBoards = travelRepository.findRecentPublicAlbumsNative();
+        return travelBoards.stream().map(board -> {
+            TravelAlbumByDate dto = new TravelAlbumByDate();
+            dto.setNickName(board.getUserIdx().getNickname());
+            dto.setTitle(board.getTitle());
+            dto.setDateRange(DateUtils.formatDateRange(board.getStatDate(), board.getEndDate()));
+            dto.setThumbnail(board.getThumbnail());
+            dto.setId(board.getId());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public boolean updateTravelBoard(Integer travelIdx, TravelAlbumUpdateRequestDTO request, Users user) {
+        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        // 현재 사용자가 소유자인지 확인
+        if (!travelBoard.getUserIdx().equals(user)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        // 여행 보드 업데이트
+        travelBoard.setTitle(request.getTitle());
+        travelBoard.setContent(request.getContent());
+        travelBoard.setRegion(Region.valueOf(request.getRegion()));
+        travelBoard.setStatDate(request.getStatDate());
+        travelBoard.setEndDate(request.getEndDate());
+        travelBoard.setIsPublic(request.getIsPublic());
+
+        // 썸네일 이미지가 새로 업로드된 경우
+        if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
+            MultipartFile thumbnailFile = request.getThumbnail();
+            String thumbnailFileName = UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+            String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+            String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+            travelBoard.setThumbnail(thumbnailUrl);
+        }
+
+        // 테마 업데이트 (기존 테마 삭제 후 새로운 테마 추가)
+        themeRepository.deleteByTravelIdx(travelBoard);
+        request.getTravelThemeList().forEach(themeRequest -> {
+            Theme theme = new Theme();
+            theme.setName(themeRequest.getName());
+            theme.setTravelIdx(travelBoard);
+            themeRepository.save(theme);
+        });
+
+        travelRepository.save(travelBoard);
+        return true;
     }
 }

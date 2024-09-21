@@ -19,17 +19,19 @@ public interface TravelRepository extends JpaRepository<TravelBoard, Integer> {
             "JOIN theme th ON th.travel_id = t.id " +
             "WHERE th.name = :name AND t.is_public = :is_public and t.region = :region", nativeQuery = true)
     List<Object[]> findAllByThemeAndRegionAndIsPublic(@Param("name") String name,
-                                                         @Param("region") String region,
-                                                         @Param("is_public") Integer is_public);
-    @Query(value = "SELECT * FROM (SELECT t.* FROM travel_board t ORDER BY DBMS_RANDOM.VALUE) WHERE ROWNUM = 1", nativeQuery = true)
-    TravelBoard findRandomTravelBoard();
+                                                      @Param("region") String region,
+                                                      @Param("is_public") Integer is_public);
+    @Query(value = "SELECT * FROM (SELECT t.* FROM travel_board t ORDER BY DBMS_RANDOM.VALUE) WHERE ROWNUM <= 5", nativeQuery = true)
+    List<TravelBoard> findRandomTravelBoards();
 
-    List<TravelBoard> findAllByUserIdx(@Param("userIdx") Users userIdx);
 
     // 좋아요 및 최신순 정렬
     @Query("SELECT tb FROM TravelBoard tb WHERE tb.userIdx = :userIdx ORDER BY " +
             "CASE WHEN :sort = 'likes' THEN tb.likeCount END DESC, " +
             "CASE WHEN :sort = 'latest' THEN tb.createdAt END DESC")
     List<TravelBoard> findAllByUserIdxSorted(@Param("userIdx") Users userIdx, @Param("sort") String sort);
+
+    @Query(value = "SELECT * FROM (SELECT * FROM travel_board WHERE is_public = 1 ORDER BY created_at DESC) WHERE ROWNUM <= 4", nativeQuery = true)
+    List<TravelBoard> findRecentPublicAlbumsNative();
 
 }

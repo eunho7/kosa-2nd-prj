@@ -109,7 +109,7 @@ public class UserService {
         </p>
         <hr style="border: none; border-top: 1px solid #ddd;">
         <p style="font-size: 12px; color: #999; text-align: center;">
-            &mdash; Team Name
+            &mdash; 촬칵! Team
         </p>
     </div>
     """.formatted(resetLink);
@@ -175,7 +175,7 @@ public class UserService {
     @Transactional
     public Long save(Users dto) {
 
-        // 예시: DTO에 대한 유효성 검사 추가
+        //  DTO에 대한 유효성 검사 추가
         if (dto.getEmail() == null || dto.getPassword() == null || dto.getNickname() == null || dto.getPhone() == null) {
             throw new IllegalArgumentException("필수 입력 값이 누락되었습니다.");
         }
