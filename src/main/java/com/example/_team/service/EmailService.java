@@ -51,7 +51,7 @@ public class EmailService {
             </div>
             <p style="font-size: 14px; color: #777; text-align: center;">
                 인증번호는 10분간 유효합니다. 감사합니다.<br><br>
-                <strong>Team</strong> 드림
+                <strong>촬칵! Team</strong> 드림
             </p>
             <hr style="border: none; border-top: 1px solid #ddd;">
             <p style="font-size: 12px; color: #999; text-align: center;">

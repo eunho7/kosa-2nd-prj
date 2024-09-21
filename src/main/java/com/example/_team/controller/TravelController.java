@@ -12,15 +12,18 @@ import com.example._team.service.TravelService;
 import com.example._team.service.UserService;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumByDate;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
-import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultMapDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumUpdateRequestDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -95,9 +98,17 @@ public class TravelController {
     @GetMapping("/random")
     public String getRandomTravelAlbum(Model model) {
 
-        TravelAlbumDetailResponseDTO response = travelService.getRandomTravelAlbum();
-        model.addAttribute("response", response);
+        List<TravelAlbumDetailResponseDTO> randomResponses = travelService.getRandomTravelAlbums();
+        // 최신순으로 4개
+        List<TravelAlbumByDate> dateRangeRes = travelService.getTravelAlbumByDate();
+        model.addAttribute("randomResponses", randomResponses);
+        model.addAttribute("dateRangeRes", dateRangeRes);
         return "view/travel/random-list";
+    }
+
+    @GetMapping("/editor")
+    public String getEditor() {
+        return "view/travel/editor";
     }
 
     @PostMapping("/like/{travelIdx}")
@@ -130,6 +141,7 @@ public class TravelController {
     @PostMapping("/create")
     public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request, @RequestParam("albumId") Long albumId,
                                     RedirectAttributes redirectAttributes) {
+        System.out.println("왔니?");
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request,albumId);
         redirectAttributes.addAttribute("id", response.getTravelIdx());
@@ -164,6 +176,24 @@ public class TravelController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/edit/upload-image")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> uploadImageEditor(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = UUID.randomUUID().toString().substring(0, 10) + "-" + file.getOriginalFilename();
+            String keyName = "travel/images/" + fileName;
+            String fileUrl = s3ImgService.uploadFile(keyName, file);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("url", fileUrl);  // Editor.js가 요구하는 응답 형식
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외 로그
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -216,5 +246,62 @@ public class TravelController {
         model.addAttribute("response", response);
 
         return "view/travel/my-random-list";
+    }
+
+    // 수정 폼 페이지
+    @GetMapping("/update/{travelIdx}")
+    public String updateTravelBoard(@PathVariable Integer travelIdx, Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userService.findByEmail(email);
+        TravelAlbumDetailResponseDTO response = travelService.getTravelBoard(travelIdx, user);
+        String dateRange = response.getDateRange();
+
+        // System.out.println()을 사용하여 isPublic 값 출력 - 현재 콘솔 창: isPublic value: null
+        System.out.println("isPublic value: " + response.getIsPublic());
+
+        System.out.println("Thumbnail value: " + response.getThumbnail());
+
+        // 날짜 포맷터 생성
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+
+        // 문자열을 각각 시작일과 종료일로 분리
+        String[] dates = dateRange.split(" - ");
+
+        // 문자열을 LocalDate로 변환
+        LocalDate startDate = LocalDate.parse(dates[0], formatter);
+        LocalDate endDate = LocalDate.parse(dates[1], formatter);
+
+        model.addAttribute("response", response);
+        model.addAttribute("user", user);
+        model.addAttribute("startDate",startDate);
+        model.addAttribute("endDAte",endDate);
+        System.out.println(response.getContent());
+        // 공개여부 추가
+        model.addAttribute("ispublic", response.getIsPublic());
+
+        return "view/travel/edit";
+    }
+
+    // 수정 완료 후
+    @PostMapping("/update/{travelIdx}")
+    public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
+                                          @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
+                                          RedirectAttributes redirectAttributes) {
+        // 현재 로그인한 사용자의 이메일 정보로 사용자 확인
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userService.findByEmail(email);
+
+        // 여행 보드 업데이트 시도
+        boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
+
+        if (updateResult) {
+            // 수정 성공 시 해당 여행보드 상세 페이지로 리다이렉트
+            redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
+            return "redirect:/api/travel/detail/" + travelIdx;
+        } else {
+            // 수정 실패 시 다시 수정 페이지로 리다이렉트
+            redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
+            return "redirect:/api/travel/update/" + travelIdx;
+        }
     }
 }

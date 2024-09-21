@@ -1,108 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Travel Album Upload</title>-->
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">-->
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">-->
-<!--    <link rel="stylesheet" th:href="@{/css/upload.css}">-->
-<!--</head>-->
-<!--<body>-->
-<!--<script src="https://cdn.tiny.cloud/1/ajckn3vmt9uxztu8lb8qylzs2i0zmacodhm03vttrtcs1q88/tinymce/5/tinymce.min.js"-->
-<!--        referrerpolicy="origin"></script>-->
-<!--<script th:src="@{/js/upload.js}"></script>-->
-
-<!--<script th:inline="javascript">-->
-<!--    const albumId = /*[[${albumId}]]*/;  // 서버에서 받은 albumId-->
-<!--    document.addEventListener('DOMContentLoaded', function () {-->
-<!--        document.getElementById('addLocation').addEventListener('click', function () {-->
-<!--            openMapPopup();  // 앨범 ID를 이용하여 팝업 호출-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
-<!--<div class="container">-->
-<!--    <button class="back-btn" onclick="history.back()">-->
-<!--        <i class="fas fa-arrow-left"></i>-->
-<!--    </button>-->
-<!--    <h1>여행 앨범 업로드</h1>-->
-
-<!--    <form th:action="@{/api/travel/create}" method="post" enctype="multipart/form-data">-->
-<!--        <div class="mb-3">-->
-<!--            <label for="title" class="form-label">앨범 제목</label>-->
-<!--            <input type="text" class="form-control" id="title" name="title" required>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="region" class="form-label">지역</label>-->
-<!--            <select id="region" name="region" class="form-select" required>-->
-<!--                <option value="서울">서울</option>-->
-<!--                <option value="인천">인천</option>-->
-<!--                <option value="부산">부산</option>-->
-<!--                <option value="대구">대구</option>-->
-<!--                <option value="광주">광주</option>-->
-<!--                <option value="대전">대전</option>-->
-<!--                <option value="울산">울산</option>-->
-<!--                <option value="세종">세종</option>-->
-<!--                <option value="경기도">경기도</option>-->
-<!--                <option value="강원도">강원도</option>-->
-<!--                <option value="충청도">충청도</option>-->
-<!--                <option value="전라도">전라도</option>-->
-<!--                <option value="경상도">경상도</option>-->
-<!--                <option value="제주도">제주도</option>-->
-<!--            </select>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="statDate" class="form-label">여행 시작일</label>-->
-<!--            <input type="date" class="form-control" id="statDate" name="statDate" required>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="endDate" class="form-label">여행 종료일</label>-->
-<!--            <input type="date" class="form-control" id="endDate" name="endDate" required onchange="validateEndDate()">-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="thumbnail" class="form-label">대표사진</label>-->
-<!--            <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" required/>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="content" class="form-label">여행 내용</label>-->
-<!--            <textarea id="content" class="form-control" name="content"></textarea>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="addLocation" class="form-label">위치추가</label>-->
-<!--            <button type="button" class="btn btn-secondary" onclick="openMapPopup()">위치추가</button>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label class="form-label">공개 여부</label>-->
-<!--            <div>-->
-<!--                <label class="radio-inline">-->
-<!--                    <input type="radio" name="isPublic" value="true" required> 공개-->
-<!--                </label>-->
-<!--                <label class="radio-inline">-->
-<!--                    <input type="radio" name="isPublic" value="false"> 비공개-->
-<!--                </label>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--            <label for="themeInput" class="form-label">테마</label>-->
-<!--            <input type="text" id="themeInput" class="form-control"-->
-<!--                   placeholder="Enter theme and press Space"/>-->
-<!--            <div id="tagContainer" class="mt-2"></div>-->
-<!--        </div>-->
-<!--        <div id="hiddenFieldsContainer"></div>-->
-
-<!--        <button type="submit" class="btn btn-primary">앨범 업로드</button>-->
-<!--    </form>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -113,25 +8,39 @@
 
     <style>
         body {
-            background: linear-gradient(to right, #8e44ad, #3498db);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #f0f4f8;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        .upload-container {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 700px;
-            width: 100%;
-            margin: 20px;
-            animation: fadeIn 1s ease-in-out;
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            margin-top: 40px;
+            max-width: 900px;
+            height: auto;
+            overflow: visible;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: none;
+            border: none;
+            color: #007bff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .back-btn:hover {
+            color: #0056b3;
         }
 
         h1 {
@@ -139,6 +48,46 @@
             margin-bottom: 20px;
             color: #333;
             font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 12px rgba(0, 91, 187, 0.3);
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .image-preview {
+            width: calc(33.33% - 10px);
+            height: auto;
         }
 
         .tag {
@@ -147,7 +96,6 @@
             margin: 2px;
             background-color: #e0e0e0;
             border-radius: 3px;
-            cursor: default;
         }
 
         .tag-close {
@@ -155,83 +103,131 @@
             cursor: pointer;
         }
 
-        .btn-primary {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .radio-inline {
             display: inline-block;
             margin-right: 10px;
         }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            margin-top: 20px;
+        }
+
+        .image-tool__image {
+            width: 100% !important; /* 너비 조정 */
+            height: auto !important; /* 높이 조정 */
+            overflow: hidden; /* 넘치는 이미지 숨기기 */
+            position: relative; /* 이미지 위치 조정 */
+        }
+
+        .image-tool__image img {
+            width: 100% !important; /* 부모 요소에 맞게 조정 */
+            height: auto !important; /* 비율 유지 */
+            object-fit: contain !important; /* 비율 유지하며 잘림 */
+        }
+
+        .image-tool__caption {
+            display: none; /* 요소를 숨깁니다 */
+        }
     </style>
 
-    <script src="https://cdn.tiny.cloud/1/ajckn3vmt9uxztu8lb8qylzs2i0zmacodhm03vttrtcs1q88/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: '#content',
-            plugins: 'image code media link',
-            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | image media link code',
-            automatic_uploads: true,
-            images_upload_handler: function (blobInfo, success, failure) {
-                let xhr = new XMLHttpRequest();
-                xhr.open('POST', '/api/travel/upload-image');
-                xhr.onload = function () {
-                    if (xhr.status !== 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
-                    }
 
-                    let json = JSON.parse(xhr.responseText);
-                    if (!json || typeof json.location != 'string') {
-                        failure('Invalid JSON: ' + xhr.responseText);
-                        return;
-                    }
-                    success(json.location);
-                };
-                xhr.onerror = function () {
-                    failure('XHR Error: ' + xhr.status);
-                };
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.3.0/dist/bundle.js"></script>
 
-                let formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                xhr.send(formData);
-            }
+    <script type="module">
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            tools: {
+                image: {
+                    class: ImageTool,
+                    config: {
+                        uploader: {
+                            uploadByFile(file) {
+                                return new Promise((resolve, reject) => {
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+
+                                    fetch('/api/travel/edit/upload-image', {
+                                        method: 'POST',
+                                        body: formData,
+                                    })
+                                        .then(response => response.json())
+                                        .then(result => {
+                                            resolve({
+                                                success: 1,
+                                                file: {
+                                                    url: result.url,
+                                                },
+                                            });
+                                        })
+                                        .catch(error => {
+                                            reject(error);
+                                        });
+                                });
+                            },
+                        },
+                        // 이미지가 업로드된 후 크기를 조정하는 함수
+                        onUpload: (response) => {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'image-wrapper'; // .image-wrapper 클래스 추가
+
+                            const img = document.createElement('img');
+                            img.src = response.file.url;
+                            img.style.width = '100%'; // 이미지 너비
+                            img.style.height = '100%'; // 이미지 높이
+                            img.style.objectFit = 'cover'; // 비율 유지
+
+                            wrapper.appendChild(img);
+                            return wrapper; // wrapper를 반환
+                        }
+                    },
+                },
+            },
         });
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('form').addEventListener('submit', function (event) {
-                tinymce.get('content').save();
-                // Validate form fields
-                const title = document.getElementById('title').value.trim();
-                const region = document.getElementById('region').value.trim();
-                const statDate = document.getElementById('statDate').value.trim();
-                const endDate = document.getElementById('endDate').value.trim();
-                const content = document.getElementById('content').value.trim();
-                const thumbnail = document.getElementById('thumbnail').files.length > 0;
-                const isPublic = document.querySelector('input[name="isPublic"]:checked') !== null;
+                event.preventDefault();
+                editor.save().then((outputData) => {
+                    if (outputData.blocks) {
+                        outputData.blocks.forEach(block => {
+                            if (block.data.text) {
+                                block.data.text = block.data.text
+                                    .replace(/<br\s*\/?>/g, ' ') // <br> 태그 제거
+                                    .replace(/&nbsp;/g, ' ') // &nbsp; 제거
+                                    .trim();
+                            }
+                        });
+                    }
+                    const contentInput = document.createElement('input');
+                    contentInput.type = 'hidden';
+                    contentInput.name = 'content';
+                    contentInput.value = JSON.stringify(outputData); // JSON.stringify를 사용하여 출력 데이터 변환
+                    this.appendChild(contentInput);
 
-                if (!title || !region || !statDate || !endDate || !thumbnail || !isPublic || !content) {
-                    alert('모든 필드를 올바르게 입력해 주세요.');
+                    // Validate form fields
+                    const title = document.getElementById('title').value.trim();
+                    const region = document.getElementById('region').value.trim();
+                    const statDate = document.getElementById('statDate').value.trim();
+                    const endDate = document.getElementById('endDate').value.trim();
+                    const thumbnail = document.getElementById('thumbnail').files.length > 0;
+                    const isPublic = document.querySelector('input[name="isPublic"]:checked') !== null;
+
+                    if (!title || !region || !statDate || !endDate || !thumbnail || !isPublic) {
+                        alert('모든 필드를 올바르게 입력해 주세요.');
+                        event.preventDefault();  // 폼 제출 방지
+                    } else {
+                        console.log('모든 필드가 유효합니다. 폼을 제출합니다.');
+                        this.submit(); // 모든 검사가 통과하면 폼 제출
+                    }
+                }).catch((error) => {
+                    console.error('Saving failed: ', error);
                     event.preventDefault();  // 폼 제출 방지
-                } else {
-                    tinymce.get('content').save();
-                }
+                });
             });
         });
     </script>
@@ -240,7 +236,7 @@
         function openMapPopup() {
             const albumElement = document.getElementById('albumElement');
             if (albumElement) {
-                const albumId = albumElement.dataset.albumId;  // 서버에서 전달된 albumId 값
+                const albumId = albumElement.dataset.albumId;
                 if (!albumId) {
                     console.error("albumId is undefined or null.");
                     return;
@@ -257,7 +253,6 @@
             document.querySelector('.btn-secondary').addEventListener('click', openMapPopup);
         });
 
-        // 태그 추가 관련 스크립트
         function addTag() {
             const input = document.getElementById('themeInput');
             let tagValue = input.value.trim();
@@ -306,25 +301,25 @@
     </script>
 
     <script th:inline="javascript">
-        const albumId = /*[[${albumId}]]*/;  // 서버에서 받은 albumId
+        const albumId = /*[[${albumId}]]*/;
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('addLocation').addEventListener('click', function () {
-                openMapPopup();  // 앨범 ID를 이용하여 팝업 호출
+                openMapPopup();
             });
         });
     </script>
 </head>
 <body>
-<div class="upload-container">
+<div class="container">
     <h1>여행앨범 기록하기</h1>
     <div id="albumElement" th:data-album-id="${albumId}"></div>
 
-    <form th:action="@{/api/travel/create}  " method="post" enctype="multipart/form-data">
+    <form th:action="@{/api/travel/create}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
-            <input type="text" id="title" name="title" class="form-control" required/>
+            <input type="text" id="title" name="title" placeholder="제목을 입력해주세요." class="form-control" required/>
         </div>
-        <input type="hidden" id="albumId" name="albumId" th:value="${albumId}" />
+        <input type="hidden" id="albumId" name="albumId" th:value="${albumId}"/>
         <div class="mb-3">
             <label for="region" class="form-label">지역</label>
             <select id="region" name="region" class="form-select" required>
@@ -346,59 +341,45 @@
         </div>
 
         <div class="mb-3">
-            <label for="statDate" class="form-label">여행시작일</label>
+            <label for="statDate" class="form-label">시작일</label>
             <input type="date" id="statDate" name="statDate" class="form-control" required/>
         </div>
-
         <div class="mb-3">
-            <label for="endDate" class="form-label">여행종료일</label>
+            <label for="endDate" class="form-label">종료일</label>
             <input type="date" id="endDate" name="endDate" class="form-control" required/>
         </div>
-
         <div class="mb-3">
-            <label for="thumbnail" class="form-label">대표사진</label>
+            <label for="thumbnail" class="form-label">썸네일</label>
             <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" required/>
         </div>
-
-        <!-- TinyMCE 에디터 적용된 내용 입력 -->
         <div class="mb-3">
-            <label for="content" class="form-label">내용</label>
-            <textarea id="content" name="content" class="form-control" rows="10"></textarea>
-        </div>
-
-
-
-        <div class="mb-3">
-            <label for="addLocation" class="form-label">위치추가</label>
-            <button type="button" class="btn btn-secondary" onclick="openMapPopup()">위치추가</button>
+            <label class="form-label">Content</label>
+            <div id="editorjs" class="mb-3" style="border: 1px solid #ced4da; padding: 10px;"></div>
         </div>
 
         <div class="mb-3">
-            <label for="isPublic" class="form-label">공개여부</label>
-            <div class="radio-inline">
-                <input type="radio" id="public" name="isPublic" value="1" required/>
-                <label for="public">공개</label>
-            </div>
-            <div class="radio-inline">
-                <input type="radio" id="private" name="isPublic" value="0" required/>
-                <label for="private">비공개</label>
+            <label class="form-label">공개 여부</label>
+            <div>
+                <label class="radio-inline">
+                    <input type="radio" name="isPublic" value="1" required/> 공개
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="isPublic" value="0" required/> 비공개
+                </label>
             </div>
         </div>
-
+        <button type="button" class="btn btn-secondary" id="addLocation">위치 추가</button>
         <div class="mb-3">
             <label for="themeInput" class="form-label">테마</label>
             <input type="text" id="themeInput" class="form-control"
                    onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }"
-                   placeholder="Enter theme and press Space"/>
+                   placeholder="테마를 입력하고 스페이바를 눌러주세요!"/>
             <div id="tagContainer" class="mt-2"></div>
         </div>
-
         <div id="hiddenFieldsContainer"></div>
-
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="submit" class="btn btn-primary">저장</button>
     </form>
+    <button class="back-btn" onclick="window.history.back()">뒤로</button>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

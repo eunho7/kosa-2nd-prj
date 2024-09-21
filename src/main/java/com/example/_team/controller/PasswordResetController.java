@@ -27,7 +27,7 @@ public class PasswordResetController {
     @GetMapping("/password/reset")
     public String showResetPasswordPage(@RequestParam("token") String token, Model model) {
         model.addAttribute("token", token); // 토큰을 모델에 추가하여 폼에 넘깁니다.
-        return "reset-password"; // 비밀번호 재설정 페이지로 이동
+        return "view/user/reset-password"; // 비밀번호 재설정 페이지로 이동
     }
 
     // 비밀번호 재설정 링크 전송 요청을 처리하는 POST 메서드
