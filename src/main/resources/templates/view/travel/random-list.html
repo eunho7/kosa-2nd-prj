@@ -18,7 +18,6 @@
         </span>
         <div id="search-section" class="search-section">
             <p class="search-title">여행 앨범 검색</p>
-
             <div class="mb-3 text-center">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" id="theme-option" name="searchOption" value="theme"
@@ -34,12 +33,10 @@
 
             <form th:action="@{/api/travel/search}" method="get" class="search-form">
                 <input type="hidden" name="isPublic" value="1"/>
-
                 <div id="theme-container" class="mb-3 theme-container" style="display: none;">
                     <label for="theme-input" class="form-label">테마</label>
                     <input id="theme-input" name="theme" type="text" class="form-control" placeholder="테마를 입력해주세요">
                 </div>
-
                 <div id="region-container" class="mb-3 region-container" style="display: none;">
                     <label for="region-select" class="form-label">지역</label>
                     <select id="region-select" name="region" class="form-select">
@@ -60,40 +57,57 @@
                         <option value="제주도">제주도</option>
                     </select>
                 </div>
-
                 <button type="submit" class="search-button">Search</button>
             </form>
         </div>
     </div>
 
-    <h5 class="text-center">랜덤 여행 앨범</h5>
-
-    <div class="thumbnail-container">
-        <a th:href="@{/api/travel/detail/{id}(id=${response.id})}">
-            <img th:src="@{${response.thumbnail}}" alt="Album image" class="result-image img-thumbnail">
-        </a>
-    </div>
-
-    <!-- Swiper 컨테이너 -->
-    <div class="swiper-container" id="swiperContainer" style="display: none;">
+    <div class="swiper-container">
         <div class="swiper-wrapper">
-            <div th:each="image : ${response.travelAlbumImageList}" class="swiper-slide">
-                <img th:src="@{${image.imagePath}}" alt="Travel Image" class="travel-image img-thumbnail"/>
+            <div th:each="response : ${randomResponses}" class="swiper-slide">
+                <div class="thumbnail-container">
+                    <a th:href="@{/api/travel/detail/{id}(id=${response.id})}" class="thumbnail-link">
+                        <img th:src="@{${response.thumbnail}}" alt="앨범 이미지" class="result-image img-thumbnail">
+                    </a>
+                    <div class="album-info">
+                        <h4>랜덤 여행 기록!</h4>
+                        <h2 class="album-title" th:text="${response.title}"></h2>
+                        <p class="album-date-range"><span th:text="${response.dateRange}"></span></p>
+                        <p class="album-nickname"><span th:text="${response.nickname}"></span> 님의 여행</p>
+                        <p class="album-region">️<span th:text="${response.region}"></span></p>
+                        <ul class="tag-list">
+                            <li th:each="theme : ${response.travelThemeList}" class="tag-item">
+                                <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
+                                   th:text="'#'+${theme.name}" class="text-black"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="swiper-pagination"></div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
     </div>
 
-    <div class="theme-list">
-        <ul>
-            <li th:each="theme : ${response.travelThemeList}">
-                <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
-                   th:text="${theme.name}" class="text-white"></a>
-            </li>
-        </ul>
+    <div class="col-12">
+        <h3>🌟방금 올라온 여행기록이에요!</h3>
+        <div class="album-container row">
+            <div th:each="album : ${dateRangeRes}" class="col-md-3">
+                <div class="album-card">
+                    <a th:href="@{/api/travel/detail/{id}(id=${album.id})}">
+                        <img th:src="@{${album.thumbnail}}" alt="앨범 이미지" class="img-thumbnail album-thumbnail">
+                    </a>
+                    <div class="album-info-1">
+                        <h6 class="title" th:text="${album.title}"></h6>
+                        <p class="nickname" th:text="${album.nickName}+'님의 여행'">작성자</p>
+                        <p class="travel-date" th:text="${album.dateRange}">기간</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
     <div th:replace="fragments/footer :: bottomMenu"></div>
 </div>
 
@@ -103,15 +117,24 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script src="/js/scripts.js"></script>
 <script src="/js/random-list.js"></script>
-<!--<script>-->
-<!--    function toggleSearchSection() {-->
-<!--        const searchSection = document.getElementById('search-section');-->
-<!--        if (searchSection.style.display === 'none' || searchSection.style.display === '') {-->
-<!--            searchSection.style.display = 'block';-->
-<!--        } else {-->
-<!--            searchSection.style.display = 'none';-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
+<script>
+    const swiper = new Swiper('.swiper-container', {
+        loop: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        spaceBetween: 30, // 슬라이드 간의 간격 조정
+        slidesPerView: 1,
+    });
+</script>
 </body>
 </html>

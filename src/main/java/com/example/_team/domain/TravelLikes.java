@@ -1,5 +1,6 @@
 package com.example._team.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class TravelLikes {
     private Integer likeIdx;
     @ManyToOne
     @JoinColumn(name = "travel_idx")
+    @JsonBackReference
     private TravelBoard travelIdx;
     @ManyToOne
     @JoinColumn(name="user_idx")

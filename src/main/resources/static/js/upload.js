@@ -106,16 +106,6 @@ function previewImages() {
     });
 }
 
-function validateEndDate() {
-    const startDate = document.getElementById('statDate').value;
-    const endDate = document.getElementById('endDate').value;
-
-    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
-        alert("여행 종료일은 시작일보다 빠를 수 없습니다!");
-        document.getElementById('endDate').value = ''; // 종료일 필드를 비웁니다.
-    }
-}
-
 function addTag() {
     const input = document.getElementById('themeInput');
     const tagValue = input.value.trim();

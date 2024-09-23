@@ -34,8 +34,6 @@ n
 >src/main/java/com/example/_team/dto/board/BoardRequestDto.java,e/5/e51d2d6ef34e6c391cba377ed3c6a1d795782fd9
 j
 :src/main/java/com/example/_team/domain/enums/Category.java,5/f/5f5943c0ee6c6825a9a528fcb9534c7c81a9fd73
-h
-8src/main/java/com/example/_team/domain/enums/Region.java,7/6/762de9eb9b38bc48ac1b2b4f92dc50b84b8d3f54
 o
 ?src/main/java/com/example/_team/dto/board/BoardResponseDto.java,2/3/2347054e375022741a21311c86efd304b0eae63f
 o

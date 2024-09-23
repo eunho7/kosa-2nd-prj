@@ -58,12 +58,57 @@ public class TravelController {
     private final MarkerRepository markerRepository;
     private final TravelRepository travelRepository;
 
-    // 테마, 지역별 검색
+
+    //    // 테마, 지역별 검색
+//    @GetMapping("/search")
+//    public String searchByRegionOrTheme(
+//            @RequestParam(value = "theme", required = false) String theme,
+//            @RequestParam(value = "region", required = false) String region,
+//            Model model) {
+//
+//        List<TravelAlbumListDTO> albums;
+//
+//        if (theme != null && !theme.trim().isEmpty() && region != null && !region.trim().isEmpty()) {
+//            try {
+//                Region regionEnum = Region.valueOf(region.trim().toUpperCase());
+//                albums = travelService.searchTravelListByThemeAndRegion(theme, regionEnum, 1);
+//            } catch (IllegalArgumentException e) {
+//                albums = List.of();
+//            }
+//        } else if (theme != null && !theme.trim().isEmpty()) {
+//            albums = travelService.searchTravelListByTheme(theme, 1);
+//        } else if (region != null && !region.trim().isEmpty()) {
+//            try {
+//                Region regionEnum = Region.valueOf(region.trim().toUpperCase());
+//                albums = travelService.searchTravelListByRegion(regionEnum, 1);
+//            } catch (IllegalArgumentException e) {
+//                albums = List.of();
+//            }
+//        } else {
+//            albums = List.of();
+//        }
+//
+//        model.addAttribute("albums", albums);
+//        model.addAttribute("region", region);
+//        model.addAttribute("theme", theme);
+//        return "view/travel/region-theme-list";
+//    }
+
     @GetMapping("/search")
     public String searchByRegionOrTheme(
             @RequestParam(value = "theme", required = false) String theme,
             @RequestParam(value = "region", required = false) String region,
             Model model) {
+
+        model.addAttribute("theme", theme);
+        model.addAttribute("region", region);
+        return "view/travel/region-theme-list"; // 뷰 이름
+    }
+// 테마, 지역별 검색
+    @GetMapping("/search/data") // /search 경로로 변경
+    public ResponseEntity<List<TravelAlbumListDTO>> searchByRegionOrTheme(
+            @RequestParam(value = "theme", required = false) String theme,
+            @RequestParam(value = "region", required = false) String region) {
 
         List<TravelAlbumListDTO> albums;
 
@@ -87,10 +132,7 @@ public class TravelController {
             albums = List.of();
         }
 
-        model.addAttribute("albums", albums);
-        model.addAttribute("region", region);
-        model.addAttribute("theme", theme);
-        return "view/travel/region-theme-list";
+        return ResponseEntity.ok(albums); // albums 리스트와 함께 200 OK 응답 반환
     }
 
 
@@ -124,6 +166,7 @@ public class TravelController {
                                                           @RequestBody Map<String, Integer> payload) {
         return handleLikeAction(travelIdx, payload.get("userIdx"), false);
     }
+
     private ResponseEntity<Map<String, Object>> handleLikeAction(Integer travelIdx, Integer userIdx, boolean isLike) {
         boolean success;
         if (isLike) {
@@ -139,11 +182,12 @@ public class TravelController {
 
     // 여행앨범 생성
     @PostMapping("/create")
-    public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request, @RequestParam("albumId") Long albumId,
+    public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request,
+                                    @RequestParam("albumId") Long albumId,
                                     RedirectAttributes redirectAttributes) {
         System.out.println("왔니?");
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request,albumId);
+        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request, albumId);
         redirectAttributes.addAttribute("id", response.getTravelIdx());
         return "redirect:/api/travel/detail/{id}";
     }
@@ -212,7 +256,8 @@ public class TravelController {
         List<UserListByPostLikesDTO> userList = travelService.getTravelLikesByUsers(id);
         model.addAttribute("userList", userList);
 
-        TravelBoard travelBoard = travelRepository.findById(Math.toIntExact(response.getId())).orElseThrow(() -> new DataNotFoundException("X"));
+        TravelBoard travelBoard = travelRepository.findById(Math.toIntExact(response.getId()))
+                .orElseThrow(() -> new DataNotFoundException("X"));
         // 앨범에 연관된 마커 리스트 가져오기
         List<Marker> markers = markerRepository.findByTravelBoard1(travelBoard.getId());
         // 마커 리스트를 JSON으로 변환
@@ -235,17 +280,22 @@ public class TravelController {
         return "redirect:/api/travel/random-list";
     }
 
+    @GetMapping("/myTravel/view")
+    public String getMyTravelPage(Model model) {
+        return "view/travel/my-random-list"; // HTML 페이지 반환
+    }
+
     // 나의 앨범 리스트 조회(좋아요, 최신순 정렬)
     @GetMapping("/myTravel")
-    public String getMyTravelBoardSort(Model model,
-                                       @RequestParam(defaultValue = "latest") String sort) {
+    public ResponseEntity<List<myTravelAlbumListDTO>> getMyTravelBoardSort(Model model,
+                                                                           @RequestParam(defaultValue = "latest") String sort) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userService.findByEmail(email);
 
         List<myTravelAlbumListDTO> response = travelService.getMyTravelBoardSortList(user, sort);
         model.addAttribute("response", response);
 
-        return "view/travel/my-random-list";
+        return ResponseEntity.ok(response);
     }
 
     // 수정 폼 페이지
@@ -273,8 +323,8 @@ public class TravelController {
 
         model.addAttribute("response", response);
         model.addAttribute("user", user);
-        model.addAttribute("startDate",startDate);
-        model.addAttribute("endDAte",endDate);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDAte", endDate);
         System.out.println(response.getContent());
         // 공개여부 추가
         model.addAttribute("ispublic", response.getIsPublic());
