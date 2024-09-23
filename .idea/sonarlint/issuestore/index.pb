@@ -36,12 +36,8 @@ j
 :src/main/java/com/example/_team/domain/enums/Category.java,5/f/5f5943c0ee6c6825a9a528fcb9534c7c81a9fd73
 o
 ?src/main/java/com/example/_team/dto/board/BoardResponseDto.java,2/3/2347054e375022741a21311c86efd304b0eae63f
-o
-?src/main/java/com/example/_team/repository/ThemeRepository.java,5/0/509a28250a3225a53e96032daea12c6f4515a8c6
 `
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
-u
-Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
 n
 >src/main/java/com/example/_team/global/s3/AmazonS3Manager.java,8/1/81b0bd0c6fd61e86c7ff0afbf18544383bca1d73
 k

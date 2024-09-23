@@ -13,7 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentPage = 0; // 페이지 초기화
                 albumContainer.innerHTML = ""; // 기존 데이터 초기화
                 loadMoreData(); // 초기 데이터 로드
-                document.getElementById("loadMoreBtn").style.display = "block";
+                if (responseData.length === 0 || responseData.length < 9) {
+                    document.getElementById("loadMoreBtn").style.display = "none";
+                } else {
+                    document.getElementById("loadMoreBtn").style.display = "block"; // 데이터가 있을 경우 버튼 보이기
+                }
             })
             .catch(error => console.error('Error fetching data:', error));
     }

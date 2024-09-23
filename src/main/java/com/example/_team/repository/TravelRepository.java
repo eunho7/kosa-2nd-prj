@@ -21,7 +21,7 @@ public interface TravelRepository extends JpaRepository<TravelBoard, Integer> {
     List<Object[]> findAllByThemeAndRegionAndIsPublic(@Param("name") String name,
                                                       @Param("region") String region,
                                                       @Param("is_public") Integer is_public);
-    @Query(value = "SELECT * FROM (SELECT t.* FROM travel_board t ORDER BY DBMS_RANDOM.VALUE) WHERE ROWNUM <= 5", nativeQuery = true)
+    @Query(value = "SELECT * FROM (SELECT t.* FROM travel_board t ORDER BY DBMS_RANDOM.VALUE) WHERE ROWNUM <= 5 AND title is NOT NULL", nativeQuery = true)
     List<TravelBoard> findRandomTravelBoards();
 
 
