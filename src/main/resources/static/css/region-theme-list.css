@@ -14,7 +14,7 @@ body {
     max-width: 900px;
     height: 970px;
     max-height: 970px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .header-container {
@@ -85,29 +85,3 @@ body {
     color: #0056b3;
 }
 
-/* 반응형 스타일 - 태블릿 */
-@media (max-width: 768px) {
-    .results-header {
-        font-size: 1.2rem;
-    }
-    .results-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .result-item {
-        padding: 15px;
-    }
-}
-
-/* 반응형 스타일 - 모바일 */
-@media (max-width: 576px) {
-    .results-header {
-        font-size: 1rem;
-    }
-    .results-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .back-btn {
-        font-size: 1.2rem;
-    }
-}

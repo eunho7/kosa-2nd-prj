@@ -66,6 +66,7 @@ public class TravelBoard extends BaseEntity {
     private int likeCount;
 
     @OneToMany(mappedBy = "travelIdx", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<TravelLikes> likes = new ArrayList<>();
     public void addLike() {
         this.likeCount++;

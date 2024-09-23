@@ -308,6 +308,36 @@
             });
         });
     </script>
+    <script>
+        function validateEndDate() {
+            const startDate = document.getElementById('statDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+                alert("여행 종료일은 시작일보다 빠를 수 없습니다!");
+                document.getElementById('endDate').value = ''; // 종료일 필드를 비웁니다.
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('endDate').addEventListener('change', validateEndDate);
+        });
+    </script>
+    <script>
+        function validateStartDate() {
+            const startDate = document.getElementById('statDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (startDate && endDate && new Date(startDate) < new Date(endDate)) {
+                alert("여행 시작일은 종료일보다 느릴 수 없습니다!");
+                document.getElementById('statDate').value = ''; // 시작일 필드를 비웁니다.
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('statDate').addEventListener('change', validateEndDate);
+        });
+    </script>
 </head>
 <body>
 <div class="container">
@@ -342,11 +372,13 @@
 
         <div class="mb-3">
             <label for="statDate" class="form-label">시작일</label>
-            <input type="date" id="statDate" name="statDate" class="form-control" required/>
+            <input type="date" id="statDate" name="statDate" class="form-control" required
+                   onchange="validateStartDate()">
         </div>
         <div class="mb-3">
-            <label for="endDate" class="form-label">종료일</label>
-            <input type="date" id="endDate" name="endDate" class="form-control" required/>
+            <label for="endDate" class="form-label">여행 종료일</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" required
+                   onchange="validateEndDate()">
         </div>
         <div class="mb-3">
             <label for="thumbnail" class="form-label">썸네일</label>
